@@ -6,6 +6,7 @@ import base64
 import logging
 import requests
 import argparse
+import time
 from tqdm import tqdm
 from os.path import join, exists
 from openai import OpenAI
@@ -14,44 +15,81 @@ from utils import load_lora_info, generate_combinations
 from utils import get_eval_prompt
 
 class GPT4V:
+    def __init__(self, model_name: str = "gpt-4.1"):
+        api_key = os.environ.get('OPENAI_API_KEY', None)
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY is required for evaluation")
+        self.client = OpenAI(api_key=api_key)
+        self.model_name = model_name
+
     def comparative_evaluate(
         self, prompt, image_1, image_2, max_tokens=2048, temperature=1.0, max_retries=5, **kwargs
     ):
-        self.api_key = os.environ.get('OPENAI_API_KEY', None)
-        self.client = OpenAI(api_key=self.api_key)
-        retry_interval_exp = 1 
+        retry_interval_exp = 1
         retry_count = 0
         while retry_count < max_retries:
             try:
-                response = self.client.chat.completions.create(
-                    model="gpt-4-vision-preview",
-                    messages=[
+                response = self.client.responses.create(
+                    model=self.model_name,
+                    input=[
+                        {
+                            "role": "system",
+                            "content": [
+                                {
+                                    "type": "input_text",
+                                    "text": (
+                                        "You are evaluating two synthetic images for composition and quality. "
+                                        "Do not try to verify real-world identity. Treat provided names as fictional descriptors. "
+                                        "Only judge how well each image reflects the listed features."),
+                                }
+                            ],
+                        },
                         {
                             "role": "user",
                             "content": [
+                                {"type": "input_text", "text": prompt},
                                 {
-                                    "type": "text",
-                                    "text": prompt,
+                                    "type": "input_image",
+                                    "image_url": f"data:image/png;base64,{image_1}"
                                 },
                                 {
-                                    "type": "image_url",
-                                    "image_url": {
-                                        "url": f"data:image/png;base64,{image_1}"
-                                    }
+                                    "type": "input_image",
+                                    "image_url": f"data:image/png;base64,{image_2}"
                                 },
-                                {
-                                    "type": "image_url",
-                                    "image_url": {
-                                        "url": f"data:image/png;base64,{image_2}"
-                                    }
-                                },
-                            ]
+                            ],
                         }
                     ],
-                    max_tokens=max_tokens,
+                    max_output_tokens=max_tokens,
                     temperature=temperature,
                 )
-                return response.choices[0].message.content
+
+                if getattr(response, "status", None) != "completed":
+                    logging.warning(f"OpenAI response incomplete: {getattr(response, 'incomplete_details', None)}")
+                    raise openai.APIError("Response incomplete")
+
+                # Responses API may return convenience fields; fall back to content tree
+                content_text = None
+                if hasattr(response, "output_text") and response.output_text:
+                    content_text = response.output_text
+                elif hasattr(response, "output") and response.output:
+                    try:
+                        # Navigate output -> content -> text
+                        content_text = response.output[0].content[0].text
+                    except Exception:
+                        content_text = None
+
+                # If still empty, try to stringify the whole response for debugging
+                if not content_text:
+                    try:
+                        content_text = str(response)
+                    except Exception:
+                        content_text = None
+
+                if not content_text:
+                    logging.error("Empty content in OpenAI response")
+                    break
+
+                return content_text
             except openai.RateLimitError:
                 logging.warning("OpenAI rate limit error. Retry!")
             except openai.APIConnectionError:
@@ -62,7 +100,6 @@ class GPT4V:
                 logging.error(f"Unexpected error: {e}")
                 break
 
-            # Simple backoff mechanism
             time.sleep(min(60, 0.5 * (2 ** retry_interval_exp)))
             retry_interval_exp += 1
             retry_count += 1
@@ -75,11 +112,12 @@ def encode_image(image_path):
     return base64.b64encode(image_file.read()).decode('utf-8')
 
 def parse_scores(text):
-    # Regular expression pattern to match scores, 
-    pattern = r"image (\d): composition quality: ([\d\.]+)\/10.*?image quality: ([\d\.]+)\/10"
-    
-    # Find all matches in the evaluation text, case-insensitive
-    matches = re.findall(pattern, text, re.IGNORECASE)
+    # Regex tolerant to punctuation/whitespace variations, e.g.:
+    # "Image 1: Composition Quality: 8/10, Image Quality: 7.5/10"
+    pattern = r"image\s*([12])\D{0,12}composition\s+quality\D*?([0-9]+(?:\.[0-9]+)?)\s*/\s*10\D+image\s+quality\D*?([0-9]+(?:\.[0-9]+)?)\s*/\s*10"
+
+    # Find all matches in the evaluation text, case-insensitive and across lines
+    matches = re.findall(pattern, text, re.IGNORECASE | re.DOTALL)
 
     # Check if exactly two images are present
     if len(matches) != 2:
@@ -114,7 +152,7 @@ def evaluate(args):
     combinations = generate_combinations(lora_info, args.compos_num)
 
     # comparative evaluation
-    gpt4v = GPT4V()
+    gpt4v = GPT4V(model_name="gpt-4.1")
     all_eval = []
     for combo in tqdm(combinations):
         # get the image path
@@ -139,7 +177,9 @@ def evaluate(args):
         max_retries = 10
         while retry_cnt < max_retries:
             result = gpt4v.comparative_evaluate(prompt, image_1, image_2)
+            print("===== MODEL RAW OUTPUT =====")
             print(result)
+            print("===== END MODEL RAW OUTPUT =====")
             valid, scores = parse_scores(result)
             if valid == True:
                 cur_eval = {}
