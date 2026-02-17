@@ -42,7 +42,7 @@ def main(args):
     else:
         pipeline = DiffusionPipeline.from_pretrained(
             args.model_name,
-            custom_pipeline="MingZhong/StableDiffusionPipeline-with-LoRA-C"
+            custom_pipeline=r"MingZhong/StableDiffusionPipeline-with-LoRA-C",
             use_safetensors=True,
         ).to("cuda")
 
