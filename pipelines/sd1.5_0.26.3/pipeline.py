@@ -1042,10 +1042,11 @@ class StableDiffusionPipeline(
 
                 if lora_timestep_mask is not None:
                     if lora_timestep_mask[i]:
+                        self.enable_lora()
                         if active_adapters is not None:
                             self.set_adapters(active_adapters)
                     else:
-                        self.set_adapters([])
+                        self.disable_lora()
 
                 # expand the latents if we are doing classifier free guidance
                 latent_model_input = torch.cat([latents] * 2) if self.do_classifier_free_guidance else latents
@@ -1102,7 +1103,7 @@ class StableDiffusionPipeline(
                     if active_adapters is None:
                         active_adapters = self.get_active_adapters()
 
-                    self.set_adapters([])
+                    self.disable_lora()
                     noise_pred_base = self.unet(
                         latent_model_input,
                         t,
@@ -1126,6 +1127,7 @@ class StableDiffusionPipeline(
                                 guidance_rescale=self.guidance_rescale,
                             )
 
+                    self.enable_lora()
                     self.set_adapters(active_adapters)
                     lora_step_importance.append(torch.mean((noise_pred - noise_pred_base) ** 2).item())
 
