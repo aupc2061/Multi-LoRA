@@ -827,7 +827,9 @@ class StableDiffusionPipeline(
         clip_skip: Optional[int] = None,
         callback_on_step_end: Optional[Callable[[int, int, Dict], None]] = None,
         callback_on_step_end_tensor_inputs: List[str] = ["latents"],
-        lora_composite: bool = False, 
+        lora_composite: bool = False,
+        lora_timestep_mask: Optional[List[bool]] = None,
+        return_lora_step_importance: bool = False,
         **kwargs,
     ):
         r"""
@@ -1023,11 +1025,27 @@ class StableDiffusionPipeline(
         if lora_composite:
             adapters = self.get_active_adapters()
 
+        if lora_timestep_mask is not None and lora_composite:
+            raise ValueError("lora_timestep_mask is not supported with lora_composite.")
+
         self._num_timesteps = len(timesteps)
+
+        if lora_timestep_mask is not None and len(lora_timestep_mask) != len(timesteps):
+            raise ValueError("lora_timestep_mask must match the number of timesteps.")
+
+        lora_step_importance = [] if return_lora_step_importance else None
+        active_adapters = self.get_active_adapters() if lora_timestep_mask is not None else None
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
                 if self.interrupt:
                     continue
+
+                if lora_timestep_mask is not None:
+                    if lora_timestep_mask[i]:
+                        if active_adapters is not None:
+                            self.set_adapters(active_adapters)
+                    else:
+                        self.set_adapters([])
 
                 # expand the latents if we are doing classifier free guidance
                 latent_model_input = torch.cat([latents] * 2) if self.do_classifier_free_guidance else latents
@@ -1077,6 +1095,40 @@ class StableDiffusionPipeline(
                     # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf
                     noise_pred = rescale_noise_cfg(noise_pred, noise_pred_text, guidance_rescale=self.guidance_rescale)
 
+                if return_lora_step_importance:
+                    if lora_composite:
+                        raise ValueError("return_lora_step_importance is not supported with lora_composite.")
+
+                    if active_adapters is None:
+                        active_adapters = self.get_active_adapters()
+
+                    self.set_adapters([])
+                    noise_pred_base = self.unet(
+                        latent_model_input,
+                        t,
+                        encoder_hidden_states=prompt_embeds,
+                        timestep_cond=timestep_cond,
+                        cross_attention_kwargs=self.cross_attention_kwargs,
+                        added_cond_kwargs=added_cond_kwargs,
+                        return_dict=False,
+                    )[0]
+
+                    if self.do_classifier_free_guidance:
+                        noise_pred_uncond_base, noise_pred_text_base = noise_pred_base.chunk(2)
+                        noise_pred_base = noise_pred_uncond_base + self.guidance_scale * (
+                            noise_pred_text_base - noise_pred_uncond_base
+                        )
+
+                        if self.guidance_rescale > 0.0:
+                            noise_pred_base = rescale_noise_cfg(
+                                noise_pred_base,
+                                noise_pred_text_base,
+                                guidance_rescale=self.guidance_rescale,
+                            )
+
+                    self.set_adapters(active_adapters)
+                    lora_step_importance.append(torch.mean((noise_pred - noise_pred_base) ** 2).item())
+
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs, return_dict=False)[0]
 
@@ -1117,6 +1169,11 @@ class StableDiffusionPipeline(
         self.maybe_free_model_hooks()
 
         if not return_dict:
+            if return_lora_step_importance:
+                return (image, has_nsfw_concept, lora_step_importance)
             return (image, has_nsfw_concept)
+
+        if return_lora_step_importance:
+            self._last_lora_step_importance = lora_step_importance
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)

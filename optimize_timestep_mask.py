@@ -6,9 +6,7 @@ from os.path import join
 import torch
 from diffusers import DPMSolverMultistepScheduler, DiffusionPipeline
 
-# from pipelines."sdxl_0.26.3".pipeline import StableDiffusionXLPipeline
 from utils import get_prompt, load_lora_info
-
 
 def _build_mask(importance, keep_ratio):
     num_steps = len(importance)
@@ -32,19 +30,13 @@ def main(args):
     # load LoRA metadata
     lora_info = load_lora_info(args.image_style, args.lora_info_path)
 
-    # load SDXL pipeline
-    if args.custom_pipeline:
-        pipeline = DiffusionPipeline.from_pretrained(
-            args.model_name,
-            custom_pipeline=args.custom_pipeline,
-            use_safetensors=True,
-        ).to("cuda")
-    else:
-        pipeline = DiffusionPipeline.from_pretrained(
-            args.model_name,
-            custom_pipeline=r"MingZhong/StableDiffusionPipeline-with-LoRA-C",
-            use_safetensors=True,
-        ).to("cuda")
+    # load SD1.5 pipeline
+    custom_pipeline = args.custom_pipeline or "./pipelines/sd1.5_0.26.3"
+    pipeline = DiffusionPipeline.from_pretrained(
+        args.model_name,
+        custom_pipeline=custom_pipeline,
+        use_safetensors=True,
+    ).to("cuda")
 
     # set scheduler
     schedule_config = dict(pipeline.scheduler.config)
@@ -72,19 +64,45 @@ def main(args):
         pipeline.set_adapters([lora_id])
 
         generator = torch.Generator(device="cuda").manual_seed(args.seed)
-        latents_full, importance = pipeline(
-            prompt=prompt,
-            negative_prompt=negative_prompt,
-            height=args.height,
-            width=args.width,
-            num_inference_steps=args.denoise_steps,
-            guidance_scale=args.cfg_scale,
-            generator=generator,
-            output_type="latent",
-            return_dict=False,
-            cross_attention_kwargs={"scale": args.lora_scale},
-            return_lora_step_importance=True,
-        )
+        try:
+            result = pipeline(
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                height=args.height,
+                width=args.width,
+                num_inference_steps=args.denoise_steps,
+                guidance_scale=args.cfg_scale,
+                generator=generator,
+                output_type="latent",
+                return_dict=False,
+                cross_attention_kwargs={"scale": args.lora_scale},
+                return_lora_step_importance=True,
+            )
+        except TypeError as exc:
+            raise RuntimeError(
+                "The selected pipeline does not support return_lora_step_importance. "
+                "Use the local SD1.5 custom pipeline implementation or a custom pipeline that implements it."
+            ) from exc
+
+        if isinstance(result, tuple) and len(result) == 3:
+            latents_full, _, importance = result
+        elif isinstance(result, tuple) and len(result) == 2:
+            latents_full, importance = result
+        elif isinstance(result, tuple) and len(result) == 1:
+            raise RuntimeError(
+                "The selected HF pipeline returned a single output. It does not support "
+                "return_lora_step_importance, which is required for optimization."
+            )
+        else:
+            raise RuntimeError(
+                "Unexpected pipeline return type; expected a tuple with latents and importance."
+            )
+
+        if importance is None:
+            raise RuntimeError(
+                "The selected pipeline returned importance=None. It does not provide "
+                "return_lora_step_importance, which is required for optimization."
+            )
 
         mask = _build_mask(importance, args.keep_ratio)
 
@@ -119,9 +137,9 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Optimize a per-timestep LoRA mask for SDXL using noise-pred MSE."
+        description="Optimize a per-timestep LoRA mask for SD1.5 using noise-pred MSE."
     )
-    parser.add_argument("--model_name", default="stabilityai/stable-diffusion-xl-base-1.0", type=str)
+    parser.add_argument("--model_name", default="SG161222/Realistic_Vision_V5.1_noVAE", type=str)
     parser.add_argument("--custom_pipeline", default=None, type=str)
     parser.add_argument("--mask_save_dir", default="timestep_masks", type=str)
     parser.add_argument("--keep_ratio", default=0.5, type=float)
