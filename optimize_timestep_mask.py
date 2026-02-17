@@ -6,7 +6,7 @@ from os.path import join
 import torch
 from diffusers import DPMSolverMultistepScheduler, DiffusionPipeline
 
-from pipelines.sdxl_0.26.3.pipeline import StableDiffusionXLPipeline
+# from pipelines."sdxl_0.26.3".pipeline import StableDiffusionXLPipeline
 from utils import get_prompt, load_lora_info
 
 
@@ -40,8 +40,9 @@ def main(args):
             use_safetensors=True,
         ).to("cuda")
     else:
-        pipeline = StableDiffusionXLPipeline.from_pretrained(
+        pipeline = DiffusionPipeline.from_pretrained(
             args.model_name,
+            custom_pipeline="MingZhong/StableDiffusionPipeline-with-LoRA-C"
             use_safetensors=True,
         ).to("cuda")
 
