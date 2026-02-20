@@ -830,6 +830,9 @@ class StableDiffusionPipeline(
         lora_composite: bool = False,
         lora_timestep_mask: Optional[List[bool]] = None,
         return_lora_step_importance: bool = False,
+        return_lora_step_importance_map: bool = False,
+        lora_timestep_spatial_mask: Optional[Union[List[torch.Tensor], torch.Tensor]] = None,
+        lora_timestep_spatial_adapters: Optional[List[str]] = None,
         **kwargs,
     ):
         r"""
@@ -902,6 +905,13 @@ class StableDiffusionPipeline(
                 Whether to use the `LoRA Composite` method from the paper
                 `Multi-LoRA Composition for Image Generation` to generate the image
                 given multiple LoRAs.
+            return_lora_step_importance_map (`bool`, *optional*, defaults to `False`):
+                Whether to return a per-timestep spatial importance map computed from
+                the post-CFG noise prediction difference.
+            lora_timestep_spatial_mask (`List[Tensor]` or `Tensor`, *optional*):
+                Spatial mask per timestep used to blend between two LoRA adapters.
+            lora_timestep_spatial_adapters (`List[str]`, *optional*):
+                Two adapter ids used when `lora_timestep_spatial_mask` is provided.
         Examples:
 
         Returns:
@@ -1028,12 +1038,26 @@ class StableDiffusionPipeline(
         if lora_timestep_mask is not None and lora_composite:
             raise ValueError("lora_timestep_mask is not supported with lora_composite.")
 
+        if lora_timestep_spatial_mask is not None and lora_composite:
+            raise ValueError("lora_timestep_spatial_mask is not supported with lora_composite.")
+
+        if lora_timestep_mask is not None and lora_timestep_spatial_mask is not None:
+            raise ValueError("lora_timestep_mask and lora_timestep_spatial_mask cannot be used together.")
+
+        if lora_timestep_spatial_mask is not None and (return_lora_step_importance or return_lora_step_importance_map):
+            raise ValueError("return_lora_step_importance(_map) is not supported with lora_timestep_spatial_mask.")
+
+        if lora_timestep_spatial_mask is not None:
+            if lora_timestep_spatial_adapters is None or len(lora_timestep_spatial_adapters) != 2:
+                raise ValueError("lora_timestep_spatial_adapters must contain exactly two adapter ids.")
+
         self._num_timesteps = len(timesteps)
 
         if lora_timestep_mask is not None and len(lora_timestep_mask) != len(timesteps):
             raise ValueError("lora_timestep_mask must match the number of timesteps.")
 
         lora_step_importance = [] if return_lora_step_importance else None
+        lora_step_importance_map = [] if return_lora_step_importance_map else None
         active_adapters = self.get_active_adapters() if lora_timestep_mask is not None else None
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
@@ -1053,7 +1077,63 @@ class StableDiffusionPipeline(
                 latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
 
                 # predict the noise residual
-                if lora_composite:
+                if lora_timestep_spatial_mask is not None:
+                    adapter_a, adapter_b = lora_timestep_spatial_adapters
+
+                    self.enable_lora()
+                    self.set_adapters([adapter_a])
+                    noise_pred_a = self.unet(
+                        latent_model_input,
+                        t,
+                        encoder_hidden_states=prompt_embeds,
+                        timestep_cond=timestep_cond,
+                        cross_attention_kwargs=self.cross_attention_kwargs,
+                        added_cond_kwargs=added_cond_kwargs,
+                        return_dict=False,
+                    )[0]
+
+                    self.set_adapters([adapter_b])
+                    noise_pred_b = self.unet(
+                        latent_model_input,
+                        t,
+                        encoder_hidden_states=prompt_embeds,
+                        timestep_cond=timestep_cond,
+                        cross_attention_kwargs=self.cross_attention_kwargs,
+                        added_cond_kwargs=added_cond_kwargs,
+                        return_dict=False,
+                    )[0]
+
+                    # perform guidance
+                    if self.do_classifier_free_guidance:
+                        noise_pred_uncond_a, noise_pred_text_a = noise_pred_a.chunk(2)
+                        noise_pred_a = noise_pred_uncond_a + self.guidance_scale * (noise_pred_text_a - noise_pred_uncond_a)
+
+                        noise_pred_uncond_b, noise_pred_text_b = noise_pred_b.chunk(2)
+                        noise_pred_b = noise_pred_uncond_b + self.guidance_scale * (noise_pred_text_b - noise_pred_uncond_b)
+
+                    if self.do_classifier_free_guidance and self.guidance_rescale > 0.0:
+                        noise_pred_a = rescale_noise_cfg(noise_pred_a, noise_pred_text_a, guidance_rescale=self.guidance_rescale)
+                        noise_pred_b = rescale_noise_cfg(noise_pred_b, noise_pred_text_b, guidance_rescale=self.guidance_rescale)
+
+                    if isinstance(lora_timestep_spatial_mask, list):
+                        spatial_mask = lora_timestep_spatial_mask[i]
+                    else:
+                        spatial_mask = lora_timestep_spatial_mask[i]
+
+                    spatial_mask = torch.as_tensor(spatial_mask, device=noise_pred_a.device, dtype=noise_pred_a.dtype)
+                    if spatial_mask.ndim == 2:
+                        spatial_mask = spatial_mask.unsqueeze(0).unsqueeze(0)
+                    elif spatial_mask.ndim == 3:
+                        spatial_mask = spatial_mask.unsqueeze(1)
+                    elif spatial_mask.ndim != 4:
+                        raise ValueError("lora_timestep_spatial_mask must be 2D, 3D, or 4D per timestep.")
+
+                    if spatial_mask.shape[0] == 1 and noise_pred_a.shape[0] > 1:
+                        spatial_mask = spatial_mask.expand(noise_pred_a.shape[0], spatial_mask.shape[1], spatial_mask.shape[2], spatial_mask.shape[3])
+
+                    noise_pred = noise_pred_b + spatial_mask * (noise_pred_a - noise_pred_b)
+                    self.set_adapters([adapter_a])
+                elif lora_composite:
                     noise_preds = []
                     # get noise_pred conditioned on each lora
                     self.enable_lora()
@@ -1080,23 +1160,24 @@ class StableDiffusionPipeline(
                         return_dict=False,
                     )[0]
 
-                # perform guidance
-                if self.do_classifier_free_guidance:
-                    if lora_composite:
-                        noise_preds = torch.stack(noise_preds, dim=0)
-                        noise_pred_uncond, noise_pred_text = noise_preds.chunk(2, dim=1)
-                        noise_pred_uncond = noise_pred_uncond.mean(dim=0)
-                        noise_pred_text = noise_pred_text.mean(dim=0)
-                        noise_pred = noise_pred_uncond + self.guidance_scale * (noise_pred_text - noise_pred_uncond)
-                    else:
-                        noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
-                        noise_pred = noise_pred_uncond + self.guidance_scale * (noise_pred_text - noise_pred_uncond)
+                if lora_timestep_spatial_mask is None:
+                    # perform guidance
+                    if self.do_classifier_free_guidance:
+                        if lora_composite:
+                            noise_preds = torch.stack(noise_preds, dim=0)
+                            noise_pred_uncond, noise_pred_text = noise_preds.chunk(2, dim=1)
+                            noise_pred_uncond = noise_pred_uncond.mean(dim=0)
+                            noise_pred_text = noise_pred_text.mean(dim=0)
+                            noise_pred = noise_pred_uncond + self.guidance_scale * (noise_pred_text - noise_pred_uncond)
+                        else:
+                            noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
+                            noise_pred = noise_pred_uncond + self.guidance_scale * (noise_pred_text - noise_pred_uncond)
 
-                if self.do_classifier_free_guidance and self.guidance_rescale > 0.0:
-                    # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf
-                    noise_pred = rescale_noise_cfg(noise_pred, noise_pred_text, guidance_rescale=self.guidance_rescale)
+                    if self.do_classifier_free_guidance and self.guidance_rescale > 0.0:
+                        # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf
+                        noise_pred = rescale_noise_cfg(noise_pred, noise_pred_text, guidance_rescale=self.guidance_rescale)
 
-                if return_lora_step_importance:
+                if return_lora_step_importance or return_lora_step_importance_map:
                     if lora_composite:
                         raise ValueError("return_lora_step_importance is not supported with lora_composite.")
 
@@ -1129,7 +1210,11 @@ class StableDiffusionPipeline(
 
                     self.enable_lora()
                     self.set_adapters(active_adapters)
-                    lora_step_importance.append(torch.mean((noise_pred - noise_pred_base) ** 2).item())
+                    if return_lora_step_importance:
+                        lora_step_importance.append(torch.mean((noise_pred - noise_pred_base) ** 2).item())
+                    if return_lora_step_importance_map:
+                        importance_map = torch.mean((noise_pred - noise_pred_base) ** 2, dim=1)
+                        lora_step_importance_map.append(importance_map.detach().float().cpu())
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs, return_dict=False)[0]
@@ -1171,11 +1256,18 @@ class StableDiffusionPipeline(
         self.maybe_free_model_hooks()
 
         if not return_dict:
+            if return_lora_step_importance and return_lora_step_importance_map:
+                return (image, has_nsfw_concept, lora_step_importance, lora_step_importance_map)
             if return_lora_step_importance:
                 return (image, has_nsfw_concept, lora_step_importance)
+            if return_lora_step_importance_map:
+                return (image, has_nsfw_concept, lora_step_importance_map)
             return (image, has_nsfw_concept)
 
         if return_lora_step_importance:
             self._last_lora_step_importance = lora_step_importance
+
+        if return_lora_step_importance_map:
+            self._last_lora_step_importance_map = lora_step_importance_map
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
