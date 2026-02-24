@@ -1,0 +1,25 @@
+{
+  "intervention": {
+    "checkpoint": "sae_data/checkpoints/object_2/sae_best.pt",
+    "lora_id": "object_2",
+    "delta_json": "sae_data/delta_summary_object_2.json",
+    "topk_from_delta": 16,
+    "ablate_scale": 0.0,
+    "target_steps": "last",
+    "apply_to": "cond",
+    "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "image_style": "reality",
+    "lora_info_path": "lora_info.json",
+    "lora_path": "models/lora",
+    "lora_scale": 0.8,
+    "height": 1024,
+    "width": 1024,
+    "denoise_steps": 50,
+    "cfg_scale": 7.0,
+    "seed": 111,
+    "hook_module": "conv_norm_out",
+    "dtype": "float16",
+    "save_dir": "sae_data/intervention/object_2"
+  }
+}

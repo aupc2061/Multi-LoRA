@@ -1,0 +1,30 @@
+{
+  "dataset": {
+    "collection_mode": "base_only",
+    "fast_p100": true,
+    "image_style": "reality",
+    "total_samples": 120,
+    "seed_bank": "101,202,303,404,505,606,707,808",
+    "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "height": 512,
+    "width": 512,
+    "denoise_steps": 20,
+    "cfg_scale": 6.5,
+    "hook_module": "conv_norm_out",
+    "dtype": "float16",
+    "device": "cuda",
+    "out_dir": "sae_data/datasets/base_reality_p100"
+  },
+  "train": {
+    "feature_dir": "sae_data/datasets/base_reality_p100",
+    "mode": "base",
+    "tokens_per_sample": 2048,
+    "batch_size": 1024,
+    "epochs": 12,
+    "lr": 0.001,
+    "l1_coeff": 0.001,
+    "latent_mult": 4.0,
+    "output_dir": "sae_data/checkpoints/base_reality_p100"
+  }
+}

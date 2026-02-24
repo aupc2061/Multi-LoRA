@@ -1,0 +1,40 @@
+{
+  "collect": {
+    "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "image_style": "reality",
+    "lora_info_path": "lora_info.json",
+    "lora_path": "models/lora",
+    "lora_id": "object_2",
+    "lora_scale": 0.8,
+    "height": 1024,
+    "width": 1024,
+    "denoise_steps": 50,
+    "cfg_scale": 7.0,
+    "seed_start": 111,
+    "num_seeds": 8,
+    "hook_module": "conv_norm_out",
+    "dtype": "float16",
+    "out_dir": "sae_data/features/object_2"
+  },
+  "train": {
+    "feature_dir": "sae_data/features/object_2",
+    "output_dir": "sae_data/checkpoints/object_2",
+    "mode": "both",
+    "tokens_per_sample": 4096,
+    "val_ratio": 0.1,
+    "batch_size": 2048,
+    "epochs": 20,
+    "lr": 0.001,
+    "l1_coeff": 0.001,
+    "latent_mult": 4.0,
+    "seed": 0
+  },
+  "delta": {
+    "feature_dir": "sae_data/features/object_2",
+    "checkpoint": "sae_data/checkpoints/object_2/sae_best.pt",
+    "topk": 64,
+    "tokens_per_sample": 4096,
+    "output": "sae_data/delta_summary_object_2.json"
+  }
+}

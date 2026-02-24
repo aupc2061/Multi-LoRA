@@ -1,0 +1,22 @@
+{
+  "dataset": {
+    "image_style": "reality",
+    "lora_info_path": "lora_info.json",
+    "lora_path": "models/lora",
+    "total_samples": 250,
+    "samples_per_category": 50,
+    "seed_bank": "111,222,333,444,555",
+    "split_seed": 0,
+    "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "lora_scale": 0.8,
+    "height": 1024,
+    "width": 1024,
+    "denoise_steps": 50,
+    "cfg_scale": 7.0,
+    "hook_module": "conv_norm_out",
+    "dtype": "float16",
+    "device": "cuda",
+    "out_dir": "sae_data/datasets/reality_250"
+  }
+}
