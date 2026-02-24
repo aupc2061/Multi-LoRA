@@ -98,31 +98,54 @@ def apply_mode_defaults(args: argparse.Namespace) -> None:
             args.seed_bank = "101,202,303,404,505,606,707,808"
 
 
+def _proportional_counts(total: int, proportions: list[float]) -> list[int]:
+    if total < 0:
+        raise ValueError("total must be non-negative")
+    if not proportions or any(p < 0 for p in proportions):
+        raise ValueError("proportions must be a non-empty list of non-negative values")
+
+    total_p = sum(proportions)
+    if total_p <= 0:
+        raise ValueError("sum(proportions) must be positive")
+
+    raw = [total * (p / total_p) for p in proportions]
+    counts = [int(x) for x in raw]
+    remainder = total - sum(counts)
+
+    fractions = sorted(enumerate([r - int(r) for r in raw]), key=lambda x: x[1], reverse=True)
+    for idx, _ in fractions[:remainder]:
+        counts[idx] += 1
+
+    return counts
+
+
 def get_allocations(lora_info: dict[str, list[dict[str, Any]]], total_samples: int, samples_per_category: int) -> dict[str, dict[str, int]]:
     categories = ["character", "clothing", "style", "background", "object"]
     for category in categories:
         if category not in lora_info:
             raise ValueError(f"Missing category in lora info: {category}")
 
-    if total_samples != 250 or samples_per_category != 50:
-        raise ValueError("Current dataset recipe is fixed to 250 total and 50 per category.")
+    expected_total = samples_per_category * len(categories)
+    if total_samples != expected_total:
+        raise ValueError(
+            f"For paired mode, total_samples must equal samples_per_category * 5. "
+            f"Got total_samples={total_samples}, samples_per_category={samples_per_category}."
+        )
 
     alloc: dict[str, dict[str, int]] = {}
 
     character_ids = sorted([entry["id"] for entry in lora_info["character"]])
     if len(character_ids) != 3:
         raise ValueError("Expected exactly 3 character LoRAs for fixed allocation plan.")
-    alloc["character"] = {
-        character_ids[0]: 20,
-        character_ids[1]: 15,
-        character_ids[2]: 15,
-    }
+    character_counts = _proportional_counts(samples_per_category, [0.4, 0.3, 0.3])
+    alloc["character"] = {character_ids[i]: character_counts[i] for i in range(3)}
 
     for category in ["clothing", "style", "background", "object"]:
         ids = sorted([entry["id"] for entry in lora_info[category]])
         if len(ids) != 2:
             raise ValueError(f"Expected exactly 2 LoRAs for category {category}.")
-        alloc[category] = {ids[0]: 25, ids[1]: 25}
+        pair_counts = _proportional_counts(samples_per_category, [0.5, 0.5])
+        alloc[category] = {ids[0]: pair_counts[0], ids[1]: pair_counts[1]}
 
     return alloc
 

@@ -1,10 +1,11 @@
 {
   "dataset": {
+    "collection_mode": "paired",
     "image_style": "reality",
     "lora_info_path": "lora_info.json",
     "lora_path": "models/lora",
-    "total_samples": 250,
-    "samples_per_category": 50,
+    "total_samples": 125,
+    "samples_per_category": 25,
     "seed_bank": "111,222,333,444,555",
     "split_seed": 0,
     "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
@@ -17,6 +18,6 @@
     "hook_module": "conv_norm_out",
     "dtype": "float16",
     "device": "cuda",
-    "out_dir": "sae_data/datasets/reality_250"
+    "out_dir": "sae_data/datasets/reality_125"
   }
 }
