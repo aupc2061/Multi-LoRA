@@ -15,8 +15,32 @@ from sae.feature_hooks import LastActivationRecorder, resolve_module
 from utils import get_prompt, load_lora_info
 
 
+def load_dataset_config(config_path: str) -> dict[str, Any]:
+    path = Path(config_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Config file not found: {config_path}")
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("Config root must be a JSON object.")
+
+    dataset_cfg = payload.get("dataset", payload)
+    if not isinstance(dataset_cfg, dict):
+        raise ValueError("Config must contain an object at key 'dataset' or be a flat object.")
+    return dataset_cfg
+
+
 def parse_args() -> argparse.Namespace:
+    bootstrap = argparse.ArgumentParser(add_help=False)
+    bootstrap.add_argument("--config", type=str, default=None)
+    bootstrap_args, _ = bootstrap.parse_known_args()
+
+    config_defaults: dict[str, Any] = {}
+    if bootstrap_args.config:
+        config_defaults = load_dataset_config(bootstrap_args.config)
+
     parser = argparse.ArgumentParser(description="Create a balanced SAE dataset and optionally collect paired activations.")
+    parser.add_argument("--config", type=str, default=None)
     parser.add_argument("--collection_mode", type=str, default="paired", choices=["paired", "base_only"])
     parser.add_argument("--fast_p100", action="store_true")
     parser.add_argument("--image_style", type=str, default="reality", choices=["anime", "reality"])
@@ -42,6 +66,12 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--manifest_only", action="store_true")
     parser.add_argument("--out_dir", type=str, default="sae_data/datasets/reality_250")
+
+    if config_defaults:
+        valid_keys = {action.dest for action in parser._actions}
+        filtered_defaults = {k: v for k, v in config_defaults.items() if k in valid_keys}
+        parser.set_defaults(**filtered_defaults)
+
     return parser.parse_args()
 
 
