@@ -44,9 +44,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run batched SAE ablations and compare top-vs-random features.")
     parser.add_argument("--config", type=str, default=None)
 
-    parser.add_argument("--checkpoint", type=str, required=True)
-    parser.add_argument("--delta_json", type=str, required=True)
-    parser.add_argument("--lora_ids", type=str, required=True, help="Comma-separated lora ids.")
+    parser.add_argument("--checkpoint", type=str, default=None)
+    parser.add_argument("--delta_json", type=str, default=None)
+    parser.add_argument("--lora_ids", type=str, default=None, help="Comma-separated lora ids.")
 
     parser.add_argument("--k_list", type=str, default="16")
     parser.add_argument("--ablate_scales", type=str, default="0.0,0.5")
@@ -78,7 +78,19 @@ def parse_args() -> argparse.Namespace:
         filtered_defaults = {k: v for k, v in config_defaults.items() if k in valid_keys}
         parser.set_defaults(**filtered_defaults)
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    missing = [
+        name for name in ["checkpoint", "delta_json", "lora_ids"]
+        if getattr(args, name) in (None, "")
+    ]
+    if missing:
+        parser.error(
+            "Missing required arguments (or config values): "
+            + ", ".join(f"--{name}" for name in missing)
+        )
+
+    return args
 
 
 def parse_csv_ints(spec: str) -> list[int]:
