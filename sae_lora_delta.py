@@ -52,6 +52,10 @@ def main() -> None:
     with torch.no_grad():
         for path in files:
             payload = torch.load(path, map_location="cpu")
+            if "lora" not in payload:
+                raise ValueError(
+                    f"File {path} has no 'lora' tensor. sae_lora_delta.py requires paired base-vs-lora samples."
+                )
             base = flatten_tokens(payload["base"].float())
             lora = flatten_tokens(payload["lora"].float())
 
