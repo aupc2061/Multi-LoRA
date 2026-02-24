@@ -16,6 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train a sparse autoencoder on collected UNet activations.")
     parser.add_argument("--feature_dir", type=str, required=True)
     parser.add_argument("--output_dir", type=str, default="sae_data/checkpoints")
+    parser.add_argument("--finetune_checkpoint", type=str, default=None)
     parser.add_argument("--mode", type=str, default="both", choices=["base", "lora", "both", "diff"])
     parser.add_argument("--max_files", type=int, default=0)
     parser.add_argument("--tokens_per_sample", type=int, default=4096)
@@ -24,7 +25,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--l1_coeff", type=float, default=1e-3)
+    parser.add_argument("--latent_dim", type=int, default=0)
     parser.add_argument("--latent_mult", type=float, default=4.0)
+    parser.add_argument("--reuse_checkpoint_norm", action="store_true")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", type=str, default="cuda")
     return parser.parse_args()
@@ -45,17 +48,27 @@ def sample_tokens(x: torch.Tensor, n: int) -> torch.Tensor:
 
 def build_tokens_from_file(path: Path, mode: str, tokens_per_sample: int) -> torch.Tensor:
     payload = torch.load(path, map_location="cpu")
+    if "base" not in payload:
+        raise ValueError(f"Missing 'base' tensor in {path}")
     base = flatten_tokens(payload["base"].float())
-    lora = flatten_tokens(payload["lora"].float())
 
     if mode == "base":
         out = base
-    elif mode == "lora":
+    else:
+        if "lora" not in payload:
+            raise ValueError(
+                f"File {path} has no 'lora' tensor. Use --mode base for base-only datasets or collect paired data."
+            )
+        lora = flatten_tokens(payload["lora"].float())
+
+    if mode == "lora":
         out = lora
     elif mode == "diff":
         out = lora - base
-    else:
+    elif mode == "both":
         out = torch.cat([base, lora], dim=0)
+    elif mode != "base":
+        raise ValueError(f"Unknown mode: {mode}")
 
     return sample_tokens(out, tokens_per_sample)
 
@@ -131,6 +144,54 @@ def evaluate(model: SparseAutoencoder, loader: DataLoader, l1_coeff: float, devi
     }
 
 
+def resolve_model_dims(args: argparse.Namespace, input_dim: int) -> tuple[int, int]:
+    if args.finetune_checkpoint:
+        ckpt = torch.load(args.finetune_checkpoint, map_location="cpu")
+        ckpt_input_dim = int(ckpt["input_dim"])
+        ckpt_latent_dim = int(ckpt["latent_dim"])
+
+        if ckpt_input_dim != input_dim:
+            raise ValueError(
+                f"Input dimension mismatch for finetune checkpoint: dataset input_dim={input_dim}, "
+                f"checkpoint input_dim={ckpt_input_dim}."
+            )
+
+        if args.latent_dim > 0 and args.latent_dim != ckpt_latent_dim:
+            raise ValueError(
+                f"--latent_dim ({args.latent_dim}) does not match finetune checkpoint latent_dim ({ckpt_latent_dim})."
+            )
+
+        return ckpt_input_dim, ckpt_latent_dim
+
+    if args.latent_dim > 0:
+        return input_dim, args.latent_dim
+    return input_dim, int(round(input_dim * args.latent_mult))
+
+
+def resolve_normalization(args: argparse.Namespace, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, str]:
+    if args.finetune_checkpoint and args.reuse_checkpoint_norm:
+        ckpt = torch.load(args.finetune_checkpoint, map_location="cpu")
+        if "mean" not in ckpt or "std" not in ckpt:
+            raise ValueError("Finetune checkpoint does not contain normalization stats (mean/std).")
+
+        mean = ckpt["mean"].float()
+        std = ckpt["std"].float().clamp_min(1e-6)
+
+        if mean.ndim != 2 or std.ndim != 2 or mean.shape != std.shape:
+            raise ValueError(
+                f"Invalid normalization shapes in checkpoint: mean={tuple(mean.shape)}, std={tuple(std.shape)}"
+            )
+        if mean.shape[1] != x.shape[1]:
+            raise ValueError(
+                f"Checkpoint normalization dim mismatch: checkpoint={mean.shape[1]}, dataset={x.shape[1]}"
+            )
+        return mean, std, "checkpoint"
+
+    mean = x.mean(dim=0, keepdim=True)
+    std = x.std(dim=0, keepdim=True).clamp_min(1e-6)
+    return mean, std, "dataset"
+
+
 def main() -> None:
     args = parse_args()
     torch.manual_seed(args.seed)
@@ -141,8 +202,7 @@ def main() -> None:
 
     x = load_dataset(feature_dir, args.mode, args.max_files, args.tokens_per_sample)
 
-    mean = x.mean(dim=0, keepdim=True)
-    std = x.std(dim=0, keepdim=True).clamp_min(1e-6)
+    mean, std, norm_source = resolve_normalization(args, x)
     x = (x - mean) / std
 
     train_x, val_x = split_dataset(x, args.val_ratio)
@@ -150,9 +210,13 @@ def main() -> None:
     train_loader = DataLoader(TensorDataset(train_x), batch_size=args.batch_size, shuffle=True, drop_last=False)
     val_loader = DataLoader(TensorDataset(val_x), batch_size=args.batch_size, shuffle=False, drop_last=False)
 
-    input_dim = train_x.shape[1]
-    latent_dim = int(round(input_dim * args.latent_mult))
+    input_dim, latent_dim = resolve_model_dims(args, train_x.shape[1])
     model = SparseAutoencoder(input_dim=input_dim, latent_dim=latent_dim).to(args.device)
+
+    if args.finetune_checkpoint:
+        ckpt = torch.load(args.finetune_checkpoint, map_location="cpu")
+        model.load_state_dict(ckpt["model_state"])
+
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
     history = []
@@ -207,6 +271,8 @@ def main() -> None:
                     "mean": mean,
                     "std": std,
                     "args": vars(args),
+                    "finetune_checkpoint": args.finetune_checkpoint,
+                    "normalization_source": norm_source,
                     "history": history,
                 },
                 best_path,
