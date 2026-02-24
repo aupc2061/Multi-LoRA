@@ -290,7 +290,7 @@ def render_prompt(base_prompt: str, lora_entry: dict[str, Any], template_spec: d
     )
 
 
-def assign_split(rows: list[dict[str, Any]], split_seed: int) -> None:
+def assign_split(rows: list[dict[str, Any]], split_seed: int, samples_per_category: int) -> None:
     rng = random.Random(split_seed)
     by_category: dict[str, list[int]] = defaultdict(list)
     for idx, row in enumerate(rows):
@@ -298,13 +298,21 @@ def assign_split(rows: list[dict[str, Any]], split_seed: int) -> None:
 
     for category, indices in by_category.items():
         rng.shuffle(indices)
-        if len(indices) != 50:
-            raise ValueError(f"Expected 50 rows for category {category}, got {len(indices)}")
+        if len(indices) != samples_per_category:
+            raise ValueError(
+                f"Expected {samples_per_category} rows for category {category}, got {len(indices)}"
+            )
+
+        n = len(indices)
+        n_train = int(round(n * 0.8))
+        n_val = int(round(n * 0.1))
+        n_train = min(max(1, n_train), max(1, n - 2)) if n >= 3 else max(1, n)
+        n_val = min(max(1, n_val), max(1, n - n_train - 1)) if n - n_train >= 2 else max(0, n - n_train)
 
         for i, idx in enumerate(indices):
-            if i < 40:
+            if i < n_train:
                 rows[idx]["split"] = "train"
-            elif i < 45:
+            elif i < n_train + n_val:
                 rows[idx]["split"] = "val"
             else:
                 rows[idx]["split"] = "test"
@@ -387,7 +395,7 @@ def build_manifest(args: argparse.Namespace) -> tuple[list[dict[str, Any]], dict
     if args.collection_mode == "base_only":
         assign_split_ratio(rows, args.split_seed, train_ratio=0.8, val_ratio=0.1)
     else:
-        assign_split(rows, args.split_seed)
+        assign_split(rows, args.split_seed, args.samples_per_category)
 
     for idx, row in enumerate(rows):
         row["sample_id"] = f"sample_{idx:06d}"
