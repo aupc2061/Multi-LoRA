@@ -265,7 +265,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def main() -> None:
     args = parse_args()
-
+    print("No of random draws:", args.random_draws)
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 

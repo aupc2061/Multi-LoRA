@@ -7,7 +7,7 @@
     "ablate_scales": "0.0,0.5",
     "step_modes": "last",
     "seeds": "111,222",
-    "random_draws": 3,
+    "random_draws": 2,
     "bootstrap_samples": 1000,
     "apply_to": "cond",
     "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
