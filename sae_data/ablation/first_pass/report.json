@@ -1,0 +1,82 @@
+{
+  "num_runs": 24,
+  "checkpoint": "sae_data/checkpoints/reality_125_finetune/sae_best.pt",
+  "delta_json": "sae_data/delta_summary_reality_125_finetuned.json",
+  "lora_ids": [
+    "character_3",
+    "object_2"
+  ],
+  "k_list": [
+    16
+  ],
+  "ablate_scales": [
+    0.0,
+    0.5
+  ],
+  "step_modes": [
+    "last"
+  ],
+  "seeds": [
+    111,
+    222
+  ],
+  "random_draws": 2,
+  "effects": [
+    {
+      "lora_id": "character_3",
+      "k": 16,
+      "ablate_scale": 0.0,
+      "step_mode": "last",
+      "top_mean_latents_mse": 0.040374755859375,
+      "random_mean_latents_mse": 0.001273512840270996,
+      "mean_diff_top_minus_random": 0.039101243019104004,
+      "bootstrap_mean_diff": 0.03903964751958847,
+      "bootstrap_ci_low": 0.03544425964355469,
+      "bootstrap_ci_high": 0.04255157709121704,
+      "num_top_runs": 2,
+      "num_random_runs": 4
+    },
+    {
+      "lora_id": "character_3",
+      "k": 16,
+      "ablate_scale": 0.5,
+      "step_mode": "last",
+      "top_mean_latents_mse": 0.01007843017578125,
+      "random_mean_latents_mse": 0.000319749116897583,
+      "mean_diff_top_minus_random": 0.009758681058883667,
+      "bootstrap_mean_diff": 0.009743280738592148,
+      "bootstrap_ci_low": 0.008842945098876953,
+      "bootstrap_ci_high": 0.010621994733810425,
+      "num_top_runs": 2,
+      "num_random_runs": 4
+    },
+    {
+      "lora_id": "object_2",
+      "k": 16,
+      "ablate_scale": 0.0,
+      "step_mode": "last",
+      "top_mean_latents_mse": 0.037567138671875,
+      "random_mean_latents_mse": 0.0004609823226928711,
+      "mean_diff_top_minus_random": 0.03710615634918213,
+      "bootstrap_mean_diff": 0.03705938643217087,
+      "bootstrap_ci_low": 0.03475618362426758,
+      "bootstrap_ci_high": 0.03945237398147583,
+      "num_top_runs": 2,
+      "num_random_runs": 4
+    },
+    {
+      "lora_id": "object_2",
+      "k": 16,
+      "ablate_scale": 0.5,
+      "step_mode": "last",
+      "top_mean_latents_mse": 0.00936126708984375,
+      "random_mean_latents_mse": 0.00011518597602844238,
+      "mean_diff_top_minus_random": 0.009246081113815308,
+      "bootstrap_mean_diff": 0.009234542042016984,
+      "bootstrap_ci_low": 0.008666574954986572,
+      "bootstrap_ci_high": 0.009824812412261963,
+      "num_top_runs": 2,
+      "num_random_runs": 4
+    }
+  ]
+}
