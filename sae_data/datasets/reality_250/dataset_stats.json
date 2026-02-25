@@ -1,0 +1,69 @@
+{
+  "num_rows": 250,
+  "collection_mode": "paired",
+  "by_category": {
+    "character": 50,
+    "clothing": 50,
+    "style": 50,
+    "background": 50,
+    "object": 50
+  },
+  "by_lora_id": {
+    "character_1": 20,
+    "character_2": 15,
+    "character_3": 15,
+    "clothing_1": 25,
+    "clothing_2": 25,
+    "style_1": 25,
+    "style_2": 25,
+    "background_1": 25,
+    "background_2": 25,
+    "object_1": 25,
+    "object_2": 25
+  },
+  "by_prompt_type": {
+    "faithful": 170,
+    "paraphrase": 60,
+    "weak": 20
+  },
+  "by_split": {
+    "train": 200,
+    "test": 25,
+    "val": 25
+  },
+  "by_split_and_category": {
+    "train": {
+      "character": 40,
+      "clothing": 40,
+      "style": 40,
+      "background": 40,
+      "object": 40
+    },
+    "val": {
+      "character": 5,
+      "clothing": 5,
+      "style": 5,
+      "background": 5,
+      "object": 5
+    },
+    "test": {
+      "character": 5,
+      "clothing": 5,
+      "style": 5,
+      "background": 5,
+      "object": 5
+    }
+  },
+  "seed_bank": [
+    111,
+    222,
+    333,
+    444,
+    555
+  ],
+  "image_style": "reality",
+  "hook_module": "conv_norm_out",
+  "height": 1024,
+  "width": 1024,
+  "denoise_steps": 50
+}

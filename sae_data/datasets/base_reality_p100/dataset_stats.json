@@ -1,0 +1,53 @@
+{
+  "num_rows": 120,
+  "collection_mode": "base_only",
+  "by_category": {
+    "base": 120
+  },
+  "by_lora_id": {
+    "null": 120
+  },
+  "by_prompt_type": {
+    "portrait": 12,
+    "street": 12,
+    "nature": 12,
+    "product": 12,
+    "architecture": 12,
+    "action": 12,
+    "closeup": 12,
+    "documentary": 12,
+    "interior": 12,
+    "outdoor": 12
+  },
+  "by_split": {
+    "train": 96,
+    "test": 12,
+    "val": 12
+  },
+  "by_split_and_category": {
+    "train": {
+      "base": 96
+    },
+    "val": {
+      "base": 12
+    },
+    "test": {
+      "base": 12
+    }
+  },
+  "seed_bank": [
+    101,
+    202,
+    303,
+    404,
+    505,
+    606,
+    707,
+    808
+  ],
+  "image_style": "reality",
+  "hook_module": "conv_norm_out",
+  "height": 512,
+  "width": 512,
+  "denoise_steps": 20
+}
