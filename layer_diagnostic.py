@@ -45,11 +45,13 @@ class ChannelZeroingController:
 
         self.enabled = False
         self.step_idx = 0
+        self.records: list[dict[str, float | int]] = []
         self._handle = self.module.register_forward_hook(self._hook)
 
     def configure(self, enabled: bool) -> None:
         self.enabled = enabled
         self.step_idx = 0
+        self.records = []
 
     def close(self) -> None:
         self._handle.remove()
@@ -83,7 +85,18 @@ class ChannelZeroingController:
         zero_channels = torch.randperm(channels, generator=gen)[:n_zero]
 
         tensor_out = tensor.clone()
+        pre_abs_mean = tensor[batch_idx[:, None], zero_channels[None, :]].abs().mean().item()
         tensor_out[batch_idx[:, None], zero_channels[None, :]] = 0.0
+        edit_abs_mean = (tensor[batch_idx[:, None], zero_channels[None, :]] - tensor_out[batch_idx[:, None], zero_channels[None, :]]).abs().mean().item()
+
+        self.records.append(
+            {
+                "step": int(step),
+                "num_zeroed_channels": int(n_zero),
+                "zeroed_abs_mean_pre": float(pre_abs_mean),
+                "edit_abs_mean": float(edit_abs_mean),
+            }
+        )
 
         if isinstance(output, tuple):
             return (tensor_out, *output[1:])
@@ -113,11 +126,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--config", type=str, default=None)
 
     p.add_argument("--lora_id", type=str, default="character_3")
-    p.add_argument("--hook_modules", type=str, default="mid_block,up_blocks.0,up_blocks.1,conv_norm_out",
+    p.add_argument("--hook_modules", type=str, default="up_blocks.3,up_blocks.2,mid_block,conv_norm_out",
                    help="Comma-separated UNet module paths to test.")
-    p.add_argument("--zero_fraction", type=float, default=0.5, help="Fraction of channels to zero.")
-    p.add_argument("--step_mode", type=str, default="last", help="last|all|comma-separated step ids")
+    p.add_argument("--zero_fraction", type=float, default=1.0, help="Fraction of channels to zero.")
+    p.add_argument("--step_mode", type=str, default="all", help="last|all|comma-separated step ids")
     p.add_argument("--seed", type=int, default=111)
+    p.add_argument("--compute_latent_mse", action="store_true")
 
     p.add_argument("--model_name", type=str, default="SG161222/Realistic_Vision_V5.1_noVAE")
     p.add_argument("--custom_pipeline", type=str, default="./pipelines/sd1.5_0.26.3")
@@ -131,7 +145,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--cfg_scale", type=float, default=7.0)
     p.add_argument("--dtype", type=str, default="float16", choices=["float16", "float32"])
     p.add_argument("--device", type=str, default="cuda")
-    p.add_argument("--apply_to", type=str, default="cond", choices=["cond", "all"])
+    p.add_argument("--apply_to", type=str, default="all", choices=["cond", "all"])
 
     p.add_argument("--out_dir", type=str, default="sae_data/layer_diagnostic")
 
@@ -148,7 +162,11 @@ def parse_target_steps(spec: str, num_steps: int) -> set[int] | None:
         return None
     if spec == "last":
         return {num_steps - 1}
-    return {int(tok.strip()) for tok in spec.split(",") if tok.strip()}
+    steps = {int(tok.strip()) for tok in spec.split(",") if tok.strip()}
+    for step in steps:
+        if step < 0 or step >= num_steps:
+            raise ValueError(f"Step index out of range: {step} for num_steps={num_steps}")
+    return steps
 
 
 def infer_prompt(image_style: str, lora_info_path: str, lora_id: str) -> str:
@@ -165,49 +183,101 @@ def pick_dtype(name: str) -> torch.dtype:
     return torch.float16 if name == "float16" else torch.float32
 
 
+def run_pipeline_once(
+    pipeline: Any,
+    prompt: str,
+    negative_prompt: str,
+    args: argparse.Namespace,
+    output_type: str,
+):
+    pipeline.enable_lora()
+    pipeline.set_adapters([args.lora_id])
+    gen = torch.Generator(device=args.device).manual_seed(args.seed)
+    return pipeline(
+        prompt=prompt,
+        negative_prompt=negative_prompt,
+        height=args.height,
+        width=args.width,
+        num_inference_steps=args.denoise_steps,
+        guidance_scale=args.cfg_scale,
+        generator=gen,
+        output_type=output_type,
+        return_dict=False,
+        cross_attention_kwargs={"scale": args.lora_scale},
+    )
+
+
+def generate_baseline_outputs(
+    pipeline: Any,
+    prompt: str,
+    negative_prompt: str,
+    args: argparse.Namespace,
+) -> tuple[Any, torch.Tensor | None]:
+    """Generate the shared no-ablation baseline once for all hook comparisons."""
+    base_result = run_pipeline_once(
+        pipeline=pipeline,
+        prompt=prompt,
+        negative_prompt=negative_prompt,
+        args=args,
+        output_type="pil",
+    )
+    base_img = base_result[0][0]
+
+    base_latents = None
+    if args.compute_latent_mse:
+        base_latent_result = run_pipeline_once(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            args=args,
+            output_type="latent",
+        )
+        base_latents = base_latent_result[0]
+
+    return base_img, base_latents
+
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 
-def generate_pair(
+def generate_ablated_outputs(
     pipeline: Any,
     hook_module: Any,
     controller_kwargs: dict[str, Any],
     prompt: str,
     negative_prompt: str,
     args: argparse.Namespace,
+    base_latents: torch.Tensor | None,
 ) -> tuple:
-    """Generate a base image and an ablated image."""
+    """Generate ablated outputs for one hook and compare against shared baseline latents."""
     controller = ChannelZeroingController(module=hook_module, **controller_kwargs)
-
-    # Baseline
-    controller.configure(enabled=False)
-    pipeline.enable_lora()
-    pipeline.set_adapters([args.lora_id])
-    gen = torch.Generator(device=args.device).manual_seed(args.seed)
-    base_result = pipeline(
-        prompt=prompt, negative_prompt=negative_prompt,
-        height=args.height, width=args.width,
-        num_inference_steps=args.denoise_steps, guidance_scale=args.cfg_scale,
-        generator=gen, output_type="pil", return_dict=False,
-        cross_attention_kwargs={"scale": args.lora_scale},
-    )
-    base_img = base_result[0][0]
 
     # Ablated
     controller.configure(enabled=True)
-    pipeline.enable_lora()
-    pipeline.set_adapters([args.lora_id])
-    gen = torch.Generator(device=args.device).manual_seed(args.seed)
-    abl_result = pipeline(
-        prompt=prompt, negative_prompt=negative_prompt,
-        height=args.height, width=args.width,
-        num_inference_steps=args.denoise_steps, guidance_scale=args.cfg_scale,
-        generator=gen, output_type="pil", return_dict=False,
-        cross_attention_kwargs={"scale": args.lora_scale},
+    abl_result = run_pipeline_once(
+        pipeline=pipeline,
+        prompt=prompt,
+        negative_prompt=negative_prompt,
+        args=args,
+        output_type="pil",
     )
     abl_img = abl_result[0][0]
+    pil_records = list(controller.records)
+
+    latents_mse = None
+    if args.compute_latent_mse and base_latents is not None:
+        controller.configure(enabled=True)
+        abl_latent_result = run_pipeline_once(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            args=args,
+            output_type="latent",
+        )
+        abl_latents = abl_latent_result[0]
+        latents_mse = torch.mean((base_latents - abl_latents) ** 2).item()
 
     controller.close()
-    return base_img, abl_img
+    return abl_img, pil_records, latents_mse
 
 
 def main() -> None:
@@ -246,6 +316,17 @@ def main() -> None:
         "cfg_scale": args.cfg_scale,
     }
 
+    base_img, base_latents = generate_baseline_outputs(
+        pipeline=pipeline,
+        prompt=prompt,
+        negative_prompt=negative_prompt,
+        args=args,
+    )
+
+    base_path = out_dir / f"base_{args.lora_id}_seed{args.seed}.png"
+    base_img.save(base_path)
+    print(f"Saved shared baseline: {base_path.name}")
+
     # List UNet top-level modules for reference
     print("Available top-level UNet modules:")
     for name, _ in pipeline.unet.named_children():
@@ -262,15 +343,19 @@ def main() -> None:
             print(f"  SKIP — {e}")
             continue
 
-        base_img, abl_img = generate_pair(
-            pipeline, hook_mod, controller_kwargs, prompt, negative_prompt, args
+        abl_img, pil_records, latents_mse = generate_ablated_outputs(
+            pipeline, hook_mod, controller_kwargs, prompt, negative_prompt, args, base_latents
         )
 
         safe_name = hook_name.replace(".", "_")
-        base_path = out_dir / f"base_{safe_name}_{args.lora_id}_seed{args.seed}.png"
         abl_path = out_dir / f"ablated_{safe_name}_{args.lora_id}_seed{args.seed}.png"
-        base_img.save(base_path)
         abl_img.save(abl_path)
+
+        mean_zeroed_abs = 0.0
+        mean_edit_abs = 0.0
+        if pil_records:
+            mean_zeroed_abs = float(sum(float(r["zeroed_abs_mean_pre"]) for r in pil_records) / len(pil_records))
+            mean_edit_abs = float(sum(float(r["edit_abs_mean"]) for r in pil_records) / len(pil_records))
 
         manifest.append({
             "hook_module": hook_name,
@@ -278,11 +363,20 @@ def main() -> None:
             "seed": args.seed,
             "zero_fraction": args.zero_fraction,
             "step_mode": args.step_mode,
+            "apply_to": args.apply_to,
+            "num_edited_steps": len(pil_records),
+            "mean_zeroed_abs_pre": mean_zeroed_abs,
+            "mean_edit_abs": mean_edit_abs,
+            "latents_mse": latents_mse,
             "base_image": base_path.name,
             "ablated_image": abl_path.name,
         })
 
-        print(f"  Saved: {base_path.name} / {abl_path.name}")
+        print(
+            f"  Saved: {base_path.name} / {abl_path.name} | "
+            f"edited_steps={len(pil_records)} mean_zeroed_abs={mean_zeroed_abs:.6f} "
+            f"latents_mse={0.0 if latents_mse is None else latents_mse:.6f}"
+        )
 
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     print(f"\nDone. {len(manifest)} layer(s) tested. Results in {out_dir}")
