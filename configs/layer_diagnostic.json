@@ -1,0 +1,23 @@
+{
+  "diagnostic": {
+    "lora_id": "character_3",
+    "hook_modules": "mid_block,up_blocks.0,up_blocks.1,up_blocks.2,up_blocks.3,conv_norm_out",
+    "zero_fraction": 0.5,
+    "step_mode": "last",
+    "seed": 111,
+    "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "image_style": "reality",
+    "lora_info_path": "lora_info.json",
+    "lora_path": "models/lora",
+    "lora_scale": 0.8,
+    "height": 1024,
+    "width": 1024,
+    "denoise_steps": 50,
+    "cfg_scale": 7.0,
+    "dtype": "float16",
+    "device": "cuda",
+    "apply_to": "cond",
+    "out_dir": "sae_data/layer_diagnostic"
+  }
+}
