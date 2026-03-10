@@ -20,6 +20,6 @@
     "hook_module": "mid_block",
     "dtype": "float16",
     "device": "cuda",
-    "out_dir": "sae_data/ablation_images_mid_block"
+    "out_dir": "sae_data/ablation_images_mid_block_1"
   }
 }
