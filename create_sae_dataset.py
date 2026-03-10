@@ -60,6 +60,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--denoise_steps", type=int, default=50)
     parser.add_argument("--cfg_scale", type=float, default=7.0)
     parser.add_argument("--hook_module", type=str, default="conv_norm_out")
+    parser.add_argument("--capture_last_n_steps", type=int, default=1,
+                        help="Number of most-recent denoising steps whose activations are stacked per sample. "
+                             "Values >1 multiply token count without extra image runs (good for mid_block which "
+                             "has few spatial tokens per step).")
+    parser.add_argument("--fast_mid_block", action="store_true",
+                        help="Apply fast defaults tuned for mid_block: 640x640, 24 steps, capture_last_n_steps=10, "
+                             "reduced sample counts (75 paired / 60 base).")
     parser.add_argument("--keep_cfg_pair", action="store_true")
     parser.add_argument("--dtype", type=str, default="float16", choices=["float16", "float32"])
     parser.add_argument("--device", type=str, default="cuda")
@@ -87,6 +94,32 @@ def parse_seed_bank(seed_bank: str) -> list[int]:
 
 
 def apply_mode_defaults(args: argparse.Namespace) -> None:
+    # ── fast_mid_block: lower-cost defaults for mid_block SAE training ─────
+    # mid_block has few spatial tokens (8×8 at 512 px, 10×10 at 640 px), so
+    # we compensate by capturing multiple late denoising steps per image run.
+    if getattr(args, "fast_mid_block", False):
+        args.hook_module = "mid_block"
+        args.capture_last_n_steps = 10
+        if args.collection_mode == "paired":
+            args.height = 640
+            args.width = 640
+            args.denoise_steps = 24
+            args.cfg_scale = 7.0
+            if args.total_samples == 250:
+                args.total_samples = 75
+            if args.samples_per_category == 50:
+                args.samples_per_category = 15
+        else:  # base_only
+            args.height = 512
+            args.width = 512
+            args.denoise_steps = 20
+            args.cfg_scale = 6.5
+            if args.total_samples == 250:
+                args.total_samples = 60
+            if args.seed_bank == "111,222,333,444,555":
+                args.seed_bank = "101,202,303,404,505,606,707,808"
+
+    # ── fast_p100: original low-cost base-only preset (conv_norm_out) ───────
     if args.collection_mode == "base_only" and args.fast_p100:
         args.height = 512
         args.width = 512
@@ -414,6 +447,7 @@ def build_manifest(args: argparse.Namespace) -> tuple[list[dict[str, Any]], dict
         "seed_bank": seed_bank,
         "image_style": args.image_style,
         "hook_module": args.hook_module,
+        "capture_last_n_steps": args.capture_last_n_steps,
         "height": args.height,
         "width": args.width,
         "denoise_steps": args.denoise_steps,
@@ -444,6 +478,11 @@ def run_and_capture(
     keep_cfg_pair: bool,
     device: str,
 ) -> torch.Tensor:
+    """Run one full denoising pass and return stacked selected-step activations.
+
+    Returns a tensor of shape ``[n_steps, C, H, W]`` where ``n_steps`` equals
+    ``recorder.capture_last_n`` (1 by default → same shape as before).
+    """
     recorder.reset()
     if with_lora:
         pipeline.enable_lora()
@@ -465,12 +504,17 @@ def run_and_capture(
         cross_attention_kwargs={"scale": lora_scale},
     )
 
-    if recorder.last is None:
+    steps = recorder.get_all_steps()
+    if not steps:
         raise RuntimeError("No activation was recorded. Check hook_module path.")
 
-    activation = recorder.last.detach().float().cpu()
-    activation = select_activation(activation, cfg_scale, keep_cfg_pair)
-    return activation
+    # Apply CFG-pair selection per step then stack along the batch dimension.
+    # For n=1 this produces the same [1, C, H, W] tensor as before.
+    selected = [
+        select_activation(s.detach().float().cpu(), cfg_scale, keep_cfg_pair)
+        for s in steps
+    ]
+    return torch.cat(selected, dim=0)  # [n_steps, C, H, W]
 
 
 def collect_samples(args: argparse.Namespace, rows: list[dict[str, Any]], out_dir: Path) -> None:
@@ -498,7 +542,7 @@ def collect_samples(args: argparse.Namespace, rows: list[dict[str, Any]], out_di
                 )
 
     hook_target = resolve_module(pipeline.unet, args.hook_module)
-    recorder = LastActivationRecorder(hook_target)
+    recorder = LastActivationRecorder(hook_target, capture_last_n=args.capture_last_n_steps)
 
     for i, row in enumerate(rows):
         base_act = run_and_capture(
