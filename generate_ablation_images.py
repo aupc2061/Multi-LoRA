@@ -108,7 +108,7 @@ def parse_args() -> argparse.Namespace:
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 def parse_csv_str(spec: str) -> list[str]:
-    return [tok.strip() for tok in spec.split(",") if tok.strip()]
+    return [tok.strip() for tok in spec.split(";") if tok.strip()]
 
 
 def parse_csv_ints(spec: str) -> list[int]:
@@ -121,6 +121,8 @@ def load_top_features(delta_json: Path, k: int) -> list[int]:
     if len(top) < k:
         raise ValueError(f"delta_json has only {len(top)} features, but k={k} requested.")
     return [int(entry["feature"]) for entry in top[:k]]
+    # Load only the topmost feature and see for changes
+    # return [int(top[0]["feature"])]
 
 
 def infer_prompt_for_lora(image_style: str, lora_info_path: str, lora_id: str) -> str:
