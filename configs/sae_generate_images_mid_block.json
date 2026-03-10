@@ -4,7 +4,7 @@
     "delta_json": "sae_data/delta_summary_mid_block_finetuned.json",
     "lora_ids": "character_3,object_2",
     "k": 64,
-    "step_modes": "all",
+    "step_modes": "14,15,16,17,18,19,20,21,22,23",
     "seeds": "111,222",
     "apply_to": "cond",
     "model_name": "SG161222/Realistic_Vision_V5.1_noVAE",
