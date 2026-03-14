@@ -1,2 +1,4 @@
 models/lora/*
 models/Realistic-LCM-LoRA/*
+*__pycache__/
+*.pt

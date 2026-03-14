@@ -831,6 +831,8 @@ class StableDiffusionPipeline(
         lora_timestep_mask: Optional[List[bool]] = None,
         return_lora_step_importance: bool = False,
         return_lora_step_importance_map: bool = False,
+        return_step_trace: bool = False,
+        step_observer: Optional[Any] = None,
         lora_timestep_spatial_mask: Optional[Union[List[torch.Tensor], torch.Tensor]] = None,
         lora_timestep_spatial_adapters: Optional[List[str]] = None,
         **kwargs,
@@ -1058,6 +1060,7 @@ class StableDiffusionPipeline(
 
         lora_step_importance = [] if return_lora_step_importance else None
         lora_step_importance_map = [] if return_lora_step_importance_map else None
+        step_trace = [] if return_step_trace else None
         active_adapters = self.get_active_adapters() if lora_timestep_mask is not None else None
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
@@ -1075,6 +1078,21 @@ class StableDiffusionPipeline(
                 # expand the latents if we are doing classifier free guidance
                 latent_model_input = torch.cat([latents] * 2) if self.do_classifier_free_guidance else latents
                 latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
+
+                if step_observer is not None:
+                    step_observer.start_step(
+                        step_index=i,
+                        timestep=t,
+                        latent_model_input=latent_model_input,
+                        latents=latents,
+                        prompt_embeds=prompt_embeds,
+                        timestep_cond=timestep_cond,
+                        added_cond_kwargs=added_cond_kwargs,
+                        cross_attention_kwargs=self.cross_attention_kwargs,
+                        guidance_scale=self.guidance_scale,
+                        guidance_rescale=self.guidance_rescale,
+                        do_classifier_free_guidance=self.do_classifier_free_guidance,
+                    )
 
                 # predict the noise residual
                 if lora_timestep_spatial_mask is not None:
@@ -1216,6 +1234,30 @@ class StableDiffusionPipeline(
                         importance_map = torch.mean((noise_pred - noise_pred_base) ** 2, dim=1)
                         lora_step_importance_map.append(importance_map.detach().float().cpu())
 
+                if return_step_trace:
+                    trace_row = {
+                        "step_index": int(i),
+                        "timestep": int(t.item()) if isinstance(t, torch.Tensor) else int(t),
+                        "latents": latents.detach().float().cpu(),
+                        "latent_model_input": latent_model_input.detach().float().cpu(),
+                        "noise_pred": noise_pred.detach().float().cpu(),
+                    }
+                    if timestep_cond is not None:
+                        trace_row["timestep_cond"] = timestep_cond.detach().float().cpu()
+                    if added_cond_kwargs is not None:
+                        trace_row["added_cond_kwargs"] = {
+                            key: value.detach().float().cpu() if isinstance(value, torch.Tensor) else value
+                            for key, value in added_cond_kwargs.items()
+                        }
+                    step_trace.append(trace_row)
+
+                if step_observer is not None:
+                    step_observer.end_step(
+                        step_index=i,
+                        timestep=t,
+                        noise_pred=noise_pred,
+                    )
+
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs, return_dict=False)[0]
 
@@ -1257,11 +1299,19 @@ class StableDiffusionPipeline(
 
         if not return_dict:
             if return_lora_step_importance and return_lora_step_importance_map:
+                if return_step_trace:
+                    return (image, has_nsfw_concept, lora_step_importance, lora_step_importance_map, step_trace)
                 return (image, has_nsfw_concept, lora_step_importance, lora_step_importance_map)
             if return_lora_step_importance:
+                if return_step_trace:
+                    return (image, has_nsfw_concept, lora_step_importance, step_trace)
                 return (image, has_nsfw_concept, lora_step_importance)
             if return_lora_step_importance_map:
+                if return_step_trace:
+                    return (image, has_nsfw_concept, lora_step_importance_map, step_trace)
                 return (image, has_nsfw_concept, lora_step_importance_map)
+            if return_step_trace:
+                return (image, has_nsfw_concept, step_trace)
             return (image, has_nsfw_concept)
 
         if return_lora_step_importance:

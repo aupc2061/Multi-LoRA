@@ -1,0 +1,19 @@
+{
+  "discovery_ap": {
+    "lora_id": "character_3",
+    "image_style": "reality",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "candidate_node_classes": "ResnetBlock2D,Transformer2DModel",
+    "num_examples": 3,
+    "seed_start": 111,
+    "ig_steps": 8,
+    "topk_nodes_per_step": 32,
+    "faithfulness_target": "directional_noise_recovery",
+    "corrupted_reference": "base_model_same_prompt",
+    "validation_split": 0.34,
+    "node_faithfulness_target": 0.9,
+    "edge_faithfulness_fraction": 0.95,
+    "edge_scope": "same_step_only",
+    "out_dir": "sae_data/individual_circuit_ap"
+  }
+}

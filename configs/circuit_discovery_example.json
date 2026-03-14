@@ -7,7 +7,11 @@
     "window_size": 5,
     "window_stride": 5,
     "semantic_eval": true,
-    "denoise_steps": 50,
+    "delta_scale": 1.0,
+    "sae_checkpoint": "sae_data/checkpoints/reality_125_finetune/sae_best.pt",
+    "sae_delta_json": "sae_data/delta_summary_reality_125_finetuned.json",
+    "sae_topk": 16,
+    "denoise_steps": 25,
     "out_dir": "sae_data/individual_circuit"
   }
 }
