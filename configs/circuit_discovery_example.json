@@ -1,0 +1,13 @@
+{
+  "discovery": {
+    "lora_id": "character_3",
+    "image_style": "reality",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "hook_modules": "mid_block,up_blocks.2,up_blocks.3,conv_norm_out",
+    "window_size": 5,
+    "window_stride": 5,
+    "semantic_eval": true,
+    "denoise_steps": 50,
+    "out_dir": "sae_data/individual_circuit"
+  }
+}

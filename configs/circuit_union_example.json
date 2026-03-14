@@ -1,0 +1,9 @@
+{
+  "union": {
+    "support_root": "sae_data/individual_circuit",
+    "lora_ids": "character_3,object_2",
+    "top_regions": 24,
+    "denoise_steps": 50,
+    "out_dir": "sae_data/union_circuit"
+  }
+}

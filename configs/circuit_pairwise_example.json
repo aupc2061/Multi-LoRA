@@ -1,0 +1,10 @@
+{
+  "pairwise": {
+    "support_root": "sae_data/individual_circuit",
+    "lora_ids": "character_3,object_2",
+    "top_regions": 24,
+    "image_style": "reality",
+    "semantic_eval": false,
+    "out_path": "sae_data/pairwise_circuit_interactions.json"
+  }
+}

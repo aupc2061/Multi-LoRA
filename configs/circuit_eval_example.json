@@ -1,0 +1,12 @@
+{
+  "evaluation": {
+    "lora_ids": "character_3,object_2",
+    "assignment_json": "sae_data/assignment_result/character_3__object_2.json",
+    "union_json": "sae_data/union_circuit/character_3__object_2.json",
+    "methods": "merge,composite,switch,union_assignment,assignment",
+    "image_style": "reality",
+    "custom_pipeline": "./pipelines/sd1.5_0.26.3",
+    "save_images": true,
+    "out_dir": "sae_data/circuit_eval"
+  }
+}

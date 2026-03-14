@@ -1,0 +1,11 @@
+{
+  "solver": {
+    "support_root": "sae_data/individual_circuit",
+    "pairwise_json": "sae_data/pairwise_circuit_interactions.json",
+    "lora_ids": "character_3,object_2",
+    "top_regions": 24,
+    "coverage_ratio": 0.35,
+    "conflict_weight": 0.75,
+    "out_dir": "sae_data/assignment_result"
+  }
+}
