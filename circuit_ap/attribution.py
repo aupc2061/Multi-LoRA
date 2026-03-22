@@ -385,6 +385,7 @@ def run_unet_step_with_patches(
     modules: dict[str, Any],
     patch_map: dict[str, torch.Tensor] | None = None,
     capture_paths: Iterable[str] = (),
+    latents_override: torch.Tensor | None = None,
 ) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
     if torch is None:
         raise ImportError("torch is required for circuit attribution.")
@@ -418,7 +419,18 @@ def run_unet_step_with_patches(
         handles.append(module_lookup[path].register_forward_hook(build_hook(path)))
 
     try:
-        latent_model_input = _to_device(step_trace.latent_model_input, device=device, dtype=unet_dtype)
+        if latents_override is None:
+            latent_model_input = _to_device(step_trace.latent_model_input, device=device, dtype=unet_dtype)
+        else:
+            latents = _to_device(latents_override, device=device, dtype=unet_dtype)
+            if step_trace.do_classifier_free_guidance:
+                latent_model_input = torch.cat([latents] * 2)
+            else:
+                latent_model_input = latents
+            latent_model_input = pipeline.scheduler.scale_model_input(
+                latent_model_input,
+                torch.tensor(step_trace.timestep, device=device),
+            )
         prompt_embeds = _to_device(step_trace.prompt_embeds, device=device, dtype=unet_dtype)
         timestep_cond = _to_device(step_trace.timestep_cond, device=device, dtype=unet_dtype)
         added_cond_kwargs = _to_device(step_trace.added_cond_kwargs, device=device, dtype=unet_dtype)
@@ -579,6 +591,88 @@ def sample_random_node_controls(
     return [rng.sample(universe, subset_size) for _ in range(num_trials)]
 
 
+def rows_by_node_key(rows: Sequence[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    return {row["node"]: row for row in rows}
+
+
+def group_nodes_by_step(rows: Sequence[dict[str, Any]]) -> dict[int, list[dict[str, Any]]]:
+    grouped: dict[int, list[dict[str, Any]]] = {}
+    for row in rows:
+        grouped.setdefault(int(row["step_index"]), []).append(row)
+    for step_rows in grouped.values():
+        step_rows.sort(key=lambda item: float(item["median_score"]), reverse=True)
+    return grouped
+
+
+def build_cross_step_edge_frontier(
+    positive_nodes: Sequence[dict[str, Any]],
+    *,
+    source_topk: int,
+    target_topk: int,
+    max_step_delta: int,
+    denoise_steps: int,
+) -> list[dict[str, Any]]:
+    grouped = group_nodes_by_step(positive_nodes)
+    frontier: list[dict[str, Any]] = []
+    for step_index in range(denoise_steps):
+        source_rows = grouped.get(step_index, [])[:source_topk]
+        if not source_rows:
+            continue
+        for step_delta in range(1, max_step_delta + 1):
+            target_step = step_index + step_delta
+            if target_step >= denoise_steps:
+                continue
+            target_rows = grouped.get(target_step, [])[:target_topk]
+            if not target_rows:
+                continue
+            frontier.append(
+                {
+                    "source_step": step_index,
+                    "target_step": target_step,
+                    "source_paths": [row["module_path"] for row in source_rows],
+                    "target_paths": [row["module_path"] for row in target_rows],
+                }
+            )
+    return frontier
+
+
+def build_same_step_diag_frontier(
+    positive_nodes: Sequence[dict[str, Any]],
+    *,
+    topk: int,
+) -> dict[int, list[str]]:
+    grouped = group_nodes_by_step(positive_nodes)
+    return {
+        step_index: [row["module_path"] for row in rows[:topk]]
+        for step_index, rows in grouped.items()
+        if len(rows[:topk]) >= 2
+    }
+
+
+def advance_latents_with_scheduler(
+    pipeline: Any,
+    *,
+    step_trace: StepTrace,
+    noise_pred: torch.Tensor,
+) -> torch.Tensor:
+    if torch is None:
+        raise ImportError("torch is required for circuit attribution.")
+    device = pipeline._execution_device
+    unet_dtype = next(pipeline.unet.parameters()).dtype
+    latents = _to_device(step_trace.latents, device=device, dtype=unet_dtype)
+    timestep = torch.tensor(step_trace.timestep, device=device)
+    step_noise = _to_device(noise_pred, device=device, dtype=unet_dtype)
+    extra_step_kwargs = pipeline.prepare_extra_step_kwargs(None, 0.0)
+    next_latents = pipeline.scheduler.step(
+        step_noise,
+        timestep,
+        latents,
+        **extra_step_kwargs,
+        return_dict=False,
+    )[0]
+    return next_latents.detach().float().cpu()
+
+
 def build_semantic_ablation_patches(
     validation_cache: dict[tuple[int, int], dict[str, Any]],
     *,
@@ -643,6 +737,259 @@ def save_json(path: str | Path, payload: Any) -> None:
     Path(path).write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
+def score_same_step_diagnostic_edges(
+    pipeline: Any,
+    *,
+    args: Any,
+    prompt: str,
+    negative_prompt: str,
+    lora_id: str,
+    train_examples: Sequence[dict[str, Any]],
+    modules: dict[str, Any],
+    execution_orders: dict[int, list[str]],
+    candidate_paths_by_step: dict[int, list[str]],
+    positive_lookup: dict[str, dict[str, Any]],
+    dtype: torch.dtype,
+    device: torch.device,
+) -> list[dict[str, Any]]:
+    edge_scores: dict[str, list[float]] = {}
+    for example in train_examples:
+        latents = sample_initial_latents(
+            pipeline,
+            seed=int(example["seed"]),
+            height=args.height,
+            width=args.width,
+            dtype=dtype,
+            device=device,
+        )
+        for step_index, candidate_paths in candidate_paths_by_step.items():
+            if len(candidate_paths) < 2:
+                continue
+            clean_trace, corr_trace = collect_step_pair(
+                pipeline,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                lora_id=lora_id,
+                latents=latents,
+                height=args.height,
+                width=args.width,
+                denoise_steps=args.denoise_steps,
+                cfg_scale=args.cfg_scale,
+                lora_scale=args.lora_scale,
+                modules=modules,
+                step_index=step_index,
+            )
+            if clean_trace.activations is None or corr_trace.activations is None:
+                continue
+            order = execution_orders.get(step_index, candidate_paths)
+            order_pos = {path: idx for idx, path in enumerate(order)}
+            for source_path in candidate_paths:
+                for target_path in candidate_paths:
+                    if source_path == target_path:
+                        continue
+                    if order_pos.get(source_path, 10**9) >= order_pos.get(target_path, 10**9):
+                        continue
+                    if source_path not in clean_trace.activations or target_path not in clean_trace.activations:
+                        continue
+                    corr_source = corr_trace.activations[source_path]
+                    clean_source = clean_trace.activations[source_path]
+                    corr_target = corr_trace.activations[target_path]
+                    clean_target = clean_trace.activations[target_path]
+                    delta_source = clean_source - corr_source
+                    delta_target = clean_target - corr_target
+                    if float(torch.sum(delta_target.float() * delta_target.float()).item()) <= EPS:
+                        continue
+                    per_alpha: list[float] = []
+                    for alpha_idx in range(1, args.ig_steps + 1):
+                        alpha = alpha_idx / args.ig_steps
+                        _, captured = run_unet_step_with_patches(
+                            pipeline,
+                            step_trace=corr_trace,
+                            modules=modules,
+                            patch_map={source_path: corr_source + (alpha * delta_source)},
+                            capture_paths=[target_path],
+                        )
+                        if target_path not in captured:
+                            continue
+                        recovery = activation_direction_recovery(captured[target_path], corr_target, delta_target)
+                        per_alpha.append(max(recovery, 0.0))
+                    if not per_alpha:
+                        continue
+                    edge_key = f"{source_path}@{step_index}->{target_path}@{step_index}"
+                    edge_scores.setdefault(edge_key, []).append(_tensor_mean(per_alpha))
+
+    edge_rows: list[dict[str, Any]] = []
+    for edge_key, values in edge_scores.items():
+        source, target = edge_key.split("->", 1)
+        source_node = positive_lookup.get(source)
+        target_node = positive_lookup.get(target)
+        if source_node is None or target_node is None:
+            continue
+        median_score = _median(values)
+        if median_score <= 0.0:
+            continue
+        edge_rows.append(
+            {
+                "edge": edge_key,
+                "edge_type": "same_step_diag",
+                "source_node": source,
+                "target_node": target,
+                "source_step": int(source.rsplit("@", 1)[1]),
+                "target_step": int(target.rsplit("@", 1)[1]),
+                "edge_score": median_score,
+                "edge_mean_score": _tensor_mean(values),
+                "edge_variance": _variance(values),
+                "edge_recovery_fraction": _tensor_mean(values),
+                "source_node_score": float(source_node["median_score"]),
+                "target_node_score": float(target_node["median_score"]),
+                "num_observations": len(values),
+            }
+        )
+    edge_rows.sort(key=lambda row: row["edge_score"], reverse=True)
+    return edge_rows
+
+
+def score_cross_step_edges(
+    pipeline: Any,
+    *,
+    args: Any,
+    prompt: str,
+    negative_prompt: str,
+    lora_id: str,
+    train_examples: Sequence[dict[str, Any]],
+    modules: dict[str, Any],
+    frontier: Sequence[dict[str, Any]],
+    positive_lookup: dict[str, dict[str, Any]],
+    dtype: torch.dtype,
+    device: torch.device,
+) -> list[dict[str, Any]]:
+    edge_scores: dict[str, list[float]] = {}
+    for example in train_examples:
+        latents = sample_initial_latents(
+            pipeline,
+            seed=int(example["seed"]),
+            height=args.height,
+            width=args.width,
+            dtype=dtype,
+            device=device,
+        )
+        for spec in frontier:
+            source_step = int(spec["source_step"])
+            target_step = int(spec["target_step"])
+            clean_source, corr_source = collect_step_pair(
+                pipeline,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                lora_id=lora_id,
+                latents=latents,
+                height=args.height,
+                width=args.width,
+                denoise_steps=args.denoise_steps,
+                cfg_scale=args.cfg_scale,
+                lora_scale=args.lora_scale,
+                modules=modules,
+                step_index=source_step,
+            )
+            clean_target, corr_target = collect_step_pair(
+                pipeline,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                lora_id=lora_id,
+                latents=latents,
+                height=args.height,
+                width=args.width,
+                denoise_steps=args.denoise_steps,
+                cfg_scale=args.cfg_scale,
+                lora_scale=args.lora_scale,
+                modules=modules,
+                step_index=target_step,
+            )
+            if (
+                clean_source.activations is None
+                or corr_source.activations is None
+                or clean_target.activations is None
+                or corr_target.activations is None
+            ):
+                continue
+            for source_path in spec["source_paths"]:
+                if source_path not in clean_source.activations or source_path not in corr_source.activations:
+                    continue
+                corr_source_activation = corr_source.activations[source_path]
+                clean_source_activation = clean_source.activations[source_path]
+                delta_source = clean_source_activation - corr_source_activation
+                for target_path in spec["target_paths"]:
+                    if target_path not in clean_target.activations or target_path not in corr_target.activations:
+                        continue
+                    corr_target_activation = corr_target.activations[target_path]
+                    clean_target_activation = clean_target.activations[target_path]
+                    delta_target = clean_target_activation - corr_target_activation
+                    if float(torch.sum(delta_target.float() * delta_target.float()).item()) <= EPS:
+                        continue
+                    per_alpha: list[float] = []
+                    for alpha_idx in range(1, args.ig_steps + 1):
+                        alpha = alpha_idx / args.ig_steps
+                        patched_noise, _ = run_unet_step_with_patches(
+                            pipeline,
+                            step_trace=corr_source,
+                            modules=modules,
+                            patch_map={source_path: corr_source_activation + (alpha * delta_source)},
+                        )
+                        patched_latents = advance_latents_with_scheduler(
+                            pipeline,
+                            step_trace=corr_source,
+                            noise_pred=patched_noise,
+                        )
+                        _, captured = run_unet_step_with_patches(
+                            pipeline,
+                            step_trace=corr_target,
+                            modules=modules,
+                            capture_paths=[target_path],
+                            latents_override=patched_latents,
+                        )
+                        if target_path not in captured:
+                            continue
+                        recovery = activation_direction_recovery(
+                            captured[target_path],
+                            corr_target_activation,
+                            delta_target,
+                        )
+                        per_alpha.append(max(recovery, 0.0))
+                    if not per_alpha:
+                        continue
+                    edge_key = f"{source_path}@{source_step}->{target_path}@{target_step}"
+                    edge_scores.setdefault(edge_key, []).append(_tensor_mean(per_alpha))
+
+    edge_rows: list[dict[str, Any]] = []
+    for edge_key, values in edge_scores.items():
+        source, target = edge_key.split("->", 1)
+        source_node = positive_lookup.get(source)
+        target_node = positive_lookup.get(target)
+        if source_node is None or target_node is None:
+            continue
+        median_score = _median(values)
+        if median_score <= 0.0:
+            continue
+        edge_rows.append(
+            {
+                "edge": edge_key,
+                "edge_type": "cross_step",
+                "source_node": source,
+                "target_node": target,
+                "source_step": int(source.rsplit("@", 1)[1]),
+                "target_step": int(target.rsplit("@", 1)[1]),
+                "edge_score": median_score,
+                "edge_mean_score": _tensor_mean(values),
+                "edge_variance": _variance(values),
+                "edge_recovery_fraction": _tensor_mean(values),
+                "source_node_score": float(source_node["median_score"]),
+                "target_node_score": float(target_node["median_score"]),
+                "num_observations": len(values),
+            }
+        )
+    edge_rows.sort(key=lambda row: row["edge_score"], reverse=True)
+    return edge_rows
+
+
 def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> dict[str, Any]:
     if torch is None:
         raise ImportError("torch is required for circuit attribution.")
@@ -650,8 +997,8 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
         raise ValueError("Only corrupted_reference='base_model_same_prompt' is supported in v1.")
     if args.faithfulness_target != "directional_noise_recovery":
         raise ValueError("Only faithfulness_target='directional_noise_recovery' is supported in v1.")
-    if args.edge_scope != "same_step_only":
-        raise ValueError("Only edge_scope='same_step_only' is supported in v1.")
+    if args.edge_scope not in {"cross_step_primary", "same_step_diag", "same_step_only"}:
+        raise ValueError("edge_scope must be one of: cross_step_primary, same_step_diag, same_step_only.")
 
     prompt = args.prompt or infer_prompt_for_lora(args.image_style, args.lora_info_path, args.lora_id)
     _, negative_prompt = get_prompt(args.image_style)
@@ -741,6 +1088,7 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
         if stats["median_score"] > 0.0
     ]
     positive_nodes.sort(key=lambda row: row["median_score"], reverse=True)
+    positive_lookup = rows_by_node_key(positive_nodes)
 
     val_steps = sorted({row["step_index"] for row in positive_nodes})
     validation_cache = cache_validation_pairs(
@@ -784,117 +1132,60 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
             )
             retained_nodes = positive_nodes
 
-    retained_nodes_by_step: dict[int, list[dict[str, Any]]] = {}
-    for row in retained_nodes:
-        retained_nodes_by_step.setdefault(row["step_index"], []).append(row)
+    cross_step_frontier = build_cross_step_edge_frontier(
+        positive_nodes,
+        source_topk=args.edge_source_topk_per_step,
+        target_topk=args.edge_target_topk_per_step,
+        max_step_delta=args.max_edge_step_delta,
+        denoise_steps=args.denoise_steps,
+    )
+    same_step_diag_frontier = build_same_step_diag_frontier(
+        positive_nodes,
+        topk=args.same_step_diag_topk,
+    )
 
-    edge_scores: dict[str, list[float]] = {}
-    admissible_paths_by_step: dict[int, list[str]] = {}
-    for step_index, rows in retained_nodes_by_step.items():
-        rows.sort(key=lambda item: item["median_score"], reverse=True)
-        admissible_paths_by_step[step_index] = [row["module_path"] for row in rows[: args.topk_nodes_per_step]]
+    cross_step_edges = score_cross_step_edges(
+        pipeline,
+        args=args,
+        prompt=prompt,
+        negative_prompt=negative_prompt,
+        lora_id=args.lora_id,
+        train_examples=train_examples,
+        modules=candidate_modules,
+        frontier=cross_step_frontier if args.edge_scope == "cross_step_primary" else [],
+        positive_lookup=positive_lookup,
+        dtype=dtype,
+        device=device,
+    )
+    same_step_diag_edges = score_same_step_diagnostic_edges(
+        pipeline,
+        args=args,
+        prompt=prompt,
+        negative_prompt=negative_prompt,
+        lora_id=args.lora_id,
+        train_examples=train_examples,
+        modules=candidate_modules,
+        execution_orders=execution_orders,
+        candidate_paths_by_step=same_step_diag_frontier if args.edge_scope in {"same_step_diag", "same_step_only"} else {},
+        positive_lookup=positive_lookup,
+        dtype=dtype,
+        device=device,
+    )
 
-    for example in train_examples:
-        latents = sample_initial_latents(
-            pipeline,
-            seed=int(example["seed"]),
-            height=args.height,
-            width=args.width,
-            dtype=dtype,
-            device=device,
-        )
-        for step_index, candidate_paths in admissible_paths_by_step.items():
-            if len(candidate_paths) < 2:
-                continue
-            clean_trace, corr_trace = collect_step_pair(
-                pipeline,
-                prompt=prompt,
-                negative_prompt=negative_prompt,
-                lora_id=args.lora_id,
-                latents=latents,
-                height=args.height,
-                width=args.width,
-                denoise_steps=args.denoise_steps,
-                cfg_scale=args.cfg_scale,
-                lora_scale=args.lora_scale,
-                modules=candidate_modules,
-                step_index=step_index,
-            )
-            order = execution_orders.get(step_index, candidate_paths)
-            order_pos = {path: idx for idx, path in enumerate(order)}
-            for source_path in candidate_paths:
-                for target_path in candidate_paths:
-                    if source_path == target_path:
-                        continue
-                    if order_pos.get(source_path, 10**9) >= order_pos.get(target_path, 10**9):
-                        continue
-                    if clean_trace.activations is None or corr_trace.activations is None:
-                        continue
-                    if source_path not in clean_trace.activations or target_path not in clean_trace.activations:
-                        continue
-                    corr_source = corr_trace.activations[source_path]
-                    clean_source = clean_trace.activations[source_path]
-                    corr_target = corr_trace.activations[target_path]
-                    clean_target = clean_trace.activations[target_path]
-                    delta_source = clean_source - corr_source
-                    delta_target = clean_target - corr_target
-                    if float(torch.sum(delta_target.float() * delta_target.float()).item()) <= EPS:
-                        continue
-                    per_alpha: list[float] = []
-                    for alpha_idx in range(1, args.ig_steps + 1):
-                        alpha = alpha_idx / args.ig_steps
-                        _, captured = run_unet_step_with_patches(
-                            pipeline,
-                            step_trace=corr_trace,
-                            modules=candidate_modules,
-                            patch_map={source_path: corr_source + (alpha * delta_source)},
-                            capture_paths=[target_path],
-                        )
-                        if target_path not in captured:
-                            continue
-                        recovery = activation_direction_recovery(captured[target_path], corr_target, delta_target)
-                        per_alpha.append(max(recovery, 0.0))
-                    if not per_alpha:
-                        continue
-                    edge_key = f"{source_path}@{step_index}->{target_path}@{step_index}"
-                    edge_scores.setdefault(edge_key, []).append(_tensor_mean(per_alpha))
-
-    edge_rows: list[dict[str, Any]] = []
-    for edge_key, values in edge_scores.items():
-        source, target = edge_key.split("->", 1)
-        source_node = next((row for row in retained_nodes if row["node"] == source), None)
-        target_node = next((row for row in retained_nodes if row["node"] == target), None)
-        if source_node is None or target_node is None:
-            continue
-        median_score = _median(values)
-        if median_score <= 0.0:
-            continue
-        edge_rows.append(
-            {
-                "edge": edge_key,
-                "source_node": source,
-                "target_node": target,
-                "edge_score": median_score,
-                "edge_mean_score": _tensor_mean(values),
-                "edge_variance": _variance(values),
-                "edge_recovery_fraction": _tensor_mean(values),
-                "source_node_score": float(source_node["median_score"]),
-                "target_node_score": float(target_node["median_score"]),
-                "num_observations": len(values),
-            }
-        )
-    edge_rows.sort(key=lambda row: row["edge_score"], reverse=True)
-
+    edge_rows = cross_step_edges if args.edge_scope == "cross_step_primary" else []
     retained_edges = list(edge_rows)
     edge_pruned_recovery = 0.0
-    if validation_cache and edge_rows and retained_nodes:
-        baseline_node_keys = [row["node"] for row in retained_nodes]
-        baseline_recovery = node_recovery or evaluate_node_subset(
+    baseline_node_keys = [row["node"] for row in retained_nodes]
+    node_recovery_baseline = node_recovery
+    if validation_cache and baseline_node_keys and node_recovery_baseline <= 0.0:
+        node_recovery_baseline = evaluate_node_subset(
             pipeline,
             modules=candidate_modules,
             validation_cache=validation_cache,
             node_subset=baseline_node_keys,
         )
+
+    if validation_cache and edge_rows and retained_nodes:
         selected_edges: list[dict[str, Any]] = []
         for row in edge_rows:
             selected_edges.append(row)
@@ -902,10 +1193,10 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
             recovery = evaluate_node_subset(
                 pipeline,
                 modules=candidate_modules,
-                validation_cache=validation_cache,
-                node_subset=touched_nodes,
-            )
-            if recovery >= args.edge_faithfulness_fraction * baseline_recovery:
+                    validation_cache=validation_cache,
+                    node_subset=touched_nodes,
+                )
+            if recovery >= args.edge_faithfulness_fraction * node_recovery_baseline:
                 retained_edges = list(selected_edges)
                 edge_pruned_recovery = recovery
                 break
@@ -919,12 +1210,41 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
                 node_subset=touched_nodes,
             )
 
+    final_node_keys = [row["node"] for row in retained_nodes]
+    if retained_edges:
+        final_node_keys = sorted({row["source_node"] for row in retained_edges} | {row["target_node"] for row in retained_edges})
+        if validation_cache and final_node_keys:
+            final_recovery = evaluate_node_subset(
+                pipeline,
+                modules=candidate_modules,
+                validation_cache=validation_cache,
+                node_subset=final_node_keys,
+            )
+            required_recovery = args.edge_faithfulness_fraction * node_recovery_baseline
+            if final_recovery < required_recovery:
+                current_keys = set(final_node_keys)
+                for row in retained_nodes:
+                    if row["node"] in current_keys:
+                        continue
+                    current_keys.add(row["node"])
+                    trial_keys = sorted(current_keys)
+                    final_recovery = evaluate_node_subset(
+                        pipeline,
+                        modules=candidate_modules,
+                        validation_cache=validation_cache,
+                        node_subset=trial_keys,
+                    )
+                    final_node_keys = trial_keys
+                    if final_recovery >= required_recovery:
+                        break
+    final_nodes = [positive_lookup[key] for key in final_node_keys if key in positive_lookup]
+
     random_node_control = []
-    if validation_cache and retained_nodes:
+    if validation_cache and final_nodes:
         all_positive_keys = [row["node"] for row in positive_nodes]
         for sampled in sample_random_node_controls(
             all_positive_keys,
-            len(retained_nodes),
+            len(final_nodes),
             num_trials=args.random_control_trials,
             seed=args.seed_start,
         ):
@@ -952,8 +1272,18 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
                 )
             )
 
+    cross_step_edge_recovery = 0.0
+    if validation_cache and retained_edges:
+        touched_nodes = sorted({row["source_node"] for row in retained_edges} | {row["target_node"] for row in retained_edges})
+        cross_step_edge_recovery = evaluate_node_subset(
+            pipeline,
+            modules=candidate_modules,
+            validation_cache=validation_cache,
+            node_subset=touched_nodes,
+        )
+
     semantic_metrics: dict[str, Any] = {}
-    if args.semantic_eval and validation_cache and retained_nodes:
+    if args.semantic_eval and validation_cache and final_nodes:
         from sae_semantic_metrics import CLIPSemanticScorer, build_lora_semantic_spec, evaluate_ablation_semantics
 
         spec = build_lora_semantic_spec(args.image_style, args.lora_info_path, args.lora_id)
@@ -986,7 +1316,7 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
             retained_patch = build_semantic_ablation_patches(
                 validation_cache,
                 example_idx=example_idx,
-                node_subset=[row["node"] for row in retained_nodes],
+                node_subset=[row["node"] for row in final_nodes],
                 use_corrupted=True,
             )
             ablated = run_semantic_ablation(
@@ -1025,27 +1355,43 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
         "validation_examples": val_examples,
         "positive_nodes": positive_nodes,
         "retained_nodes": retained_nodes,
+        "final_nodes": final_nodes,
+        "cross_step_frontier": cross_step_frontier,
+        "same_step_diag_frontier": same_step_diag_frontier,
         "execution_order": execution_orders,
     }
     edge_payload = {
         "lora_id": args.lora_id,
         "retained_edges": retained_edges,
-        "all_positive_edges": edge_rows,
+        "cross_step_edges": cross_step_edges,
+        "same_step_diag_edges": same_step_diag_edges,
     }
     circuit_payload = {
         "lora_id": args.lora_id,
-        "nodes": retained_nodes,
+        "nodes": final_nodes,
         "edges": retained_edges,
         "execution_order": execution_orders,
         "faithfulness_metrics": {
             "node_recovery": node_recovery,
+            "node_recovery_baseline": node_recovery_baseline,
             "edge_pruned_recovery": edge_pruned_recovery,
+            "cross_step_edge_recovery": cross_step_edge_recovery,
             "random_node_control_mean": _tensor_mean(random_node_control),
             "random_edge_control_mean": _tensor_mean(random_edge_control),
             "random_node_control_rows": random_node_control,
             "random_edge_control_rows": random_edge_control,
         },
         "semantic_metrics": semantic_metrics,
+        "edge_scope": args.edge_scope,
+        "edge_type_counts": {
+            "cross_step": len(cross_step_edges),
+            "same_step_diag": len(same_step_diag_edges),
+            "retained_cross_step": len(retained_edges),
+        },
+        "same_step_diag_summary": {
+            "num_edges": len(same_step_diag_edges),
+            "top_edges": same_step_diag_edges[: min(10, len(same_step_diag_edges))],
+        },
         "examples_used": {
             "train": train_examples,
             "validation": val_examples,
@@ -1056,6 +1402,10 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
             "ig_steps": args.ig_steps,
             "direction_norm_floor": args.direction_norm_floor,
             "edge_scope": args.edge_scope,
+            "edge_source_topk_per_step": args.edge_source_topk_per_step,
+            "edge_target_topk_per_step": args.edge_target_topk_per_step,
+            "max_edge_step_delta": args.max_edge_step_delta,
+            "same_step_diag_topk": args.same_step_diag_topk,
         },
     }
     manifest_payload = {

@@ -13,7 +13,11 @@
     "validation_split": 0.34,
     "node_faithfulness_target": 0.9,
     "edge_faithfulness_fraction": 0.95,
-    "edge_scope": "same_step_only",
+    "edge_scope": "cross_step_primary",
+    "edge_source_topk_per_step": 6,
+    "edge_target_topk_per_step": 6,
+    "max_edge_step_delta": 1,
+    "same_step_diag_topk": 4,
     "out_dir": "sae_data/individual_circuit_ap"
   }
 }

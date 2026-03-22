@@ -55,7 +55,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--node_faithfulness_target", type=float, default=0.90)
     parser.add_argument("--edge_faithfulness_fraction", type=float, default=0.95)
     parser.add_argument("--direction_norm_floor", type=float, default=1e-6)
-    parser.add_argument("--edge_scope", type=str, default="same_step_only")
+    parser.add_argument("--edge_scope", type=str, default="cross_step_primary")
+    parser.add_argument("--edge_source_topk_per_step", type=int, default=6)
+    parser.add_argument("--edge_target_topk_per_step", type=int, default=6)
+    parser.add_argument("--max_edge_step_delta", type=int, default=1)
+    parser.add_argument("--same_step_diag_topk", type=int, default=4)
     parser.add_argument("--random_control_trials", type=int, default=5)
 
     parser.add_argument("--prompt", type=str, default="")
