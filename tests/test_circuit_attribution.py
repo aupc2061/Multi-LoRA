@@ -145,6 +145,7 @@ class CircuitAttributionTests(unittest.TestCase):
             guidance_scale=1.0,
             guidance_rescale=0.0,
             do_classifier_free_guidance=False,
+            scheduler_state=pipeline.scheduler,
         )
         advanced = advance_latents_with_scheduler(
             pipeline,

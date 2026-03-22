@@ -145,6 +145,7 @@ class StepTrace:
     guidance_scale: float
     guidance_rescale: float
     do_classifier_free_guidance: bool
+    scheduler_state: Any | None = None
     noise_pred: torch.Tensor | None = None
     activations: dict[str, torch.Tensor] | None = None
     execution_order: list[str] | None = None
@@ -177,6 +178,7 @@ class StepTraceObserver:
         guidance_scale: float,
         guidance_rescale: float,
         do_classifier_free_guidance: bool,
+        scheduler_state: Any | None = None,
     ) -> None:
         if self.target_steps is not None and step_index not in self.target_steps:
             self.current_step = None
@@ -195,6 +197,7 @@ class StepTraceObserver:
             guidance_scale=float(guidance_scale),
             guidance_rescale=float(guidance_rescale),
             do_classifier_free_guidance=bool(do_classifier_free_guidance),
+            scheduler_state=scheduler_state,
             activations={},
             execution_order=[],
         )
@@ -657,13 +660,16 @@ def advance_latents_with_scheduler(
 ) -> torch.Tensor:
     if torch is None:
         raise ImportError("torch is required for circuit attribution.")
+    if step_trace.scheduler_state is None:
+        raise ValueError("Step trace is missing scheduler_state required for cross-step transport.")
+    scheduler = step_trace.scheduler_state
     device = pipeline._execution_device
     unet_dtype = next(pipeline.unet.parameters()).dtype
     latents = _to_device(step_trace.latents, device=device, dtype=unet_dtype)
     timestep = torch.tensor(step_trace.timestep, device=device)
     step_noise = _to_device(noise_pred, device=device, dtype=unet_dtype)
     extra_step_kwargs = pipeline.prepare_extra_step_kwargs(None, 0.0)
-    next_latents = pipeline.scheduler.step(
+    next_latents = scheduler.step(
         step_noise,
         timestep,
         latents,

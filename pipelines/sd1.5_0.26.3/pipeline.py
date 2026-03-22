@@ -14,6 +14,7 @@
 
 # for diffusers version 0.26.3
 
+import copy
 import inspect
 from typing import Any, Callable, Dict, List, Optional, Union
 
@@ -1092,6 +1093,7 @@ class StableDiffusionPipeline(
                         guidance_scale=self.guidance_scale,
                         guidance_rescale=self.guidance_rescale,
                         do_classifier_free_guidance=self.do_classifier_free_guidance,
+                        scheduler_state=copy.deepcopy(self.scheduler),
                     )
 
                 # predict the noise residual

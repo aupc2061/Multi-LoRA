@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import inspect
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
@@ -1281,6 +1282,7 @@ class StableDiffusionXLPipeline(
                         guidance_scale=self.guidance_scale,
                         guidance_rescale=self.guidance_rescale,
                         do_classifier_free_guidance=self.do_classifier_free_guidance,
+                        scheduler_state=copy.deepcopy(self.scheduler),
                     )
 
                 # predict the noise residual
