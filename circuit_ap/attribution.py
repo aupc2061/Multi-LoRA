@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 import math
 import random
@@ -662,7 +663,7 @@ def advance_latents_with_scheduler(
         raise ImportError("torch is required for circuit attribution.")
     if step_trace.scheduler_state is None:
         raise ValueError("Step trace is missing scheduler_state required for cross-step transport.")
-    scheduler = step_trace.scheduler_state
+    scheduler = copy.deepcopy(step_trace.scheduler_state)
     device = pipeline._execution_device
     unet_dtype = next(pipeline.unet.parameters()).dtype
     latents = _to_device(step_trace.latents, device=device, dtype=unet_dtype)
