@@ -1,0 +1,4534 @@
+{
+  "lora_id": "object_2",
+  "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, blow bubble gum",
+  "candidate_node_classes": [
+    "ResnetBlock2D",
+    "Transformer2DModel"
+  ],
+  "faithfulness_target": "directional_noise_recovery",
+  "corrupted_reference": "base_model_same_prompt",
+  "train_examples": [
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, blow bubble gum",
+      "seed": 111
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, blow bubble gum",
+      "seed": 112
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, blow bubble gum",
+      "seed": 113
+    }
+  ],
+  "validation_examples": [
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, blow bubble gum",
+      "seed": 114
+    }
+  ],
+  "positive_nodes": [
+    {
+      "node": "up_blocks.3.attentions.2@9",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 9,
+      "median_score": 0.6388756523029535,
+      "mean_score": 0.638401422730322,
+      "variance": 7.369010205748823e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@9",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 9,
+      "median_score": 0.6342244419907499,
+      "mean_score": 0.6338154635475701,
+      "variance": 3.8944595615615055e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@8",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 8,
+      "median_score": 0.6320885921202646,
+      "mean_score": 0.6327487472212718,
+      "variance": 0.00012497391610551085,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@1",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 1,
+      "median_score": 0.6258945369502166,
+      "mean_score": 0.6252443619512843,
+      "variance": 5.8781191905513406e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@0",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 0,
+      "median_score": 0.625080826875266,
+      "mean_score": 0.6254892051899553,
+      "variance": 1.203348216592247e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@7",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 7,
+      "median_score": 0.6244976013187779,
+      "mean_score": 0.627936133268304,
+      "variance": 4.4790575569443346e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@8",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 8,
+      "median_score": 0.6243009568173075,
+      "mean_score": 0.6247009249809883,
+      "variance": 7.384887532291691e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@6",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 6,
+      "median_score": 0.6233111360984144,
+      "mean_score": 0.6241829953602024,
+      "variance": 1.007839412970057e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@2",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 2,
+      "median_score": 0.6212271113757737,
+      "mean_score": 0.6198505148853608,
+      "variance": 6.239124865213063e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@5",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 5,
+      "median_score": 0.6203219030378206,
+      "mean_score": 0.6206507421874511,
+      "variance": 1.302165667416064e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@4",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 4,
+      "median_score": 0.6190243450649714,
+      "mean_score": 0.6197678816953439,
+      "variance": 4.827268281047175e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@7",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 7,
+      "median_score": 0.6188981175754,
+      "mean_score": 0.6240082582675668,
+      "variance": 0.0001473907473771479,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@3",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 3,
+      "median_score": 0.6185501360002897,
+      "mean_score": 0.6186239461409923,
+      "variance": 1.6990622239744238e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@5",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 5,
+      "median_score": 0.6138388294991537,
+      "mean_score": 0.6175772814376443,
+      "variance": 0.00011152633404161447,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@4",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 4,
+      "median_score": 0.6116845648191378,
+      "mean_score": 0.6150612218985404,
+      "variance": 0.00012202430102856324,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@6",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 6,
+      "median_score": 0.6110250686148053,
+      "mean_score": 0.6172608886059309,
+      "variance": 0.00021846462772345305,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@3",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 3,
+      "median_score": 0.6013993533782375,
+      "mean_score": 0.602243588626331,
+      "variance": 2.297883374086314e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@2",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 2,
+      "median_score": 0.5910501908791596,
+      "mean_score": 0.5905007494295739,
+      "variance": 9.718022725601834e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@1",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 1,
+      "median_score": 0.5797159814806886,
+      "mean_score": 0.56758331907783,
+      "variance": 0.0006835252516934649,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@1",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 1,
+      "median_score": 0.5721332284550027,
+      "mean_score": 0.5588404469493506,
+      "variance": 0.0008079853680400298,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@1",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 1,
+      "median_score": 0.5672505357494706,
+      "mean_score": 0.5615985161235418,
+      "variance": 0.0002707026087234464,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@1",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 1,
+      "median_score": 0.5630853937172731,
+      "mean_score": 0.5508243000212181,
+      "variance": 0.0008329412890178481,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@1",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 1,
+      "median_score": 0.5558964598199564,
+      "mean_score": 0.5438211534216307,
+      "variance": 0.0007149986199362835,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@1",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 1,
+      "median_score": 0.5525984668634858,
+      "mean_score": 0.5404520333546804,
+      "variance": 0.0007691048558191404,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@5",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 5,
+      "median_score": 0.5435754194388279,
+      "mean_score": 0.5394988647081319,
+      "variance": 0.0007360365752901651,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@5",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 5,
+      "median_score": 0.5376993533862795,
+      "mean_score": 0.5383417922044048,
+      "variance": 0.0006212947904287005,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@1",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 1,
+      "median_score": 0.5326836706266815,
+      "mean_score": 0.5211947181528959,
+      "variance": 0.0008749120689919677,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@1",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 1,
+      "median_score": 0.5317206941334234,
+      "mean_score": 0.5201206054996154,
+      "variance": 0.001209180345702079,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@7",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 7,
+      "median_score": 0.5315629737323313,
+      "mean_score": 0.5294166063089948,
+      "variance": 0.0004363008623160493,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@7",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 7,
+      "median_score": 0.5311993856479688,
+      "mean_score": 0.5329845100987368,
+      "variance": 0.0007409964598810967,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@1",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 1,
+      "median_score": 0.5309202307570147,
+      "mean_score": 0.5188702684498236,
+      "variance": 0.0004642119075916046,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@6",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 6,
+      "median_score": 0.5260383621484822,
+      "mean_score": 0.5309534179650124,
+      "variance": 0.00045297202292524037,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@9",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 9,
+      "median_score": 0.5224088765409562,
+      "mean_score": 0.5131612294216071,
+      "variance": 0.00034720129241798024,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@9",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 9,
+      "median_score": 0.5224086523486089,
+      "mean_score": 0.513487547951471,
+      "variance": 0.0002590187657865465,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@8",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 8,
+      "median_score": 0.5181282233371075,
+      "mean_score": 0.5185217885608945,
+      "variance": 0.00032836422425639464,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@8",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 8,
+      "median_score": 0.5174344903157366,
+      "mean_score": 0.5192016242644738,
+      "variance": 0.0004999907046290701,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@3",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 3,
+      "median_score": 0.5173434206245225,
+      "mean_score": 0.523639278886486,
+      "variance": 0.0003325987181420926,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@6",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 6,
+      "median_score": 0.5168043648942728,
+      "mean_score": 0.5289868388900081,
+      "variance": 0.0005127835789589213,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@3",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 3,
+      "median_score": 0.5150933481576803,
+      "mean_score": 0.5194896211228741,
+      "variance": 0.000418748209339356,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@2",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 2,
+      "median_score": 0.509765339850375,
+      "mean_score": 0.5144233064806354,
+      "variance": 0.00021771110755880956,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@2",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 2,
+      "median_score": 0.5080707794777536,
+      "mean_score": 0.51581264094751,
+      "variance": 0.00046457164317852855,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@4",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 4,
+      "median_score": 0.507876194076156,
+      "mean_score": 0.5121995671759466,
+      "variance": 6.008982989655546e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@5",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 5,
+      "median_score": 0.5075308198681185,
+      "mean_score": 0.4948178160583187,
+      "variance": 0.001225170936614953,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@5",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 5,
+      "median_score": 0.5071449915564078,
+      "mean_score": 0.4890854387516632,
+      "variance": 0.00104317829239131,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@4",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 4,
+      "median_score": 0.5060101678171037,
+      "mean_score": 0.5089253514249624,
+      "variance": 4.162352306231664e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@1",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 1,
+      "median_score": 0.4987256373062067,
+      "mean_score": 0.4937550701364986,
+      "variance": 0.0005555766820861674,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@3",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 3,
+      "median_score": 0.4940729301845818,
+      "mean_score": 0.49006764746049813,
+      "variance": 0.0003648678185125354,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@3",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 3,
+      "median_score": 0.492648057814298,
+      "mean_score": 0.48911480762455745,
+      "variance": 0.0005673170641093376,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@2",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 2,
+      "median_score": 0.4805629861184984,
+      "mean_score": 0.48778202337256177,
+      "variance": 0.00030757818416190955,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@2",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 2,
+      "median_score": 0.4802305189784974,
+      "mean_score": 0.4847932804368092,
+      "variance": 0.00024230037109012996,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@1",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 1,
+      "median_score": 0.4799983813103188,
+      "mean_score": 0.47994541190808193,
+      "variance": 0.0006807780305611877,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@6",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 6,
+      "median_score": 0.4790956923507581,
+      "mean_score": 0.4746099087611287,
+      "variance": 0.000522680889256454,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@4",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 4,
+      "median_score": 0.4762234439835438,
+      "mean_score": 0.4773035916531451,
+      "variance": 0.00040799715575163983,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@3",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 3,
+      "median_score": 0.47523313452326843,
+      "mean_score": 0.4632586830431397,
+      "variance": 0.0005506639856083824,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@5",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 5,
+      "median_score": 0.47452487424465745,
+      "mean_score": 0.4575877690498131,
+      "variance": 0.0012193599286878004,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@6",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 6,
+      "median_score": 0.47416580087643845,
+      "mean_score": 0.46585682956873437,
+      "variance": 0.0004350232496337822,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@4",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 4,
+      "median_score": 0.4717820971819759,
+      "mean_score": 0.48043905959387173,
+      "variance": 0.000730039467517504,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@7",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 7,
+      "median_score": 0.4705283519314474,
+      "mean_score": 0.4684986287616335,
+      "variance": 0.004870035059031721,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@9",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 9,
+      "median_score": 0.4694739976972079,
+      "mean_score": 0.44850487988301246,
+      "variance": 0.0014072985862313358,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@1",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 1,
+      "median_score": 0.46930141214568505,
+      "mean_score": 0.4652350060794022,
+      "variance": 0.00026060432516674043,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@2",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 2,
+      "median_score": 0.469246692425379,
+      "mean_score": 0.4719470479652197,
+      "variance": 0.0002678789838580823,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@7",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 7,
+      "median_score": 0.46867537005601767,
+      "mean_score": 0.4635361697944688,
+      "variance": 0.004727302061676176,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@5",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 5,
+      "median_score": 0.46727272766514694,
+      "mean_score": 0.47554003842954695,
+      "variance": 0.0022852394865145995,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@3",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 3,
+      "median_score": 0.46692089486929916,
+      "mean_score": 0.4554937824333556,
+      "variance": 0.0008336579551026737,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@5",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 5,
+      "median_score": 0.4665576920818531,
+      "mean_score": 0.44743894415030433,
+      "variance": 0.0011600608512242782,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@2",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 2,
+      "median_score": 0.463014417017641,
+      "mean_score": 0.4519285679388621,
+      "variance": 0.0006012663557199405,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@5",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 5,
+      "median_score": 0.46095054984390804,
+      "mean_score": 0.47164349380388143,
+      "variance": 0.002323106928600394,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@9",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 9,
+      "median_score": 0.4597952012605325,
+      "mean_score": 0.4427506337249599,
+      "variance": 0.0014585749679265209,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@2",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 2,
+      "median_score": 0.4590790597170726,
+      "mean_score": 0.45900044688319097,
+      "variance": 0.0002307206650746654,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@3",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 3,
+      "median_score": 0.4571028758308314,
+      "mean_score": 0.4643808568542001,
+      "variance": 0.002302687866098363,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@3",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 3,
+      "median_score": 0.4549006471856563,
+      "mean_score": 0.4641101186274583,
+      "variance": 0.002436623534025346,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@7",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 7,
+      "median_score": 0.45373327675015407,
+      "mean_score": 0.4593832262275268,
+      "variance": 0.0010438613847499182,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@3",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 3,
+      "median_score": 0.4527388203817234,
+      "mean_score": 0.44766270805191805,
+      "variance": 0.0004814772715513342,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@8",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 8,
+      "median_score": 0.4502269634843405,
+      "mean_score": 0.4434872410172351,
+      "variance": 0.004794236601279168,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@2",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 2,
+      "median_score": 0.4460831770331464,
+      "mean_score": 0.4377724155136738,
+      "variance": 0.00023181222784609298,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@1",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 1,
+      "median_score": 0.44546149296125415,
+      "mean_score": 0.42950007921982075,
+      "variance": 0.0011537776254784105,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@8",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 8,
+      "median_score": 0.4436113995763,
+      "mean_score": 0.43879603979775395,
+      "variance": 0.004499380455746579,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@4",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 4,
+      "median_score": 0.4425985152754091,
+      "mean_score": 0.4493764339961633,
+      "variance": 0.000639026768769543,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@6",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 6,
+      "median_score": 0.43956688652158393,
+      "mean_score": 0.4567973722089798,
+      "variance": 0.001346712987628892,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@7",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 7,
+      "median_score": 0.43887250226127406,
+      "mean_score": 0.4441074138979498,
+      "variance": 0.004265206640233635,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@5",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 5,
+      "median_score": 0.43840799313269846,
+      "mean_score": 0.4573178895698391,
+      "variance": 0.002269896500592959,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@8",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 8,
+      "median_score": 0.4377064868124223,
+      "mean_score": 0.4252577400290692,
+      "variance": 0.0005417528517974386,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@5",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 5,
+      "median_score": 0.4356765347043601,
+      "mean_score": 0.450296773000671,
+      "variance": 0.0023065968244741397,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@3",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 3,
+      "median_score": 0.4355997203667907,
+      "mean_score": 0.42420472433221995,
+      "variance": 0.0006339999085280318,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@6",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 6,
+      "median_score": 0.43504500914759026,
+      "mean_score": 0.45619453807035004,
+      "variance": 0.0014212401367459766,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@6",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 6,
+      "median_score": 0.4342429177088232,
+      "mean_score": 0.4228482808076093,
+      "variance": 0.0008749284359281197,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@5",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 5,
+      "median_score": 0.4334215037333278,
+      "mean_score": 0.43502341187638977,
+      "variance": 0.0020033747731897193,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@6",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 6,
+      "median_score": 0.43341212090359316,
+      "mean_score": 0.4221684879149031,
+      "variance": 0.0006058700627592917,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@7",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 7,
+      "median_score": 0.4332748867937112,
+      "mean_score": 0.45122477901700075,
+      "variance": 0.0013655065282083903,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@3",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 3,
+      "median_score": 0.4332012058164154,
+      "mean_score": 0.42601939298018626,
+      "variance": 0.00039867928097219927,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@7",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 7,
+      "median_score": 0.4328906009791684,
+      "mean_score": 0.43667300996720987,
+      "variance": 0.004257355581542792,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@4",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 4,
+      "median_score": 0.4320255975619678,
+      "mean_score": 0.42803684642265916,
+      "variance": 0.004890991680640457,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@1",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 1,
+      "median_score": 0.42782821875009835,
+      "mean_score": 0.4185536027295766,
+      "variance": 0.0005813242320573531,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@3",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 3,
+      "median_score": 0.42728054790467496,
+      "mean_score": 0.4427718436692274,
+      "variance": 0.0016045611359692623,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@4",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 4,
+      "median_score": 0.42721830633095875,
+      "mean_score": 0.44248809259132055,
+      "variance": 0.0011480884459599287,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@3",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 3,
+      "median_score": 0.42642731455784605,
+      "mean_score": 0.4427352957330548,
+      "variance": 0.001954637038553877,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@6",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 6,
+      "median_score": 0.42531634634867654,
+      "mean_score": 0.43614933674119744,
+      "variance": 0.0009204769842617219,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@4",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 4,
+      "median_score": 0.4241677448497135,
+      "mean_score": 0.4223250189457351,
+      "variance": 0.004777538291433776,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@5",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 5,
+      "median_score": 0.42126131040769293,
+      "mean_score": 0.4121983953816628,
+      "variance": 0.001390283929643056,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@6",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 6,
+      "median_score": 0.4180124585147376,
+      "mean_score": 0.43071296024461886,
+      "variance": 0.0009748655500133796,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@8",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 8,
+      "median_score": 0.4175937952019939,
+      "mean_score": 0.4215840383742458,
+      "variance": 0.0005697628681136277,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@2",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 2,
+      "median_score": 0.41406364369228865,
+      "mean_score": 0.4092801963243223,
+      "variance": 0.0014453181670474795,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@0",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 0,
+      "median_score": 0.41307887305287416,
+      "mean_score": 0.4134280421040477,
+      "variance": 0.00017684458193611638,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@4",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 4,
+      "median_score": 0.41182082605808606,
+      "mean_score": 0.40404270010845145,
+      "variance": 0.005389666282439502,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@3",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 3,
+      "median_score": 0.41060224213111873,
+      "mean_score": 0.412474765423102,
+      "variance": 0.0002799689178550532,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@4",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 4,
+      "median_score": 0.4105435270482118,
+      "mean_score": 0.42899598950855294,
+      "variance": 0.001795146734355434,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@4",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 4,
+      "median_score": 0.4085386934014845,
+      "mean_score": 0.3833408074199207,
+      "variance": 0.005823355081169705,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@4",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 4,
+      "median_score": 0.4082613418011421,
+      "mean_score": 0.40770016165336526,
+      "variance": 0.0049378768507967125,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@4",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 4,
+      "median_score": 0.40774275642506064,
+      "mean_score": 0.3838656431092535,
+      "variance": 0.006177894769850318,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@0",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 0,
+      "median_score": 0.4068936420440297,
+      "mean_score": 0.40903028765454263,
+      "variance": 0.00019778366159488894,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@2",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 2,
+      "median_score": 0.4060177087477353,
+      "mean_score": 0.4077047024466722,
+      "variance": 0.00041471800785909153,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@4",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 4,
+      "median_score": 0.40579427242998245,
+      "mean_score": 0.38897422955229927,
+      "variance": 0.0034020441572582107,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@1",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 1,
+      "median_score": 0.40578642508191726,
+      "mean_score": 0.40507971238184365,
+      "variance": 0.0006714832522511622,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@8",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 8,
+      "median_score": 0.4026638070207676,
+      "mean_score": 0.4052816410547178,
+      "variance": 0.004539047357801721,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@6",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 6,
+      "median_score": 0.4026180645316892,
+      "mean_score": 0.39463647751149233,
+      "variance": 0.0008511349409735905,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@2",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 2,
+      "median_score": 0.4020851296138612,
+      "mean_score": 0.4033383029888589,
+      "variance": 4.572206662637234e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@3",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 3,
+      "median_score": 0.40188570850212096,
+      "mean_score": 0.40747600507244,
+      "variance": 0.0006306114122378411,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@4",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 4,
+      "median_score": 0.39981795399775344,
+      "mean_score": 0.3605203898224947,
+      "variance": 0.00599841182954667,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@4",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 4,
+      "median_score": 0.39941125383241644,
+      "mean_score": 0.3609680425556301,
+      "variance": 0.0059377307917566485,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@5",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 5,
+      "median_score": 0.3992887830565124,
+      "mean_score": 0.41884476118023867,
+      "variance": 0.002562507353853538,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@2",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 2,
+      "median_score": 0.3982280810188918,
+      "mean_score": 0.4006093812424778,
+      "variance": 8.790271470374546e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@4",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 4,
+      "median_score": 0.3973697545052395,
+      "mean_score": 0.3602777199439045,
+      "variance": 0.004911481058381997,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@4",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 4,
+      "median_score": 0.3970553239675677,
+      "mean_score": 0.37638286081243466,
+      "variance": 0.006106578181203911,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@4",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 4,
+      "median_score": 0.3954926107000117,
+      "mean_score": 0.39094831904144417,
+      "variance": 0.0044054859231650294,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@5",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 5,
+      "median_score": 0.3950292539344868,
+      "mean_score": 0.40458569497263414,
+      "variance": 0.0025464987109460767,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@9",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 9,
+      "median_score": 0.3947125882635492,
+      "mean_score": 0.3918365080234067,
+      "variance": 3.2731213746513594e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@0",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 0,
+      "median_score": 0.3945384126396896,
+      "mean_score": 0.3906437226777613,
+      "variance": 0.000819973449869696,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@4",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 4,
+      "median_score": 0.39434054390488077,
+      "mean_score": 0.3420265242366615,
+      "variance": 0.008649847217937693,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@7",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 7,
+      "median_score": 0.3940078387505596,
+      "mean_score": 0.39848056057126796,
+      "variance": 0.003855786103161083,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@4",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 4,
+      "median_score": 0.39342790692384005,
+      "mean_score": 0.34354007514764895,
+      "variance": 0.008249782409713262,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@8",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 8,
+      "median_score": 0.3931550604756487,
+      "mean_score": 0.40117303815578476,
+      "variance": 0.005453411885374764,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@0",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 0,
+      "median_score": 0.39241573176463485,
+      "mean_score": 0.3964533018957948,
+      "variance": 0.00022115223644685457,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@5",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 5,
+      "median_score": 0.39212784404242423,
+      "mean_score": 0.41344591398635605,
+      "variance": 0.0021736659618577367,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@0",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 0,
+      "median_score": 0.3920268781214342,
+      "mean_score": 0.3895288617912663,
+      "variance": 0.0007552979710356393,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@3",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 3,
+      "median_score": 0.3918558356790842,
+      "mean_score": 0.39617353513568104,
+      "variance": 0.0012106685979108723,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@1",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 1,
+      "median_score": 0.3914393257410871,
+      "mean_score": 0.38875266458118246,
+      "variance": 0.00031090694202285914,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@4",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 4,
+      "median_score": 0.39129518377077754,
+      "mean_score": 0.35522098462285195,
+      "variance": 0.007444345952807778,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@3",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 3,
+      "median_score": 0.39080047512854293,
+      "mean_score": 0.41176159545260355,
+      "variance": 0.0021745486001562247,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@7",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 7,
+      "median_score": 0.3905360852994365,
+      "mean_score": 0.40300370485205605,
+      "variance": 0.0018020110094662861,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@6",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 6,
+      "median_score": 0.3903379368935192,
+      "mean_score": 0.39335428859382143,
+      "variance": 0.0006858571776111391,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@3",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 3,
+      "median_score": 0.3902127185863011,
+      "mean_score": 0.398154092289251,
+      "variance": 0.0007500754766984379,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@4",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 4,
+      "median_score": 0.39007051705523826,
+      "mean_score": 0.3954889112197815,
+      "variance": 0.0016043629169108548,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@4",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 4,
+      "median_score": 0.38985463724575375,
+      "mean_score": 0.40674954956872655,
+      "variance": 0.0013011252364269225,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@7",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 7,
+      "median_score": 0.3883294515572612,
+      "mean_score": 0.3936881093678391,
+      "variance": 0.004031397834368472,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@6",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 6,
+      "median_score": 0.38631809868733,
+      "mean_score": 0.37872234187930914,
+      "variance": 0.00101582872069707,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@9",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 9,
+      "median_score": 0.38614710548572106,
+      "mean_score": 0.38132736306208975,
+      "variance": 0.0015389575922837378,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@6",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 6,
+      "median_score": 0.38579537959317334,
+      "mean_score": 0.3890338835216996,
+      "variance": 0.0006566314202346568,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@2",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 2,
+      "median_score": 0.38464679516198325,
+      "mean_score": 0.3868219709270038,
+      "variance": 4.993286419840677e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@7",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 7,
+      "median_score": 0.38449242131502437,
+      "mean_score": 0.3841836362524946,
+      "variance": 0.0042978136976833435,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@9",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 9,
+      "median_score": 0.3842095848398762,
+      "mean_score": 0.3924530758943873,
+      "variance": 0.0002241385416961351,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@5",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 5,
+      "median_score": 0.3840999207557629,
+      "mean_score": 0.39264156017598584,
+      "variance": 0.0011118265342342248,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@5",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 5,
+      "median_score": 0.3835960774901105,
+      "mean_score": 0.406497908590499,
+      "variance": 0.0023935110108202536,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@3",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 3,
+      "median_score": 0.38287567299933634,
+      "mean_score": 0.39857552819719383,
+      "variance": 0.0014270130906913776,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@0",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 0,
+      "median_score": 0.3826887054627933,
+      "mean_score": 0.3889754718761802,
+      "variance": 0.00021825908182706346,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@6",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 6,
+      "median_score": 0.382605615462844,
+      "mean_score": 0.37950547210914326,
+      "variance": 0.0007368078761916847,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@4",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 4,
+      "median_score": 0.38215086546167,
+      "mean_score": 0.3710178875445597,
+      "variance": 0.006064191004314236,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@2",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 2,
+      "median_score": 0.3811090674864472,
+      "mean_score": 0.38520252323569254,
+      "variance": 9.141957704619644e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@5",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 5,
+      "median_score": 0.38029202375823096,
+      "mean_score": 0.39273241176684986,
+      "variance": 0.002617470548694426,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@2",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 2,
+      "median_score": 0.38013232657149626,
+      "mean_score": 0.3763371339775126,
+      "variance": 0.002152256746803945,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@3",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 3,
+      "median_score": 0.3800472733617979,
+      "mean_score": 0.39647251371585773,
+      "variance": 0.0020373106328549283,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@7",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 7,
+      "median_score": 0.37940869639530694,
+      "mean_score": 0.40504004311923403,
+      "variance": 0.0027137474991435592,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@1",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 1,
+      "median_score": 0.37930309673839513,
+      "mean_score": 0.3580011112238613,
+      "variance": 0.003367333330221288,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@3",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 3,
+      "median_score": 0.37911900498114215,
+      "mean_score": 0.39907050830098245,
+      "variance": 0.002108300581897661,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@9",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 9,
+      "median_score": 0.3772914624242964,
+      "mean_score": 0.377082416446551,
+      "variance": 0.001764482048227759,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@5",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 5,
+      "median_score": 0.3759332447274671,
+      "mean_score": 0.3729844959725921,
+      "variance": 0.0030686602291273824,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@4",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 4,
+      "median_score": 0.3752800305864468,
+      "mean_score": 0.3432729288145742,
+      "variance": 0.007355667677220382,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@5",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 5,
+      "median_score": 0.3741430837664715,
+      "mean_score": 0.3780756507486431,
+      "variance": 0.002908279773781583,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@3",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 3,
+      "median_score": 0.37329901122542336,
+      "mean_score": 0.38190934622227846,
+      "variance": 0.0009683325957510211,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@2",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 2,
+      "median_score": 0.3725361677468491,
+      "mean_score": 0.35134502239595217,
+      "variance": 0.0014793288312984275,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@3",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 3,
+      "median_score": 0.3724994964719167,
+      "mean_score": 0.38375705697733586,
+      "variance": 0.0019697152833943092,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@4",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 4,
+      "median_score": 0.372107170645247,
+      "mean_score": 0.38510079411222603,
+      "variance": 0.000858149081355038,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@4",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 4,
+      "median_score": 0.37107604642812786,
+      "mean_score": 0.3330141292893725,
+      "variance": 0.008037770138814454,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@5",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 5,
+      "median_score": 0.37057416954547,
+      "mean_score": 0.36882404060938095,
+      "variance": 0.0036805654890785878,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@6",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 6,
+      "median_score": 0.3671156416408098,
+      "mean_score": 0.3679103170789857,
+      "variance": 0.0008595155756574856,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@5",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 5,
+      "median_score": 0.3670488760615802,
+      "mean_score": 0.3866429506116738,
+      "variance": 0.003059137966616203,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@5",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 5,
+      "median_score": 0.3661471791976549,
+      "mean_score": 0.3915198138053337,
+      "variance": 0.0053181568962596595,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@3",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 3,
+      "median_score": 0.36606001709906477,
+      "mean_score": 0.39364133166050097,
+      "variance": 0.003881475521407911,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@3",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 3,
+      "median_score": 0.36600733462727597,
+      "mean_score": 0.3936674053617304,
+      "variance": 0.0024936682341740657,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@7",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 7,
+      "median_score": 0.36600131174652406,
+      "mean_score": 0.364802829912954,
+      "variance": 0.004399248835497017,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@2",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 2,
+      "median_score": 0.364849525735796,
+      "mean_score": 0.36140848074604787,
+      "variance": 4.079574173620285e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@5",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 5,
+      "median_score": 0.3635130479150418,
+      "mean_score": 0.3728159609144403,
+      "variance": 0.0043563127040820515,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@6",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 6,
+      "median_score": 0.3635060077616621,
+      "mean_score": 0.3568688709885203,
+      "variance": 0.0008410816542255465,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@3",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 3,
+      "median_score": 0.36286582034224296,
+      "mean_score": 0.3832125635421664,
+      "variance": 0.0031549795210127265,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@2",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 2,
+      "median_score": 0.3620780448948836,
+      "mean_score": 0.3654164559049791,
+      "variance": 0.0011784523343549998,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@8",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 8,
+      "median_score": 0.36128823132948645,
+      "mean_score": 0.3635519956685532,
+      "variance": 0.001170016883996223,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@2",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 2,
+      "median_score": 0.3610965857796055,
+      "mean_score": 0.3384890806621313,
+      "variance": 0.0031878595659008313,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@7",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 7,
+      "median_score": 0.36076347811793513,
+      "mean_score": 0.38232264162598034,
+      "variance": 0.0026628341556321584,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@8",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 8,
+      "median_score": 0.3598566011526716,
+      "mean_score": 0.3673650581429489,
+      "variance": 0.001883720412428032,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@8",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 8,
+      "median_score": 0.35979119122366526,
+      "mean_score": 0.3607750116588317,
+      "variance": 0.005247195908241976,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@5",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 5,
+      "median_score": 0.3582226863055061,
+      "mean_score": 0.38819738641884793,
+      "variance": 0.004430740546788955,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@6",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 6,
+      "median_score": 0.35750316186708336,
+      "mean_score": 0.3617707556689214,
+      "variance": 0.00010895472836197833,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@6",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 6,
+      "median_score": 0.3567272822112596,
+      "mean_score": 0.34907558895362495,
+      "variance": 0.0003422664627338726,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@3",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 3,
+      "median_score": 0.3558585063233026,
+      "mean_score": 0.37949722112802386,
+      "variance": 0.004671000043060183,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@5",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 5,
+      "median_score": 0.35427937868756393,
+      "mean_score": 0.38395845384307425,
+      "variance": 0.0036881247887692275,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@2",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 2,
+      "median_score": 0.3540273951077653,
+      "mean_score": 0.3620808514826912,
+      "variance": 0.00024067844597038738,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@6",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 6,
+      "median_score": 0.3529847870289398,
+      "mean_score": 0.3530188510582087,
+      "variance": 0.00015115114995160054,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@8",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 8,
+      "median_score": 0.35277509190383943,
+      "mean_score": 0.3557386234019635,
+      "variance": 0.0045549999537943045,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@7",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 7,
+      "median_score": 0.3517303125142386,
+      "mean_score": 0.34195275942089537,
+      "variance": 0.00645663249150215,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@2",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 2,
+      "median_score": 0.3492921029084812,
+      "mean_score": 0.33556294490812216,
+      "variance": 0.0012435882874545653,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@2",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 2,
+      "median_score": 0.34902906829919506,
+      "mean_score": 0.3268301308571439,
+      "variance": 0.001521063912485245,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@6",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 6,
+      "median_score": 0.3488314486982566,
+      "mean_score": 0.3497345441665998,
+      "variance": 0.0006591795617462866,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@6",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 6,
+      "median_score": 0.34809326206233177,
+      "mean_score": 0.3527575715352042,
+      "variance": 0.0008890428251248527,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@6",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 6,
+      "median_score": 0.34732022312357147,
+      "mean_score": 0.350063505011814,
+      "variance": 0.0002512771465145294,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@6",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 6,
+      "median_score": 0.34728190873598735,
+      "mean_score": 0.34294526959493116,
+      "variance": 0.0006075059221041944,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@7",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 7,
+      "median_score": 0.3465416854558228,
+      "mean_score": 0.34942696708603793,
+      "variance": 0.006460846446585317,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@6",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 6,
+      "median_score": 0.34598784431534857,
+      "mean_score": 0.34840668123063573,
+      "variance": 0.00041315889985025334,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@7",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 7,
+      "median_score": 0.3454296695280316,
+      "mean_score": 0.34962286940624443,
+      "variance": 0.00624246266514938,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@5",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 5,
+      "median_score": 0.34536445783706576,
+      "mean_score": 0.3709487186031124,
+      "variance": 0.003978584774987689,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@3",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 3,
+      "median_score": 0.34506662108345426,
+      "mean_score": 0.37767988185246043,
+      "variance": 0.003947274621185548,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@7",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 7,
+      "median_score": 0.34455678269591067,
+      "mean_score": 0.348449377171149,
+      "variance": 0.006441024424507177,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@5",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 5,
+      "median_score": 0.3435608209056773,
+      "mean_score": 0.3713786576405876,
+      "variance": 0.003452952941115461,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@7",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 7,
+      "median_score": 0.34015530929966886,
+      "mean_score": 0.349376452504385,
+      "variance": 0.005922211219608191,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@7",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 7,
+      "median_score": 0.3393412823852725,
+      "mean_score": 0.3430175565397649,
+      "variance": 0.00445393405847513,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@7",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 7,
+      "median_score": 0.33925397635529136,
+      "mean_score": 0.3554179003477928,
+      "variance": 0.003979246912932478,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@8",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 8,
+      "median_score": 0.33816432474590685,
+      "mean_score": 0.3382659710757958,
+      "variance": 0.006060508695722406,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@6",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 6,
+      "median_score": 0.33629440658420107,
+      "mean_score": 0.3355402275984489,
+      "variance": 0.00014181101065897944,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@6",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 6,
+      "median_score": 0.3350488941866944,
+      "mean_score": 0.34299944303940616,
+      "variance": 0.0009286319159092818,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@7",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 7,
+      "median_score": 0.334960230923662,
+      "mean_score": 0.3618372930481464,
+      "variance": 0.002404481172001881,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.2@9",
+      "module_path": "up_blocks.2.attentions.2",
+      "step_index": 9,
+      "median_score": 0.33237453745214746,
+      "mean_score": 0.32460008475935515,
+      "variance": 0.0001985235425110652,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@2",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 2,
+      "median_score": 0.3322505037056592,
+      "mean_score": 0.3323128446391034,
+      "variance": 0.000287958368290696,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@1",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 1,
+      "median_score": 0.3319416245646705,
+      "mean_score": 0.3373983446200406,
+      "variance": 0.010174677410897415,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@2",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 2,
+      "median_score": 0.33185292121577836,
+      "mean_score": 0.335099120773416,
+      "variance": 0.00010573678544460004,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@7",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 7,
+      "median_score": 0.3306667392256558,
+      "mean_score": 0.3380141647389407,
+      "variance": 0.0076006968855629395,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@9",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 9,
+      "median_score": 0.32870223721134645,
+      "mean_score": 0.3294034494965701,
+      "variance": 0.0003789682227093061,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@2",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 2,
+      "median_score": 0.32788382120862564,
+      "mean_score": 0.3215430246481109,
+      "variance": 0.0005829534745970693,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@7",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 7,
+      "median_score": 0.32620653665972515,
+      "mean_score": 0.32793999376871097,
+      "variance": 0.005402370624044147,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@8",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 8,
+      "median_score": 0.3249050636349054,
+      "mean_score": 0.3387396047337527,
+      "variance": 0.0012115236058892903,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@7",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 7,
+      "median_score": 0.3247302683551062,
+      "mean_score": 0.3444320579869415,
+      "variance": 0.007051936333600734,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@6",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 6,
+      "median_score": 0.3226703636594006,
+      "mean_score": 0.3283998740414291,
+      "variance": 0.0004584183991579553,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@7",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 7,
+      "median_score": 0.3209499089718962,
+      "mean_score": 0.3347935613079645,
+      "variance": 0.002319031591000203,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@2",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 2,
+      "median_score": 0.3191143738477037,
+      "mean_score": 0.31695622158964576,
+      "variance": 0.0006716086692628207,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@9",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 9,
+      "median_score": 0.3184569216565719,
+      "mean_score": 0.32428985729029125,
+      "variance": 0.001969876827068442,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@7",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 7,
+      "median_score": 0.316505148914071,
+      "mean_score": 0.32790701199527766,
+      "variance": 0.005844870498040185,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@8",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 8,
+      "median_score": 0.30948904820059425,
+      "mean_score": 0.32292260712771853,
+      "variance": 0.0010510634894946623,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@2",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 2,
+      "median_score": 0.30947138889224285,
+      "mean_score": 0.29881172119263083,
+      "variance": 0.0006231788537039866,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@8",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 8,
+      "median_score": 0.30502036906440433,
+      "mean_score": 0.31630267159220365,
+      "variance": 0.005550414502754088,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@1",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 1,
+      "median_score": 0.3035487262932452,
+      "mean_score": 0.30213107860846783,
+      "variance": 0.004071672244436326,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@9",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 9,
+      "median_score": 0.29888287295964844,
+      "mean_score": 0.3051180863592052,
+      "variance": 0.0002784167184287579,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@9",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 9,
+      "median_score": 0.29871519345745123,
+      "mean_score": 0.3126850460571355,
+      "variance": 0.001673372848338996,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@9",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 9,
+      "median_score": 0.29097617262228176,
+      "mean_score": 0.29184189106152253,
+      "variance": 0.00024342700967344976,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.1@1",
+      "module_path": "down_blocks.0.resnets.1",
+      "step_index": 1,
+      "median_score": 0.288348723675052,
+      "mean_score": 0.298294996435362,
+      "variance": 0.004644417628279924,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@1",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 1,
+      "median_score": 0.2880971389057419,
+      "mean_score": 0.2985347423849234,
+      "variance": 0.004909680418622887,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@8",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 8,
+      "median_score": 0.28739095612718557,
+      "mean_score": 0.2817442699648986,
+      "variance": 0.005602370207063601,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.1@1",
+      "module_path": "down_blocks.0.attentions.1",
+      "step_index": 1,
+      "median_score": 0.2870586070912941,
+      "mean_score": 0.29724195465280334,
+      "variance": 0.00492589624838245,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.2@0",
+      "module_path": "up_blocks.2.resnets.2",
+      "step_index": 0,
+      "median_score": 0.28580695510930987,
+      "mean_score": 0.2941550826479208,
+      "variance": 0.0004922184754745583,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@8",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 8,
+      "median_score": 0.28252168992250415,
+      "mean_score": 0.30056772541785737,
+      "variance": 0.002157825143895902,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@2",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 2,
+      "median_score": 0.2818992744622849,
+      "mean_score": 0.29755280089656627,
+      "variance": 0.0015570916521570888,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.1@0",
+      "module_path": "up_blocks.2.attentions.1",
+      "step_index": 0,
+      "median_score": 0.2786364741451988,
+      "mean_score": 0.2867999690960547,
+      "variance": 0.0005641305105388411,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@9",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 9,
+      "median_score": 0.2771827956380108,
+      "mean_score": 0.28808812341301643,
+      "variance": 0.002269489922092941,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@8",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 8,
+      "median_score": 0.27600040504874784,
+      "mean_score": 0.2823203479455443,
+      "variance": 0.005147348444859168,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.0@1",
+      "module_path": "down_blocks.1.resnets.0",
+      "step_index": 1,
+      "median_score": 0.2741354180619221,
+      "mean_score": 0.2928642635930136,
+      "variance": 0.004524527171807293,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.0@1",
+      "module_path": "down_blocks.1.attentions.0",
+      "step_index": 1,
+      "median_score": 0.273787298374074,
+      "mean_score": 0.2904018768338034,
+      "variance": 0.006354956235807105,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@8",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 8,
+      "median_score": 0.27056716760903565,
+      "mean_score": 0.2900052138899451,
+      "variance": 0.0051940557228656375,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@8",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 8,
+      "median_score": 0.26998735682712294,
+      "mean_score": 0.28072115351451943,
+      "variance": 0.001347121338714897,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@8",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 8,
+      "median_score": 0.26977848514298547,
+      "mean_score": 0.2915269578058555,
+      "variance": 0.0034341198859329106,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@8",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 8,
+      "median_score": 0.26845978801899323,
+      "mean_score": 0.2898053354455645,
+      "variance": 0.007880174833761602,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@3",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 3,
+      "median_score": 0.26734013185020605,
+      "mean_score": 0.3065175702281003,
+      "variance": 0.008629752070009211,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@3",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 3,
+      "median_score": 0.2672592139157174,
+      "mean_score": 0.2869305677020095,
+      "variance": 0.011598889661066949,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@1",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 1,
+      "median_score": 0.2664868202661187,
+      "mean_score": 0.2841391184644005,
+      "variance": 0.006040681876129488,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@8",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 8,
+      "median_score": 0.26597313546985735,
+      "mean_score": 0.2846300669967364,
+      "variance": 0.0075398919479040495,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@1",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 1,
+      "median_score": 0.2641021019125935,
+      "mean_score": 0.32119975622663643,
+      "variance": 0.010648822636705324,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.resnets.1@1",
+      "module_path": "down_blocks.1.resnets.1",
+      "step_index": 1,
+      "median_score": 0.26322893560849037,
+      "mean_score": 0.2793078198173153,
+      "variance": 0.005803418824597761,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@0",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 0,
+      "median_score": 0.2623007302648853,
+      "mean_score": 0.2673596879209426,
+      "variance": 0.000475560881604114,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@8",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 8,
+      "median_score": 0.2578611765779716,
+      "mean_score": 0.27124130959350695,
+      "variance": 0.007180476359667275,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@8",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 8,
+      "median_score": 0.25672192690367157,
+      "mean_score": 0.27458667274904563,
+      "variance": 0.004059231340489207,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@1",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 1,
+      "median_score": 0.25644482277113584,
+      "mean_score": 0.30095727898880376,
+      "variance": 0.010772960805532753,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.1@0",
+      "module_path": "up_blocks.2.resnets.1",
+      "step_index": 0,
+      "median_score": 0.2561375851949876,
+      "mean_score": 0.2662272004381369,
+      "variance": 0.00039385193217262,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@3",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 3,
+      "median_score": 0.2544446733648399,
+      "mean_score": 0.2831078708779826,
+      "variance": 0.008971984355496435,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@8",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 8,
+      "median_score": 0.2534679366102921,
+      "mean_score": 0.28289262833319573,
+      "variance": 0.004475727506699954,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@5",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 5,
+      "median_score": 0.25333617271048664,
+      "mean_score": 0.24735665828324194,
+      "variance": 0.0010491388411011935,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@0",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 0,
+      "median_score": 0.2511381888279808,
+      "mean_score": 0.2583702516007036,
+      "variance": 0.000501070107771159,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@3",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 3,
+      "median_score": 0.2507833961086331,
+      "mean_score": 0.28382667361848907,
+      "variance": 0.011577094246291553,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@3",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 3,
+      "median_score": 0.25047904851009883,
+      "mean_score": 0.28473193515643785,
+      "variance": 0.01190397135246197,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@8",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 8,
+      "median_score": 0.2482947422440553,
+      "mean_score": 0.26541365595146277,
+      "variance": 0.004682820459977066,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@9",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 9,
+      "median_score": 0.24712338673161283,
+      "mean_score": 0.26947495974428576,
+      "variance": 0.0025476126732737322,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@1",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 1,
+      "median_score": 0.2451441070015124,
+      "mean_score": 0.2627491919179086,
+      "variance": 0.006578792764098458,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@0",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 0,
+      "median_score": 0.24507323874741402,
+      "mean_score": 0.2543338963214105,
+      "variance": 0.0004742484548616428,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@3",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 3,
+      "median_score": 0.24367203741040755,
+      "mean_score": 0.28484896293802525,
+      "variance": 0.010231747770271506,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@3",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 3,
+      "median_score": 0.2405058336840907,
+      "mean_score": 0.2791532416730403,
+      "variance": 0.009666584828642402,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@2",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 2,
+      "median_score": 0.24024565139618537,
+      "mean_score": 0.21931852604778765,
+      "variance": 0.0015425429929218461,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@4",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 4,
+      "median_score": 0.23973562919429808,
+      "mean_score": 0.23828491939695082,
+      "variance": 0.003075974090641192,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@2",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 2,
+      "median_score": 0.239563930228729,
+      "mean_score": 0.2270403437397639,
+      "variance": 0.0006310921265519042,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@1",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 1,
+      "median_score": 0.2395424307962404,
+      "mean_score": 0.25533380798416055,
+      "variance": 0.015292219185728635,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@4",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 4,
+      "median_score": 0.23941907308924024,
+      "mean_score": 0.2484113871637796,
+      "variance": 0.0030669279906403095,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@4",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 4,
+      "median_score": 0.23920945245675068,
+      "mean_score": 0.2540761680950983,
+      "variance": 0.006037531307781478,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@5",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 5,
+      "median_score": 0.23908239407085916,
+      "mean_score": 0.22282568263137403,
+      "variance": 0.0014234162582368749,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@5",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 5,
+      "median_score": 0.2385232249114554,
+      "mean_score": 0.2229719134537664,
+      "variance": 0.0019236706002841888,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@5",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 5,
+      "median_score": 0.2384628436146875,
+      "mean_score": 0.23812358316293736,
+      "variance": 0.00011290867941737349,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@1",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 1,
+      "median_score": 0.2378304285179417,
+      "mean_score": 0.24179975897669112,
+      "variance": 0.008622148484177281,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.resnets.0@9",
+      "module_path": "up_blocks.2.resnets.0",
+      "step_index": 9,
+      "median_score": 0.2366779178231375,
+      "mean_score": 0.25423799800462615,
+      "variance": 0.0011479325294200592,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@2",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 2,
+      "median_score": 0.23665271074139296,
+      "mean_score": 0.22719567125943887,
+      "variance": 0.0018763055954926758,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@1",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 1,
+      "median_score": 0.2361579869162407,
+      "mean_score": 0.24087497696780105,
+      "variance": 0.007859197142119089,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@5",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 5,
+      "median_score": 0.23423988085936326,
+      "mean_score": 0.22067633246442467,
+      "variance": 0.0017241613897138993,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@2",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 2,
+      "median_score": 0.2338697061341536,
+      "mean_score": 0.22303876446543427,
+      "variance": 0.001406343329810116,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.2.attentions.0@9",
+      "module_path": "up_blocks.2.attentions.0",
+      "step_index": 9,
+      "median_score": 0.22980092249666872,
+      "mean_score": 0.24279330130373414,
+      "variance": 0.00085942541152252,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@4",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 4,
+      "median_score": 0.22947689797824342,
+      "mean_score": 0.24114063978255865,
+      "variance": 0.0021580679571190286,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@5",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 5,
+      "median_score": 0.22923510485821486,
+      "mean_score": 0.22216469119090956,
+      "variance": 0.001896115917204539,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@0",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 0,
+      "median_score": 0.2272085702545465,
+      "mean_score": 0.2331976333123296,
+      "variance": 0.00014063158771072688,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@3",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 3,
+      "median_score": 0.22638632138850107,
+      "mean_score": 0.25645269105661056,
+      "variance": 0.009951884436355633,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@5",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 5,
+      "median_score": 0.22517962201804914,
+      "mean_score": 0.22211475512492895,
+      "variance": 0.0005208491022218713,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@9",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 9,
+      "median_score": 0.2244465115394998,
+      "mean_score": 0.21613700524881752,
+      "variance": 0.0013069275029627258,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@4",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 4,
+      "median_score": 0.2238053846138751,
+      "mean_score": 0.24074573909739994,
+      "variance": 0.0019303266010273258,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@1",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 1,
+      "median_score": 0.22367215790413392,
+      "mean_score": 0.2499740148688132,
+      "variance": 0.014806522451515038,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@2",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 2,
+      "median_score": 0.22190140189050567,
+      "mean_score": 0.2112800938321132,
+      "variance": 0.0005189026690456816,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.2@9",
+      "module_path": "up_blocks.1.resnets.2",
+      "step_index": 9,
+      "median_score": 0.21991500532577488,
+      "mean_score": 0.23418739435048963,
+      "variance": 0.0011874017938020257,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@1",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 1,
+      "median_score": 0.21661302150777922,
+      "mean_score": 0.22262368619086134,
+      "variance": 0.010773396491785143,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@2",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 2,
+      "median_score": 0.21535137541620614,
+      "mean_score": 0.22315101859481792,
+      "variance": 0.0022259790349985196,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@9",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 9,
+      "median_score": 0.21135534163573894,
+      "mean_score": 0.2266776434593147,
+      "variance": 0.002559597021755542,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@9",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 9,
+      "median_score": 0.21119485266225438,
+      "mean_score": 0.22730224381153077,
+      "variance": 0.0022897724629423206,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@0",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 0,
+      "median_score": 0.2092952096286733,
+      "mean_score": 0.21146541422016274,
+      "variance": 0.00040779107485720053,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.2@9",
+      "module_path": "up_blocks.1.attentions.2",
+      "step_index": 9,
+      "median_score": 0.2092914811581752,
+      "mean_score": 0.226091682531942,
+      "variance": 0.001480646905605455,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@7",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 7,
+      "median_score": 0.2092325453176867,
+      "mean_score": 0.18853718273983847,
+      "variance": 0.0020176017515048657,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@9",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 9,
+      "median_score": 0.20880160187362523,
+      "mean_score": 0.22823307735828927,
+      "variance": 0.001282978338315277,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@2",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 2,
+      "median_score": 0.2067513939903449,
+      "mean_score": 0.21805517689579834,
+      "variance": 0.0017373786899583937,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@6",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 6,
+      "median_score": 0.20669802780335583,
+      "mean_score": 0.19865337328871555,
+      "variance": 0.0007202996046054144,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@5",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 5,
+      "median_score": 0.20628683796720834,
+      "mean_score": 0.1986610803323643,
+      "variance": 0.0013051504875135635,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@9",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 9,
+      "median_score": 0.20543590292391095,
+      "mean_score": 0.21601593943916578,
+      "variance": 0.000649248176004147,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@6",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 6,
+      "median_score": 0.20537965410471573,
+      "mean_score": 0.21242851743401844,
+      "variance": 0.0008289866431876405,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@1",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 1,
+      "median_score": 0.2033015583378418,
+      "mean_score": 0.22784319064122996,
+      "variance": 0.011490358146790338,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@4",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 4,
+      "median_score": 0.20244357929873427,
+      "mean_score": 0.2169457146084898,
+      "variance": 0.0020116261100355448,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.1@9",
+      "module_path": "up_blocks.1.attentions.1",
+      "step_index": 9,
+      "median_score": 0.20167850467854984,
+      "mean_score": 0.21731104788782127,
+      "variance": 0.0012049956088908901,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@4",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 4,
+      "median_score": 0.19873702363980472,
+      "mean_score": 0.22553948369347054,
+      "variance": 0.003548684380777547,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@9",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 9,
+      "median_score": 0.19836343352350788,
+      "mean_score": 0.20812113639160537,
+      "variance": 0.0021658393152371638,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@4",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 4,
+      "median_score": 0.19795772202323328,
+      "mean_score": 0.2253124663891054,
+      "variance": 0.004932457233374943,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@2",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 2,
+      "median_score": 0.19709404800751895,
+      "mean_score": 0.19824513242322375,
+      "variance": 0.0004690977125733992,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@6",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 6,
+      "median_score": 0.189744484836376,
+      "mean_score": 0.19639292903875186,
+      "variance": 0.0007434091438411765,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@6",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 6,
+      "median_score": 0.18828247569333964,
+      "mean_score": 0.1820724235227484,
+      "variance": 0.001346661002795388,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@1",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 1,
+      "median_score": 0.18653780712192652,
+      "mean_score": 0.19508515904463716,
+      "variance": 0.008548968688370379,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@6",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 6,
+      "median_score": 0.1862592892948381,
+      "mean_score": 0.19777184509330592,
+      "variance": 0.0006652123207814517,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@6",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 6,
+      "median_score": 0.1837392103229372,
+      "mean_score": 0.19913911475303436,
+      "variance": 0.0007534103041371527,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@7",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 7,
+      "median_score": 0.18344890803766165,
+      "mean_score": 0.17191969113657013,
+      "variance": 0.0013303498888825101,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@9",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 9,
+      "median_score": 0.1833040223247814,
+      "mean_score": 0.19942925793561986,
+      "variance": 0.000916371275849716,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@6",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 6,
+      "median_score": 0.18094430195967628,
+      "mean_score": 0.1929719575746516,
+      "variance": 0.0011313691017227246,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@7",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 7,
+      "median_score": 0.17821304706725036,
+      "mean_score": 0.1728982147994459,
+      "variance": 0.001353616373611668,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@1",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 1,
+      "median_score": 0.17784452880671672,
+      "mean_score": 0.20091591285026547,
+      "variance": 0.011664762052341932,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@7",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 7,
+      "median_score": 0.17580912295658369,
+      "mean_score": 0.16048807987959074,
+      "variance": 0.0020015660569879987,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@7",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 7,
+      "median_score": 0.17317947744151146,
+      "mean_score": 0.16766462125627535,
+      "variance": 0.0011163780440464751,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@7",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 7,
+      "median_score": 0.16724841507149837,
+      "mean_score": 0.16770897727343162,
+      "variance": 0.0011699732084323763,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@7",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 7,
+      "median_score": 0.16712741968519956,
+      "mean_score": 0.1666494577588861,
+      "variance": 0.0012155064776920666,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@6",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 6,
+      "median_score": 0.1664500263708593,
+      "mean_score": 0.16876587571476723,
+      "variance": 0.0015913071217451143,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@7",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 7,
+      "median_score": 0.16539948378314465,
+      "mean_score": 0.14720296336947747,
+      "variance": 0.0015433065736600133,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.1@0",
+      "module_path": "up_blocks.1.resnets.1",
+      "step_index": 0,
+      "median_score": 0.1543474218220166,
+      "mean_score": 0.1616576005860406,
+      "variance": 0.0005592711647074477,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@8",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 8,
+      "median_score": 0.140179212804214,
+      "mean_score": 0.12272605993877343,
+      "variance": 0.0009479269850782817,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@8",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 8,
+      "median_score": 0.13701629930886658,
+      "mean_score": 0.13110015041446973,
+      "variance": 0.001029518262369507,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@8",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 8,
+      "median_score": 0.12751305476454347,
+      "mean_score": 0.10923047270556785,
+      "variance": 0.0011866560564380692,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.attentions.0@0",
+      "module_path": "up_blocks.1.attentions.0",
+      "step_index": 0,
+      "median_score": 0.12698136647840785,
+      "mean_score": 0.1318360601703503,
+      "variance": 0.0004282649221168757,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@8",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 8,
+      "median_score": 0.11506077537781469,
+      "mean_score": 0.11864088731855565,
+      "variance": 0.0008958219200448605,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@8",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 8,
+      "median_score": 0.10937616628846578,
+      "mean_score": 0.11238403730220647,
+      "variance": 0.0009202046030441144,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@8",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 8,
+      "median_score": 0.10900169032200954,
+      "mean_score": 0.09895417383351812,
+      "variance": 0.0011450206647996494,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@8",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 8,
+      "median_score": 0.10464505673690938,
+      "mean_score": 0.11537928217117838,
+      "variance": 0.0007370653323492699,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@8",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 8,
+      "median_score": 0.10364586699684335,
+      "mean_score": 0.11013679639962466,
+      "variance": 0.0010081662262344602,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.0@0",
+      "module_path": "down_blocks.2.attentions.0",
+      "step_index": 0,
+      "median_score": 0.09490571813081113,
+      "mean_score": 0.07305081293405825,
+      "variance": 0.0027096758311775534,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.1.resnets.0@0",
+      "module_path": "up_blocks.1.resnets.0",
+      "step_index": 0,
+      "median_score": 0.08884149466248634,
+      "mean_score": 0.06313924286721165,
+      "variance": 0.0021668126752900207,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@0",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 0,
+      "median_score": 0.0862217038869461,
+      "mean_score": 0.07413507143486679,
+      "variance": 0.0012626942308114027,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@0",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 0,
+      "median_score": 0.08383956898574504,
+      "mean_score": 0.0803437516932147,
+      "variance": 0.0010715523183388214,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@9",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 9,
+      "median_score": 0.08304669585494184,
+      "mean_score": 0.08810376928611952,
+      "variance": 0.00010884184291125848,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.2@9",
+      "module_path": "up_blocks.0.resnets.2",
+      "step_index": 9,
+      "median_score": 0.08276055632515532,
+      "mean_score": 0.08345809770902286,
+      "variance": 1.285773336110617e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.0@0",
+      "module_path": "down_blocks.3.resnets.0",
+      "step_index": 0,
+      "median_score": 0.08056130249399746,
+      "mean_score": 0.0691570600223005,
+      "variance": 0.0012492530580356371,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@9",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 9,
+      "median_score": 0.07581040876232947,
+      "mean_score": 0.07369734462235451,
+      "variance": 0.00017118200199714112,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@9",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 9,
+      "median_score": 0.07578070304971567,
+      "mean_score": 0.07337305975345006,
+      "variance": 0.00021503116851237798,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@9",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 9,
+      "median_score": 0.07414754832091779,
+      "mean_score": 0.07769904446306866,
+      "variance": 0.00018290466940796212,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.1@9",
+      "module_path": "up_blocks.0.resnets.1",
+      "step_index": 9,
+      "median_score": 0.07359000585038868,
+      "mean_score": 0.0714047719607725,
+      "variance": 3.335812372276142e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@9",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 9,
+      "median_score": 0.07233678161162091,
+      "mean_score": 0.07179749653054372,
+      "variance": 0.00021685395133505954,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.0@0",
+      "module_path": "mid_block.resnets.0",
+      "step_index": 0,
+      "median_score": 0.07120453158284701,
+      "mean_score": 0.05816141954331853,
+      "variance": 0.0008750567755582627,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.attentions.1@0",
+      "module_path": "down_blocks.2.attentions.1",
+      "step_index": 0,
+      "median_score": 0.06477362692772153,
+      "mean_score": 0.047826260767469736,
+      "variance": 0.004493591972700037,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.3.resnets.1@0",
+      "module_path": "down_blocks.3.resnets.1",
+      "step_index": 0,
+      "median_score": 0.06075273241898332,
+      "mean_score": 0.05655641704991075,
+      "variance": 0.0008605403665680455,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@9",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 9,
+      "median_score": 0.05896119941303912,
+      "mean_score": 0.06398685000159168,
+      "variance": 7.582101586202345e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.1@0",
+      "module_path": "down_blocks.2.resnets.1",
+      "step_index": 0,
+      "median_score": 0.057178644151336507,
+      "mean_score": 0.04437791811915944,
+      "variance": 0.0018234146045391295,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.0.resnets.0@0",
+      "module_path": "up_blocks.0.resnets.0",
+      "step_index": 0,
+      "median_score": 0.05245035501399485,
+      "mean_score": 0.05926191968190495,
+      "variance": 0.0008974362743969384,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.resnets.1@0",
+      "module_path": "mid_block.resnets.1",
+      "step_index": 0,
+      "median_score": 0.05169477108122771,
+      "mean_score": 0.06358386826349617,
+      "variance": 0.0007761396838809338,
+      "num_observations": 3
+    },
+    {
+      "node": "mid_block.attentions.0@0",
+      "module_path": "mid_block.attentions.0",
+      "step_index": 0,
+      "median_score": 0.0509275182813844,
+      "mean_score": 0.0627037271146461,
+      "variance": 0.0006279997413580279,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.1.attentions.1@0",
+      "module_path": "down_blocks.1.attentions.1",
+      "step_index": 0,
+      "median_score": 0.00825401745052871,
+      "mean_score": 0.006563559989243891,
+      "variance": 0.0024484154313374057,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.2.resnets.0@0",
+      "module_path": "down_blocks.2.resnets.0",
+      "step_index": 0,
+      "median_score": 0.004562580831463759,
+      "mean_score": -0.005552026871163563,
+      "variance": 0.002341437038438459,
+      "num_observations": 3
+    }
+  ],
+  "retained_nodes": [
+    {
+      "node": "up_blocks.3.attentions.2@9",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 9,
+      "median_score": 0.6388756523029535,
+      "mean_score": 0.638401422730322,
+      "variance": 7.369010205748823e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@9",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 9,
+      "median_score": 0.6342244419907499,
+      "mean_score": 0.6338154635475701,
+      "variance": 3.8944595615615055e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@8",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 8,
+      "median_score": 0.6320885921202646,
+      "mean_score": 0.6327487472212718,
+      "variance": 0.00012497391610551085,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@1",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 1,
+      "median_score": 0.6258945369502166,
+      "mean_score": 0.6252443619512843,
+      "variance": 5.8781191905513406e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@0",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 0,
+      "median_score": 0.625080826875266,
+      "mean_score": 0.6254892051899553,
+      "variance": 1.203348216592247e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@7",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 7,
+      "median_score": 0.6244976013187779,
+      "mean_score": 0.627936133268304,
+      "variance": 4.4790575569443346e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@8",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 8,
+      "median_score": 0.6243009568173075,
+      "mean_score": 0.6247009249809883,
+      "variance": 7.384887532291691e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@6",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 6,
+      "median_score": 0.6233111360984144,
+      "mean_score": 0.6241829953602024,
+      "variance": 1.007839412970057e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@2",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 2,
+      "median_score": 0.6212271113757737,
+      "mean_score": 0.6198505148853608,
+      "variance": 6.239124865213063e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@5",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 5,
+      "median_score": 0.6203219030378206,
+      "mean_score": 0.6206507421874511,
+      "variance": 1.302165667416064e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@4",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 4,
+      "median_score": 0.6190243450649714,
+      "mean_score": 0.6197678816953439,
+      "variance": 4.827268281047175e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@7",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 7,
+      "median_score": 0.6188981175754,
+      "mean_score": 0.6240082582675668,
+      "variance": 0.0001473907473771479,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@3",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 3,
+      "median_score": 0.6185501360002897,
+      "mean_score": 0.6186239461409923,
+      "variance": 1.6990622239744238e-06,
+      "num_observations": 3
+    }
+  ],
+  "final_nodes": [
+    {
+      "node": "down_blocks.0.attentions.0@7",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 7,
+      "median_score": 0.4705283519314474,
+      "mean_score": 0.4684986287616335,
+      "variance": 0.004870035059031721,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@8",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 8,
+      "median_score": 0.4502269634843405,
+      "mean_score": 0.4434872410172351,
+      "variance": 0.004794236601279168,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.attentions.0@9",
+      "module_path": "down_blocks.0.attentions.0",
+      "step_index": 9,
+      "median_score": 0.4694739976972079,
+      "mean_score": 0.44850487988301246,
+      "variance": 0.0014072985862313358,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@7",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 7,
+      "median_score": 0.46867537005601767,
+      "mean_score": 0.4635361697944688,
+      "variance": 0.004727302061676176,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@8",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 8,
+      "median_score": 0.4436113995763,
+      "mean_score": 0.43879603979775395,
+      "variance": 0.004499380455746579,
+      "num_observations": 3
+    },
+    {
+      "node": "down_blocks.0.resnets.0@9",
+      "module_path": "down_blocks.0.resnets.0",
+      "step_index": 9,
+      "median_score": 0.4597952012605325,
+      "mean_score": 0.4427506337249599,
+      "variance": 0.0014585749679265209,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@0",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 0,
+      "median_score": 0.4068936420440297,
+      "mean_score": 0.40903028765454263,
+      "variance": 0.00019778366159488894,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@1",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 1,
+      "median_score": 0.5630853937172731,
+      "mean_score": 0.5508243000212181,
+      "variance": 0.0008329412890178481,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@2",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 2,
+      "median_score": 0.4805629861184984,
+      "mean_score": 0.48778202337256177,
+      "variance": 0.00030757818416190955,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@3",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 3,
+      "median_score": 0.4940729301845818,
+      "mean_score": 0.49006764746049813,
+      "variance": 0.0003648678185125354,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.0@4",
+      "module_path": "up_blocks.3.attentions.0",
+      "step_index": 4,
+      "median_score": 0.4762234439835438,
+      "mean_score": 0.4773035916531451,
+      "variance": 0.00040799715575163983,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@0",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 0,
+      "median_score": 0.3920268781214342,
+      "mean_score": 0.3895288617912663,
+      "variance": 0.0007552979710356393,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@1",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 1,
+      "median_score": 0.5797159814806886,
+      "mean_score": 0.56758331907783,
+      "variance": 0.0006835252516934649,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@2",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 2,
+      "median_score": 0.5080707794777536,
+      "mean_score": 0.51581264094751,
+      "variance": 0.00046457164317852855,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@3",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 3,
+      "median_score": 0.5150933481576803,
+      "mean_score": 0.5194896211228741,
+      "variance": 0.000418748209339356,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@4",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 4,
+      "median_score": 0.5060101678171037,
+      "mean_score": 0.5089253514249624,
+      "variance": 4.162352306231664e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@6",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 6,
+      "median_score": 0.5168043648942728,
+      "mean_score": 0.5289868388900081,
+      "variance": 0.0005127835789589213,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@8",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 8,
+      "median_score": 0.5174344903157366,
+      "mean_score": 0.5192016242644738,
+      "variance": 0.0004999907046290701,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.1@9",
+      "module_path": "up_blocks.3.attentions.1",
+      "step_index": 9,
+      "median_score": 0.5224088765409562,
+      "mean_score": 0.5131612294216071,
+      "variance": 0.00034720129241798024,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@0",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 0,
+      "median_score": 0.625080826875266,
+      "mean_score": 0.6254892051899553,
+      "variance": 1.203348216592247e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@1",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 1,
+      "median_score": 0.6258945369502166,
+      "mean_score": 0.6252443619512843,
+      "variance": 5.8781191905513406e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@2",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 2,
+      "median_score": 0.6212271113757737,
+      "mean_score": 0.6198505148853608,
+      "variance": 6.239124865213063e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.attentions.2@3",
+      "module_path": "up_blocks.3.attentions.2",
+      "step_index": 3,
+      "median_score": 0.6185501360002897,
+      "mean_score": 0.6186239461409923,
+      "variance": 1.6990622239744238e-06,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@0",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 0,
+      "median_score": 0.39241573176463485,
+      "mean_score": 0.3964533018957948,
+      "variance": 0.00022115223644685457,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@1",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 1,
+      "median_score": 0.5558964598199564,
+      "mean_score": 0.5438211534216307,
+      "variance": 0.0007149986199362835,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@2",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 2,
+      "median_score": 0.4802305189784974,
+      "mean_score": 0.4847932804368092,
+      "variance": 0.00024230037109012996,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@3",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 3,
+      "median_score": 0.492648057814298,
+      "mean_score": 0.48911480762455745,
+      "variance": 0.0005673170641093376,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.0@4",
+      "module_path": "up_blocks.3.resnets.0",
+      "step_index": 4,
+      "median_score": 0.4717820971819759,
+      "mean_score": 0.48043905959387173,
+      "variance": 0.000730039467517504,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@0",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 0,
+      "median_score": 0.41307887305287416,
+      "mean_score": 0.4134280421040477,
+      "variance": 0.00017684458193611638,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@1",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 1,
+      "median_score": 0.5721332284550027,
+      "mean_score": 0.5588404469493506,
+      "variance": 0.0008079853680400298,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@2",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 2,
+      "median_score": 0.509765339850375,
+      "mean_score": 0.5144233064806354,
+      "variance": 0.00021771110755880956,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@3",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 3,
+      "median_score": 0.5173434206245225,
+      "mean_score": 0.523639278886486,
+      "variance": 0.0003325987181420926,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@4",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 4,
+      "median_score": 0.507876194076156,
+      "mean_score": 0.5121995671759466,
+      "variance": 6.008982989655546e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@8",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 8,
+      "median_score": 0.5181282233371075,
+      "mean_score": 0.5185217885608945,
+      "variance": 0.00032836422425639464,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.1@9",
+      "module_path": "up_blocks.3.resnets.1",
+      "step_index": 9,
+      "median_score": 0.5224086523486089,
+      "mean_score": 0.513487547951471,
+      "variance": 0.0002590187657865465,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@0",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 0,
+      "median_score": 0.3945384126396896,
+      "mean_score": 0.3906437226777613,
+      "variance": 0.000819973449869696,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@1",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 1,
+      "median_score": 0.5672505357494706,
+      "mean_score": 0.5615985161235418,
+      "variance": 0.0002707026087234464,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@2",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 2,
+      "median_score": 0.5910501908791596,
+      "mean_score": 0.5905007494295739,
+      "variance": 9.718022725601834e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@3",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 3,
+      "median_score": 0.6013993533782375,
+      "mean_score": 0.602243588626331,
+      "variance": 2.297883374086314e-05,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@4",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 4,
+      "median_score": 0.6116845648191378,
+      "mean_score": 0.6150612218985404,
+      "variance": 0.00012202430102856324,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@5",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 5,
+      "median_score": 0.6138388294991537,
+      "mean_score": 0.6175772814376443,
+      "variance": 0.00011152633404161447,
+      "num_observations": 3
+    },
+    {
+      "node": "up_blocks.3.resnets.2@9",
+      "module_path": "up_blocks.3.resnets.2",
+      "step_index": 9,
+      "median_score": 0.6342244419907499,
+      "mean_score": 0.6338154635475701,
+      "variance": 3.8944595615615055e-05,
+      "num_observations": 3
+    }
+  ],
+  "cross_step_frontier": [
+    {
+      "source_step": 0,
+      "target_step": 1,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.0",
+        "up_blocks.3.attentions.1"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ]
+    },
+    {
+      "source_step": 1,
+      "target_step": 2,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ]
+    },
+    {
+      "source_step": 2,
+      "target_step": 3,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ]
+    },
+    {
+      "source_step": 3,
+      "target_step": 4,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ]
+    },
+    {
+      "source_step": 4,
+      "target_step": 5,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ]
+    },
+    {
+      "source_step": 5,
+      "target_step": 6,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ]
+    },
+    {
+      "source_step": 6,
+      "target_step": 7,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.attentions.0",
+        "up_blocks.3.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.resnets.1",
+        "down_blocks.0.attentions.0",
+        "down_blocks.0.resnets.0"
+      ]
+    },
+    {
+      "source_step": 7,
+      "target_step": 8,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.resnets.1",
+        "down_blocks.0.attentions.0",
+        "down_blocks.0.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "down_blocks.0.attentions.0",
+        "down_blocks.0.resnets.0"
+      ]
+    },
+    {
+      "source_step": 8,
+      "target_step": 9,
+      "source_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.resnets.1",
+        "up_blocks.3.attentions.1",
+        "down_blocks.0.attentions.0",
+        "down_blocks.0.resnets.0"
+      ],
+      "target_paths": [
+        "up_blocks.3.attentions.2",
+        "up_blocks.3.resnets.2",
+        "up_blocks.3.attentions.1",
+        "up_blocks.3.resnets.1",
+        "down_blocks.0.attentions.0",
+        "down_blocks.0.resnets.0"
+      ]
+    }
+  ],
+  "same_step_diag_frontier": {
+    "9": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.1"
+    ],
+    "8": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1"
+    ],
+    "1": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.resnets.2"
+    ],
+    "0": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.2"
+    ],
+    "7": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.1"
+    ],
+    "6": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1"
+    ],
+    "2": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1"
+    ],
+    "5": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1"
+    ],
+    "4": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1"
+    ],
+    "3": [
+      "up_blocks.3.attentions.2",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1"
+    ]
+  },
+  "execution_order": {
+    "0": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "1": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "2": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "3": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "4": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "5": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "6": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "7": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "8": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ],
+    "9": [
+      "down_blocks.0.resnets.0",
+      "down_blocks.0.attentions.0",
+      "down_blocks.0.resnets.1",
+      "down_blocks.0.attentions.1",
+      "down_blocks.1.resnets.0",
+      "down_blocks.1.attentions.0",
+      "down_blocks.1.resnets.1",
+      "down_blocks.1.attentions.1",
+      "down_blocks.2.resnets.0",
+      "down_blocks.2.attentions.0",
+      "down_blocks.2.resnets.1",
+      "down_blocks.2.attentions.1",
+      "down_blocks.3.resnets.0",
+      "down_blocks.3.resnets.1",
+      "mid_block.resnets.0",
+      "mid_block.attentions.0",
+      "mid_block.resnets.1",
+      "up_blocks.0.resnets.0",
+      "up_blocks.0.resnets.1",
+      "up_blocks.0.resnets.2",
+      "up_blocks.1.resnets.0",
+      "up_blocks.1.attentions.0",
+      "up_blocks.1.resnets.1",
+      "up_blocks.1.attentions.1",
+      "up_blocks.1.resnets.2",
+      "up_blocks.1.attentions.2",
+      "up_blocks.2.resnets.0",
+      "up_blocks.2.attentions.0",
+      "up_blocks.2.resnets.1",
+      "up_blocks.2.attentions.1",
+      "up_blocks.2.resnets.2",
+      "up_blocks.2.attentions.2",
+      "up_blocks.3.resnets.0",
+      "up_blocks.3.attentions.0",
+      "up_blocks.3.resnets.1",
+      "up_blocks.3.attentions.1",
+      "up_blocks.3.resnets.2",
+      "up_blocks.3.attentions.2"
+    ]
+  }
+}

@@ -76,6 +76,25 @@ class CLIPSemanticScorer:
         similarities = (image_embeds * text_embeds).sum(dim=-1)
         return [float(score.item()) for score in similarities.cpu()]
 
+    @torch.no_grad()
+    def encode_images(self, images: Iterable[Image.Image]) -> torch.Tensor:
+        image_list = [image.convert("RGB") for image in images]
+        inputs = self.processor(images=image_list, return_tensors="pt", padding=True)
+        pixel_values = inputs["pixel_values"].to(self.device)
+        image_embeds = self.model.get_image_features(pixel_values=pixel_values)
+        return image_embeds / image_embeds.norm(dim=-1, keepdim=True)
+
+    @torch.no_grad()
+    def score_image_pairs(self, left_images: Iterable[Image.Image], right_images: Iterable[Image.Image]) -> list[float]:
+        left_list = list(left_images)
+        right_list = list(right_images)
+        if len(left_list) != len(right_list):
+            raise ValueError("Number of left and right images must match.")
+        left_embeds = self.encode_images(left_list)
+        right_embeds = self.encode_images(right_list)
+        similarities = (left_embeds * right_embeds).sum(dim=-1)
+        return [float(score.item()) for score in similarities.cpu()]
+
 
 def _mean(values: list[float]) -> float:
     return float(sum(values) / len(values)) if values else 0.0

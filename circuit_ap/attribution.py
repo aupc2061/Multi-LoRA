@@ -489,6 +489,45 @@ def robust_node_stats(values_by_key: dict[str, list[float]]) -> dict[str, dict[s
     return out
 
 
+def build_lora_profile_from_positive_nodes(
+    lora_id: str,
+    positive_nodes: Sequence[dict[str, Any]],
+    *,
+    topk_modules: int = 12,
+    topk_steps: int = 12,
+) -> dict[str, Any]:
+    module_scores: dict[str, float] = {}
+    step_scores: dict[str, float] = {}
+    module_step_scores: dict[str, float] = {}
+    for row in positive_nodes:
+        module_path = str(row["module_path"])
+        step_index = int(row["step_index"])
+        score = float(row["median_score"])
+        module_scores[module_path] = module_scores.get(module_path, 0.0) + score
+        step_scores[str(step_index)] = step_scores.get(str(step_index), 0.0) + score
+        module_step_scores[node_key(module_path, step_index)] = score
+
+    top_modules = [
+        {"module_path": module_path, "score": score}
+        for module_path, score in sorted(module_scores.items(), key=lambda item: item[1], reverse=True)[:topk_modules]
+    ]
+    top_steps = [
+        {"step_index": int(step_index), "score": score}
+        for step_index, score in sorted(step_scores.items(), key=lambda item: item[1], reverse=True)[:topk_steps]
+    ]
+    support_density = float(len(module_step_scores) / max(len(module_scores) * max(len(step_scores), 1), 1))
+    return {
+        "lora_id": lora_id,
+        "module_scores": module_scores,
+        "step_scores": step_scores,
+        "module_step_scores": module_step_scores,
+        "top_modules": top_modules,
+        "top_steps": top_steps,
+        "support_density": support_density,
+        "num_positive_nodes": len(positive_nodes),
+    }
+
+
 def cache_validation_pairs(
     pipeline: Any,
     *,
@@ -1367,6 +1406,7 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
         "same_step_diag_frontier": same_step_diag_frontier,
         "execution_order": execution_orders,
     }
+    profile_payload = build_lora_profile_from_positive_nodes(args.lora_id, positive_nodes)
     edge_payload = {
         "lora_id": args.lora_id,
         "retained_edges": retained_edges,
@@ -1422,12 +1462,14 @@ def run_attribution_discovery(pipeline: Any, args: Any, out_dir: str | Path) -> 
     }
 
     save_json(output_dir / "support_ap.json", support_payload)
+    save_json(output_dir / "lora_profile.json", profile_payload)
     save_json(output_dir / "edge_scores_ap.json", edge_payload)
     save_json(output_dir / "circuit_ap.json", circuit_payload)
     save_json(output_dir / "trace_manifest.json", manifest_payload)
 
     return {
         "support": support_payload,
+        "profile": profile_payload,
         "edges": edge_payload,
         "circuit": circuit_payload,
         "manifest": manifest_payload,
