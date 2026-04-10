@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import time
 from pathlib import Path
 from typing import Any, Sequence
@@ -18,6 +19,8 @@ from circuit_utils import (
 )
 from selective_lora import build_selective_policy, load_lora_profile, run_selective_generation
 from utils import get_prompt
+
+LOGGER = logging.getLogger(__name__)
 
 
 def parse_csv_float(spec: str) -> list[float]:
@@ -383,6 +386,7 @@ def evaluate_mixing_combination(
     switch_step: int,
     save_images: bool,
     out_dir: str | Path,
+    log_prefix: str = "",
 ) -> dict[str, Any]:
     specs = build_specs(image_style, lora_info_path, lora_ids)
     profiles = load_profiles(profile_root, lora_ids)
@@ -396,6 +400,8 @@ def evaluate_mixing_combination(
         support_mode=support_mode,
     )
     _, negative_prompt = get_prompt(image_style)
+    if log_prefix:
+        LOGGER.info("%sBuilding single-LoRA reference images for %s", log_prefix, ", ".join(lora_ids))
     single_refs = build_single_refs(
         pipeline=pipeline,
         scorer=scorer,
@@ -419,10 +425,14 @@ def evaluate_mixing_combination(
     results: list[dict[str, Any]] = []
     runtime_cache: dict[str, list[float]] = {}
     for method in methods:
+        if log_prefix:
+            LOGGER.info("%sRunning method=%s across %d seed(s)", log_prefix, method, len(seeds))
         rows: list[dict[str, Any]] = []
         runtimes: list[float] = []
         image_paths: list[str] = []
         for seed in seeds:
+            if log_prefix:
+                LOGGER.info("%s  seed=%s", log_prefix, seed)
             image, runtime = generate_image_for_method(
                 method=method,
                 pipeline=pipeline,
@@ -452,6 +462,8 @@ def evaluate_mixing_combination(
                 image_path = combination_out_dir / f"{method}_seed{seed}.png"
                 image.save(image_path)
                 image_paths.append(str(image_path))
+                if log_prefix:
+                    LOGGER.info("%s  saved image %s", log_prefix, image_path)
 
         runtime_cache[method] = runtimes
         results.append(
@@ -468,6 +480,8 @@ def evaluate_mixing_combination(
         mean_runtime = float(result["summary"]["mean_runtime_sec"])
         result["summary"]["runtime_overhead_vs_merge"] = (mean_runtime / merge_runtime) if merge_runtime > 0 else 0.0
 
+    if log_prefix:
+        LOGGER.info("%sFinished combination", log_prefix)
     return {
         "lora_ids": list(lora_ids),
         "lora_weights": dict(lora_weights),
@@ -490,6 +504,7 @@ def main() -> None:
     args = parse_args()
     from sae_semantic_metrics import CLIPSemanticScorer
 
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
     lora_ids = parse_csv_str(args.lora_ids)
     methods = parse_csv_str(args.methods)
     seeds = parse_csv_int(args.seeds)
@@ -512,6 +527,7 @@ def main() -> None:
     prompt = args.prompt or infer_prompt_for_loras(args.image_style, args.lora_info_path, lora_ids)
 
     out_dir = Path(args.out_dir) / "__".join(lora_ids)
+    LOGGER.info("Loaded selective mixing run for %s", ", ".join(lora_ids))
     report = evaluate_mixing_combination(
         pipeline=pipeline,
         scorer=scorer,
@@ -535,6 +551,7 @@ def main() -> None:
         switch_step=args.switch_step,
         save_images=args.save_images,
         out_dir=out_dir,
+        log_prefix=f"[{'__'.join(lora_ids)}] ",
     )
     (out_dir / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"Saved selective mixing report to {out_dir / 'report.json'}")
