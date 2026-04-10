@@ -504,7 +504,7 @@ def main() -> None:
     args = parse_args()
     from sae_semantic_metrics import CLIPSemanticScorer
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s", force=True)
     lora_ids = parse_csv_str(args.lora_ids)
     methods = parse_csv_str(args.methods)
     seeds = parse_csv_int(args.seeds)

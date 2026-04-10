@@ -237,17 +237,13 @@ def ensure_lora_profile(args: argparse.Namespace, lora_id: str) -> dict[str, Any
         "--out_dir",
         args.profile_root,
     ]
-    completed = subprocess.run(command, capture_output=True, text=True, check=False)
+    completed = subprocess.run(command, text=True, check=False)
     status = discover_profile_status(args.profile_root, lora_id)
     status["generation"] = "generated" if status["exists"] else "failed"
     status["returncode"] = completed.returncode
-    status["stdout"] = completed.stdout[-4000:]
-    status["stderr"] = completed.stderr[-4000:]
     if not status["exists"]:
         status["error"] = "profile_generation_failed"
         LOGGER.error("[profile %s] generation failed (returncode=%s)", lora_id, completed.returncode)
-        if status["stderr"]:
-            LOGGER.error("[profile %s] stderr tail:\n%s", lora_id, status["stderr"])
     else:
         LOGGER.info("[profile %s] generated profile at %s", lora_id, status["profile_path"])
     return status
@@ -412,18 +408,23 @@ def main() -> None:
     args = parse_args()
     from sae_semantic_metrics import CLIPSemanticScorer
 
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s", force=True)
     methods = parse_csv_str(args.methods)
     ablations = parse_optional_csv_str(args.include_ablations)
     all_methods = methods + [method for method in ablations if method not in methods]
     seeds = parse_csv_int(args.benchmark_seeds)
     out_root = Path(args.out_dir) / args.run_name
     out_root.mkdir(parents=True, exist_ok=True)
+    print(f"[benchmark] starting run_name={args.run_name}", flush=True)
     LOGGER.info("Starting selective mixing benchmark: run_name=%s", args.run_name)
     LOGGER.info(
         "Resolved diffusion model: %s (image_style=%s)",
         get_model_name(args.image_style, args.model_name),
         args.image_style,
+    )
+    print(
+        f"[benchmark] resolved model={get_model_name(args.image_style, args.model_name)} style={args.image_style}",
+        flush=True,
     )
     LOGGER.info("Profile mode: %s", args.profile_mode)
     LOGGER.info("Methods: %s", ", ".join(all_methods))
@@ -444,9 +445,11 @@ def main() -> None:
 
     all_lora_ids = sorted({lora_id for combo in combinations_to_run for lora_id in combo["lora_ids"]})
     LOGGER.info("Checking profiles for %d unique LoRA(s)", len(all_lora_ids))
+    print(f"[benchmark] checking profiles for {len(all_lora_ids)} LoRAs", flush=True)
     profile_status = {lora_id: ensure_lora_profile(args, lora_id) for lora_id in all_lora_ids}
 
     LOGGER.info("Loading diffusion pipeline")
+    print("[benchmark] loading diffusion pipeline", flush=True)
     pipeline = load_pipeline(
         image_style=args.image_style,
         model_name=args.model_name,
@@ -455,6 +458,7 @@ def main() -> None:
         device=args.device,
     )
     LOGGER.info("Pipeline loaded, loading %d adapter(s)", len(all_lora_ids))
+    print(f"[benchmark] pipeline loaded, loading {len(all_lora_ids)} adapters", flush=True)
     load_adapters(
         pipeline,
         image_style=args.image_style,
@@ -462,8 +466,10 @@ def main() -> None:
         lora_path=args.lora_path,
     )
     LOGGER.info("Adapters loaded")
+    print("[benchmark] adapters loaded", flush=True)
     scorer = CLIPSemanticScorer(args.clip_model_name, args.device)
     LOGGER.info("CLIP scorer ready: %s", args.clip_model_name)
+    print(f"[benchmark] clip scorer ready: {args.clip_model_name}", flush=True)
 
     pair_results: list[dict[str, Any]] = []
     per_seed_results: list[dict[str, Any]] = []
@@ -472,6 +478,7 @@ def main() -> None:
     for pair_index, combo in enumerate(combinations_to_run, start=1):
         lora_ids = combo["lora_ids"]
         LOGGER.info("[%d/%d] Evaluating pair %s", pair_index, total_pairs, combo["combination_id"])
+        print(f"[benchmark] [{pair_index}/{total_pairs}] pair={combo['combination_id']}", flush=True)
         combo_profile_status = {lora_id: profile_status[lora_id] for lora_id in lora_ids}
         attempted_manifest.append(
             {
@@ -483,6 +490,7 @@ def main() -> None:
         )
         if any(not status.get("exists", False) for status in combo_profile_status.values()):
             LOGGER.warning("[%d/%d] Skipping %s due to missing profile(s)", pair_index, total_pairs, combo["combination_id"])
+            print(f"[benchmark] [{pair_index}/{total_pairs}] skipped missing profile(s)", flush=True)
             pair_results.append(
                 {
                     **combo,
@@ -587,6 +595,7 @@ def main() -> None:
     if args.save_per_seed_metrics:
         (out_root / "per_seed_results.json").write_text(json.dumps(per_seed_results, indent=2), encoding="utf-8")
     LOGGER.info("Saved selective mixing benchmark to %s", out_root)
+    print(f"[benchmark] saved outputs to {out_root}", flush=True)
 
 
 if __name__ == "__main__":
