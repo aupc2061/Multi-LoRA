@@ -4,7 +4,7 @@ import argparse
 import json
 import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 from circuit_utils import (
     infer_prompt_for_lora,
@@ -42,10 +42,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lora_ids", type=str, required=False, default=None)
     parser.add_argument("--lora_weights", type=str, default="")
     parser.add_argument("--profile_root", type=str, default="sae_data/individual_circuit_ap_crossstep")
-    parser.add_argument("--methods", type=str, default="merge,timestep_only,module_only,selective_module_step")
+    parser.add_argument(
+        "--methods",
+        type=str,
+        default="merge,switch,timestep_only,module_only,selective_module_step",
+    )
     parser.add_argument("--support_mode", type=str, default="union", choices=["union", "intersection"])
     parser.add_argument("--top_modules_per_lora", type=int, default=6)
     parser.add_argument("--top_steps_per_lora", type=int, default=6)
+    parser.add_argument("--switch_step", type=int, default=5)
 
     parser.add_argument("--prompt", type=str, default="")
     parser.add_argument("--image_style", type=str, default="reality", choices=["anime", "reality"])
@@ -75,18 +80,60 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def _mean(values: list[float]) -> float:
+def _mean(values: Sequence[float]) -> float:
     return float(sum(values) / len(values)) if values else 0.0
 
 
-def average_prompt_score(scorer: CLIPSemanticScorer, image: Any, prompts: list[str]) -> float:
+def average_prompt_score(scorer: Any, image: Any, prompts: list[str]) -> float:
     values = scorer.score_image_text([image] * len(prompts), prompts)
     return _mean(values)
 
 
+def build_specs(image_style: str, lora_info_path: str, lora_ids: Sequence[str]) -> dict[str, Any]:
+    from sae_semantic_metrics import build_lora_semantic_spec
+
+    return {
+        lora_id: build_lora_semantic_spec(image_style, lora_info_path, lora_id)
+        for lora_id in lora_ids
+    }
+
+
+def resolve_lora_weights(lora_ids: Sequence[str], lora_weights_spec: str) -> dict[str, float]:
+    weights = parse_csv_float(lora_weights_spec) if lora_weights_spec else [1.0] * len(lora_ids)
+    if len(weights) != len(lora_ids):
+        raise ValueError("--lora_weights must match the number of lora_ids")
+    return {lora_id: weights[idx] for idx, lora_id in enumerate(lora_ids)}
+
+
+def load_profiles(profile_root: str | Path, lora_ids: Sequence[str]) -> dict[str, dict[str, Any]]:
+    root = Path(profile_root)
+    return {lora_id: load_lora_profile(root / lora_id) for lora_id in lora_ids}
+
+
+def build_policy(
+    *,
+    lora_ids: Sequence[str],
+    profiles: dict[str, dict[str, Any]],
+    lora_weights: dict[str, float],
+    denoise_steps: int,
+    top_modules_per_lora: int,
+    top_steps_per_lora: int,
+    support_mode: str,
+) -> dict[str, Any]:
+    return build_selective_policy(
+        lora_ids,
+        profiles,
+        lora_weights=lora_weights,
+        denoise_steps=denoise_steps,
+        top_modules=top_modules_per_lora,
+        top_steps=top_steps_per_lora,
+        support_mode=support_mode,
+    )
+
+
 def score_generation(
     *,
-    scorer: CLIPSemanticScorer,
+    scorer: Any,
     image: Any,
     specs: dict[str, Any],
     single_refs: dict[str, dict[int, dict[str, Any]]],
@@ -131,17 +178,322 @@ def score_generation(
     }
 
 
+def build_single_refs(
+    *,
+    pipeline: Any,
+    scorer: Any,
+    lora_ids: Sequence[str],
+    specs: dict[str, Any],
+    seeds: Sequence[int],
+    image_style: str,
+    lora_info_path: str,
+    negative_prompt: str,
+    device: str,
+    height: int,
+    width: int,
+    denoise_steps: int,
+    cfg_scale: float,
+    lora_scale: float,
+) -> dict[str, dict[int, dict[str, Any]]]:
+    single_refs: dict[str, dict[int, dict[str, Any]]] = {lora_id: {} for lora_id in lora_ids}
+    for lora_id in lora_ids:
+        single_prompt = infer_prompt_for_lora(image_style, lora_info_path, lora_id)
+        for seed in seeds:
+            result = run_generation(
+                pipeline=pipeline,
+                prompt=single_prompt,
+                negative_prompt=negative_prompt,
+                lora_ids=[lora_id],
+                seed=seed,
+                device=device,
+                height=height,
+                width=width,
+                denoise_steps=denoise_steps,
+                cfg_scale=cfg_scale,
+                lora_scale=lora_scale,
+                output_type="pil",
+                method="merge",
+            )
+            image = result[0][0]
+            single_refs[lora_id][seed] = {
+                "image": image,
+                "trigger_score": average_prompt_score(scorer, image, specs[lora_id].prompt_variants),
+            }
+    return single_refs
+
+
+def generate_image_for_method(
+    *,
+    method: str,
+    pipeline: Any,
+    prompt: str,
+    negative_prompt: str,
+    lora_ids: Sequence[str],
+    seed: int,
+    device: str,
+    height: int,
+    width: int,
+    denoise_steps: int,
+    cfg_scale: float,
+    lora_scale: float,
+    policy: dict[str, Any],
+    switch_step: int,
+) -> tuple[Any, float]:
+    start = time.perf_counter()
+    if method == "merge":
+        result = run_generation(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            lora_ids=lora_ids,
+            seed=seed,
+            device=device,
+            height=height,
+            width=width,
+            denoise_steps=denoise_steps,
+            cfg_scale=cfg_scale,
+            lora_scale=lora_scale,
+            output_type="pil",
+            method="merge",
+        )
+        return result[0][0], float(time.perf_counter() - start)
+    if method == "switch":
+        result = run_generation(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            lora_ids=lora_ids,
+            seed=seed,
+            device=device,
+            height=height,
+            width=width,
+            denoise_steps=denoise_steps,
+            cfg_scale=cfg_scale,
+            lora_scale=lora_scale,
+            output_type="pil",
+            method="switch",
+            switch_step=switch_step,
+        )
+        return result[0][0], float(time.perf_counter() - start)
+    if method == "composite":
+        result = run_generation(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            lora_ids=lora_ids,
+            seed=seed,
+            device=device,
+            height=height,
+            width=width,
+            denoise_steps=denoise_steps,
+            cfg_scale=cfg_scale,
+            lora_scale=lora_scale,
+            output_type="pil",
+            method="composite",
+        )
+        return result[0][0], float(time.perf_counter() - start)
+    if method == "timestep_only":
+        schedule = [step if step else None for step in policy["timestep_schedule"]]
+        result = run_generation(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            lora_ids=lora_ids,
+            seed=seed,
+            device=device,
+            height=height,
+            width=width,
+            denoise_steps=denoise_steps,
+            cfg_scale=cfg_scale,
+            lora_scale=lora_scale,
+            output_type="pil",
+            method="assignment",
+            assignment_schedule=schedule,
+        )
+        return result[0][0], float(time.perf_counter() - start)
+    if method == "module_only":
+        result, runtime = run_selective_generation(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            lora_ids=lora_ids,
+            seed=seed,
+            device=device,
+            height=height,
+            width=width,
+            denoise_steps=denoise_steps,
+            cfg_scale=cfg_scale,
+            lora_scale=lora_scale,
+            module_assignments_by_step=policy["module_only_assignments"],
+        )
+        return result[0][0], runtime
+    if method == "selective_module_step":
+        result, runtime = run_selective_generation(
+            pipeline=pipeline,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            lora_ids=lora_ids,
+            seed=seed,
+            device=device,
+            height=height,
+            width=width,
+            denoise_steps=denoise_steps,
+            cfg_scale=cfg_scale,
+            lora_scale=lora_scale,
+            module_assignments_by_step=policy["module_step_assignments"],
+        )
+        return result[0][0], runtime
+    raise ValueError(f"Unsupported method: {method}")
+
+
+def summarize_method_rows(rows: Sequence[dict[str, Any]], runtimes: Sequence[float]) -> dict[str, float]:
+    summary_rows = [row["summary"] for row in rows]
+    return {
+        "mean_retention": _mean([row["mean_retention"] for row in summary_rows]),
+        "min_retention": min(row["min_retention"] for row in summary_rows) if summary_rows else 0.0,
+        "pairwise_concept_retention": _mean([row["pairwise_concept_retention"] for row in summary_rows]),
+        "mean_semantic_specificity": _mean([row["mean_semantic_specificity"] for row in summary_rows]),
+        "mean_image_similarity_to_single": _mean([row["mean_image_similarity_to_single"] for row in summary_rows]),
+        "generic_quality_score": _mean([row["generic_quality_score"] for row in summary_rows]),
+        "mean_runtime_sec": _mean(runtimes),
+    }
+
+
+def evaluate_mixing_combination(
+    *,
+    pipeline: Any,
+    scorer: Any,
+    lora_ids: Sequence[str],
+    lora_weights: dict[str, float],
+    profile_root: str | Path,
+    methods: Sequence[str],
+    support_mode: str,
+    top_modules_per_lora: int,
+    top_steps_per_lora: int,
+    prompt: str,
+    image_style: str,
+    lora_info_path: str,
+    device: str,
+    height: int,
+    width: int,
+    denoise_steps: int,
+    cfg_scale: float,
+    lora_scale: float,
+    seeds: Sequence[int],
+    switch_step: int,
+    save_images: bool,
+    out_dir: str | Path,
+) -> dict[str, Any]:
+    specs = build_specs(image_style, lora_info_path, lora_ids)
+    profiles = load_profiles(profile_root, lora_ids)
+    policy = build_policy(
+        lora_ids=lora_ids,
+        profiles=profiles,
+        lora_weights=lora_weights,
+        denoise_steps=denoise_steps,
+        top_modules_per_lora=top_modules_per_lora,
+        top_steps_per_lora=top_steps_per_lora,
+        support_mode=support_mode,
+    )
+    _, negative_prompt = get_prompt(image_style)
+    single_refs = build_single_refs(
+        pipeline=pipeline,
+        scorer=scorer,
+        lora_ids=lora_ids,
+        specs=specs,
+        seeds=seeds,
+        image_style=image_style,
+        lora_info_path=lora_info_path,
+        negative_prompt=negative_prompt,
+        device=device,
+        height=height,
+        width=width,
+        denoise_steps=denoise_steps,
+        cfg_scale=cfg_scale,
+        lora_scale=lora_scale,
+    )
+
+    combination_out_dir = Path(out_dir)
+    combination_out_dir.mkdir(parents=True, exist_ok=True)
+
+    results: list[dict[str, Any]] = []
+    runtime_cache: dict[str, list[float]] = {}
+    for method in methods:
+        rows: list[dict[str, Any]] = []
+        runtimes: list[float] = []
+        image_paths: list[str] = []
+        for seed in seeds:
+            image, runtime = generate_image_for_method(
+                method=method,
+                pipeline=pipeline,
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                lora_ids=lora_ids,
+                seed=seed,
+                device=device,
+                height=height,
+                width=width,
+                denoise_steps=denoise_steps,
+                cfg_scale=cfg_scale,
+                lora_scale=lora_scale,
+                policy=policy,
+                switch_step=switch_step,
+            )
+            metrics = score_generation(
+                scorer=scorer,
+                image=image,
+                specs=specs,
+                single_refs=single_refs,
+                seed=seed,
+            )
+            rows.append({"seed": seed, **metrics})
+            runtimes.append(runtime)
+            if save_images:
+                image_path = combination_out_dir / f"{method}_seed{seed}.png"
+                image.save(image_path)
+                image_paths.append(str(image_path))
+
+        runtime_cache[method] = runtimes
+        results.append(
+            {
+                "method": method,
+                "rows": rows,
+                "summary": summarize_method_rows(rows, runtimes),
+                "image_paths": image_paths,
+            }
+        )
+
+    merge_runtime = _mean(runtime_cache.get("merge", []))
+    for result in results:
+        mean_runtime = float(result["summary"]["mean_runtime_sec"])
+        result["summary"]["runtime_overhead_vs_merge"] = (mean_runtime / merge_runtime) if merge_runtime > 0 else 0.0
+
+    return {
+        "lora_ids": list(lora_ids),
+        "lora_weights": dict(lora_weights),
+        "prompt": prompt,
+        "methods": list(methods),
+        "policy": {
+            "support_mode": support_mode,
+            "top_modules_per_lora": top_modules_per_lora,
+            "top_steps_per_lora": top_steps_per_lora,
+            "switch_step": switch_step,
+            "timestep_schedule": policy["timestep_schedule"],
+            "module_only_assignments": policy["module_only_assignments"],
+            "module_step_assignments": policy["module_step_assignments"],
+        },
+        "results": results,
+    }
+
+
 def main() -> None:
     args = parse_args()
-    from sae_semantic_metrics import CLIPSemanticScorer, build_lora_semantic_spec
+    from sae_semantic_metrics import CLIPSemanticScorer
 
     lora_ids = parse_csv_str(args.lora_ids)
     methods = parse_csv_str(args.methods)
     seeds = parse_csv_int(args.seeds)
-    weights = parse_csv_float(args.lora_weights) if args.lora_weights else [1.0] * len(lora_ids)
-    if len(weights) != len(lora_ids):
-        raise ValueError("--lora_weights must match the number of lora_ids")
-    lora_weights = {lora_id: weights[idx] for idx, lora_id in enumerate(lora_ids)}
+    lora_weights = resolve_lora_weights(lora_ids, args.lora_weights)
 
     pipeline = load_pipeline(
         image_style=args.image_style,
@@ -157,183 +509,33 @@ def main() -> None:
         lora_path=args.lora_path,
     )
     scorer = CLIPSemanticScorer(args.clip_model_name, args.device)
-    specs = {lora_id: build_lora_semantic_spec(args.image_style, args.lora_info_path, lora_id) for lora_id in lora_ids}
-    profiles = {lora_id: load_lora_profile(Path(args.profile_root) / lora_id) for lora_id in lora_ids}
-    policy = build_selective_policy(
-        lora_ids,
-        profiles,
-        lora_weights=lora_weights,
-        denoise_steps=args.denoise_steps,
-        top_modules=args.top_modules_per_lora,
-        top_steps=args.top_steps_per_lora,
-        support_mode=args.support_mode,
-    )
-
     prompt = args.prompt or infer_prompt_for_loras(args.image_style, args.lora_info_path, lora_ids)
-    _, negative_prompt = get_prompt(args.image_style)
-
-    single_refs: dict[str, dict[int, dict[str, Any]]] = {lora_id: {} for lora_id in lora_ids}
-    for lora_id in lora_ids:
-        single_prompt = infer_prompt_for_lora(args.image_style, args.lora_info_path, lora_id)
-        for seed in seeds:
-            result = run_generation(
-                pipeline=pipeline,
-                prompt=single_prompt,
-                negative_prompt=negative_prompt,
-                lora_ids=[lora_id],
-                seed=seed,
-                device=args.device,
-                height=args.height,
-                width=args.width,
-                denoise_steps=args.denoise_steps,
-                cfg_scale=args.cfg_scale,
-                lora_scale=args.lora_scale,
-                output_type="pil",
-                method="merge",
-            )
-            image = result[0][0]
-            single_refs[lora_id][seed] = {
-                "image": image,
-                "trigger_score": average_prompt_score(scorer, image, specs[lora_id].prompt_variants),
-            }
 
     out_dir = Path(args.out_dir) / "__".join(lora_ids)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    results: list[dict[str, Any]] = []
-    runtime_cache: dict[str, list[float]] = {}
-    for method in methods:
-        rows: list[dict[str, Any]] = []
-        runtimes: list[float] = []
-        image_paths: list[str] = []
-        for seed in seeds:
-            start = time.perf_counter()
-            if method == "merge":
-                result = run_generation(
-                    pipeline=pipeline,
-                    prompt=prompt,
-                    negative_prompt=negative_prompt,
-                    lora_ids=lora_ids,
-                    seed=seed,
-                    device=args.device,
-                    height=args.height,
-                    width=args.width,
-                    denoise_steps=args.denoise_steps,
-                    cfg_scale=args.cfg_scale,
-                    lora_scale=args.lora_scale,
-                    output_type="pil",
-                    method="merge",
-                )
-                image = result[0][0]
-                runtime = time.perf_counter() - start
-            elif method == "timestep_only":
-                schedule = [step if step else None for step in policy["timestep_schedule"]]
-                result = run_generation(
-                    pipeline=pipeline,
-                    prompt=prompt,
-                    negative_prompt=negative_prompt,
-                    lora_ids=lora_ids,
-                    seed=seed,
-                    device=args.device,
-                    height=args.height,
-                    width=args.width,
-                    denoise_steps=args.denoise_steps,
-                    cfg_scale=args.cfg_scale,
-                    lora_scale=args.lora_scale,
-                    output_type="pil",
-                    method="assignment",
-                    assignment_schedule=schedule,
-                )
-                image = result[0][0]
-                runtime = time.perf_counter() - start
-            elif method == "module_only":
-                result, runtime = run_selective_generation(
-                    pipeline=pipeline,
-                    prompt=prompt,
-                    negative_prompt=negative_prompt,
-                    lora_ids=lora_ids,
-                    seed=seed,
-                    device=args.device,
-                    height=args.height,
-                    width=args.width,
-                    denoise_steps=args.denoise_steps,
-                    cfg_scale=args.cfg_scale,
-                    lora_scale=args.lora_scale,
-                    module_assignments_by_step=policy["module_only_assignments"],
-                )
-                image = result[0][0]
-            elif method == "selective_module_step":
-                result, runtime = run_selective_generation(
-                    pipeline=pipeline,
-                    prompt=prompt,
-                    negative_prompt=negative_prompt,
-                    lora_ids=lora_ids,
-                    seed=seed,
-                    device=args.device,
-                    height=args.height,
-                    width=args.width,
-                    denoise_steps=args.denoise_steps,
-                    cfg_scale=args.cfg_scale,
-                    lora_scale=args.lora_scale,
-                    module_assignments_by_step=policy["module_step_assignments"],
-                )
-                image = result[0][0]
-            else:
-                raise ValueError(f"Unsupported method: {method}")
-
-            metrics = score_generation(
-                scorer=scorer,
-                image=image,
-                specs=specs,
-                single_refs=single_refs,
-                seed=seed,
-            )
-            rows.append({"seed": seed, **metrics})
-            runtimes.append(runtime)
-            if args.save_images:
-                image_path = out_dir / f"{method}_seed{seed}.png"
-                image.save(image_path)
-                image_paths.append(str(image_path))
-
-        runtime_cache[method] = runtimes
-        summary_rows = [row["summary"] for row in rows]
-        results.append(
-            {
-                "method": method,
-                "rows": rows,
-                "summary": {
-                    "mean_retention": _mean([row["mean_retention"] for row in summary_rows]),
-                    "min_retention": min(row["min_retention"] for row in summary_rows),
-                    "pairwise_concept_retention": _mean([row["pairwise_concept_retention"] for row in summary_rows]),
-                    "mean_semantic_specificity": _mean([row["mean_semantic_specificity"] for row in summary_rows]),
-                    "mean_image_similarity_to_single": _mean([row["mean_image_similarity_to_single"] for row in summary_rows]),
-                    "generic_quality_score": _mean([row["generic_quality_score"] for row in summary_rows]),
-                    "mean_runtime_sec": _mean(runtimes),
-                },
-                "image_paths": image_paths,
-            }
-        )
-
-    merge_runtime = _mean(runtime_cache.get("merge", []))
-    for result in results:
-        mean_runtime = float(result["summary"]["mean_runtime_sec"])
-        result["summary"]["runtime_overhead_vs_merge"] = (mean_runtime / merge_runtime) if merge_runtime > 0 else 0.0
-
-    report = {
-        "lora_ids": lora_ids,
-        "lora_weights": lora_weights,
-        "prompt": prompt,
-        "methods": methods,
-        "policy": {
-            "support_mode": args.support_mode,
-            "top_modules_per_lora": args.top_modules_per_lora,
-            "top_steps_per_lora": args.top_steps_per_lora,
-            "timestep_schedule": policy["timestep_schedule"],
-            "module_only_assignments": policy["module_only_assignments"],
-            "module_step_assignments": policy["module_step_assignments"],
-        },
-        "results": results,
-    }
+    report = evaluate_mixing_combination(
+        pipeline=pipeline,
+        scorer=scorer,
+        lora_ids=lora_ids,
+        lora_weights=lora_weights,
+        profile_root=args.profile_root,
+        methods=methods,
+        support_mode=args.support_mode,
+        top_modules_per_lora=args.top_modules_per_lora,
+        top_steps_per_lora=args.top_steps_per_lora,
+        prompt=prompt,
+        image_style=args.image_style,
+        lora_info_path=args.lora_info_path,
+        device=args.device,
+        height=args.height,
+        width=args.width,
+        denoise_steps=args.denoise_steps,
+        cfg_scale=args.cfg_scale,
+        lora_scale=args.lora_scale,
+        seeds=seeds,
+        switch_step=args.switch_step,
+        save_images=args.save_images,
+        out_dir=out_dir,
+    )
     (out_dir / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"Saved selective mixing report to {out_dir / 'report.json'}")
 
