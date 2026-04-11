@@ -3,6 +3,8 @@
     "run_name": "reality_pairs_v1",
     "image_style": "reality",
     "combination_size": 2,
+    "pair_mode": "character_vs_other",
+    "categories": "character,object,style,clothing",
     "methods": "merge,switch,selective_module_step",
     "include_ablations": "module_only,timestep_only",
     "profile_root": "sae_data/individual_circuit_ap_crossstep",

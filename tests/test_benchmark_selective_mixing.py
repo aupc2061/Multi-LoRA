@@ -25,6 +25,21 @@ class BenchmarkSelectiveMixingTests(unittest.TestCase):
             "object_1__style_1",
         ])
 
+    def test_enumerate_benchmark_pairs_can_limit_to_character_vs_other(self) -> None:
+        entries = [
+            {"id": "character_1", "category": "character"},
+            {"id": "character_2", "category": "character"},
+            {"id": "object_1", "category": "object"},
+            {"id": "style_1", "category": "style"},
+        ]
+        pairs = enumerate_benchmark_pairs(entries, pair_mode="character_vs_other")
+        self.assertEqual([row["combination_id"] for row in pairs], [
+            "character_1__object_1",
+            "character_1__style_1",
+            "character_2__object_1",
+            "character_2__style_1",
+        ])
+
     def test_discover_profile_status_distinguishes_present_and_missing(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

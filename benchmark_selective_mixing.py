@@ -61,6 +61,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--lora_info_path", type=str, default="lora_info.json")
     parser.add_argument("--lora_ids", type=str, default="")
     parser.add_argument("--categories", type=str, default="")
+    parser.add_argument(
+        "--pair_mode",
+        type=str,
+        default="all_pairs",
+        choices=["all_pairs", "character_vs_other"],
+    )
     parser.add_argument("--methods", type=str, default="merge,switch,selective_module_step")
     parser.add_argument("--include_ablations", type=str, default="")
     parser.add_argument("--profile_root", type=str, default="sae_data/individual_circuit_ap_crossstep")
@@ -129,6 +135,7 @@ def enumerate_benchmark_pairs(
     *,
     selected_lora_ids: Sequence[str] | None = None,
     selected_categories: Sequence[str] | None = None,
+    pair_mode: str = "all_pairs",
 ) -> list[dict[str, Any]]:
     allowed_ids = set(selected_lora_ids or [])
     allowed_categories = set(selected_categories or [])
@@ -140,6 +147,10 @@ def enumerate_benchmark_pairs(
     ]
     out: list[dict[str, Any]] = []
     for left, right in combinations(sorted(filtered, key=lambda item: item["id"]), 2):
+        if pair_mode == "character_vs_other":
+            categories = {left["category"], right["category"]}
+            if "character" not in categories or len(categories) != 2:
+                continue
         lora_ids = [left["id"], right["id"]]
         categories = [left["category"], right["category"]]
         out.append(
@@ -437,6 +448,7 @@ def main() -> None:
         inventory,
         selected_lora_ids=selected_lora_ids or None,
         selected_categories=selected_categories or None,
+        pair_mode=args.pair_mode,
     )
 
     if not combinations_to_run:
@@ -573,6 +585,7 @@ def main() -> None:
         "run_name": args.run_name,
         "image_style": args.image_style,
         "combination_size": args.combination_size,
+        "pair_mode": args.pair_mode,
         "methods": all_methods,
         "profile_mode": args.profile_mode,
         "benchmark_seeds": seeds,
