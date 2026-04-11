@@ -1,0 +1,263 @@
+{
+  "lora_id": "character_2",
+  "examples": [
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, scarlett, short red hair, blue eyes",
+      "seed": 111
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, scarlett, short red hair, blue eyes",
+      "seed": 112
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, scarlett, short red hair, blue eyes",
+      "seed": 113
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, scarlett, short red hair, blue eyes",
+      "seed": 114
+    }
+  ],
+  "trace_rows": [
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 0,
+      "timestep": 999,
+      "direction_norm": 64.73162841796875
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 1,
+      "timestep": 899,
+      "direction_norm": 510.39239501953125
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 2,
+      "timestep": 799,
+      "direction_norm": 1597.66845703125
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 3,
+      "timestep": 699,
+      "direction_norm": 2902.135009765625
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 4,
+      "timestep": 599,
+      "direction_norm": 2525.439208984375
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 5,
+      "timestep": 500,
+      "direction_norm": 2375.779052734375
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 6,
+      "timestep": 400,
+      "direction_norm": 2856.644775390625
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 7,
+      "timestep": 300,
+      "direction_norm": 4275.53857421875
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 8,
+      "timestep": 200,
+      "direction_norm": 5241.185546875
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 9,
+      "timestep": 100,
+      "direction_norm": 7877.55126953125
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 0,
+      "timestep": 999,
+      "direction_norm": 50.14554977416992
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 1,
+      "timestep": 899,
+      "direction_norm": 356.6941223144531
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 2,
+      "timestep": 799,
+      "direction_norm": 1025.7296142578125
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 3,
+      "timestep": 699,
+      "direction_norm": 2761.4931640625
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 4,
+      "timestep": 599,
+      "direction_norm": 4259.5419921875
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 5,
+      "timestep": 500,
+      "direction_norm": 4632.03173828125
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 6,
+      "timestep": 400,
+      "direction_norm": 5086.35107421875
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 7,
+      "timestep": 300,
+      "direction_norm": 6144.17041015625
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 8,
+      "timestep": 200,
+      "direction_norm": 7837.916015625
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 9,
+      "timestep": 100,
+      "direction_norm": 12218.21875
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 0,
+      "timestep": 999,
+      "direction_norm": 138.37738037109375
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 1,
+      "timestep": 899,
+      "direction_norm": 861.2733764648438
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 2,
+      "timestep": 799,
+      "direction_norm": 1685.772705078125
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 3,
+      "timestep": 699,
+      "direction_norm": 3025.06005859375
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 4,
+      "timestep": 599,
+      "direction_norm": 3954.8505859375
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 5,
+      "timestep": 500,
+      "direction_norm": 4703.39794921875
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 6,
+      "timestep": 400,
+      "direction_norm": 5363.51953125
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 7,
+      "timestep": 300,
+      "direction_norm": 5728.56103515625
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 8,
+      "timestep": 200,
+      "direction_norm": 6035.17431640625
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 9,
+      "timestep": 100,
+      "direction_norm": 9688.908203125
+    }
+  ]
+}

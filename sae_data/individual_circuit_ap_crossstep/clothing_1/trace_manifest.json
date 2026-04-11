@@ -1,0 +1,263 @@
+{
+  "lora_id": "clothing_1",
+  "examples": [
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, mahalaiuniform, white shirt short sleeves, black pencil skirt",
+      "seed": 111
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, mahalaiuniform, white shirt short sleeves, black pencil skirt",
+      "seed": 112
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, mahalaiuniform, white shirt short sleeves, black pencil skirt",
+      "seed": 113
+    },
+    {
+      "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, mahalaiuniform, white shirt short sleeves, black pencil skirt",
+      "seed": 114
+    }
+  ],
+  "trace_rows": [
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 0,
+      "timestep": 999,
+      "direction_norm": 50.629066467285156
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 1,
+      "timestep": 899,
+      "direction_norm": 907.0733032226562
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 2,
+      "timestep": 799,
+      "direction_norm": 3202.99072265625
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 3,
+      "timestep": 699,
+      "direction_norm": 5108.28662109375
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 4,
+      "timestep": 599,
+      "direction_norm": 3439.116455078125
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 5,
+      "timestep": 500,
+      "direction_norm": 2341.553466796875
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 6,
+      "timestep": 400,
+      "direction_norm": 1649.8980712890625
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 7,
+      "timestep": 300,
+      "direction_norm": 1647.046875
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 8,
+      "timestep": 200,
+      "direction_norm": 1922.599609375
+    },
+    {
+      "phase": "train",
+      "example_index": 0,
+      "seed": 111,
+      "step_index": 9,
+      "timestep": 100,
+      "direction_norm": 2373.23193359375
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 0,
+      "timestep": 999,
+      "direction_norm": 44.282867431640625
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 1,
+      "timestep": 899,
+      "direction_norm": 540.718017578125
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 2,
+      "timestep": 799,
+      "direction_norm": 1922.1177978515625
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 3,
+      "timestep": 699,
+      "direction_norm": 3266.10888671875
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 4,
+      "timestep": 599,
+      "direction_norm": 2681.0927734375
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 5,
+      "timestep": 500,
+      "direction_norm": 1955.251708984375
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 6,
+      "timestep": 400,
+      "direction_norm": 1871.489013671875
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 7,
+      "timestep": 300,
+      "direction_norm": 2205.299072265625
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 8,
+      "timestep": 200,
+      "direction_norm": 2488.48828125
+    },
+    {
+      "phase": "train",
+      "example_index": 1,
+      "seed": 112,
+      "step_index": 9,
+      "timestep": 100,
+      "direction_norm": 3037.16748046875
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 0,
+      "timestep": 999,
+      "direction_norm": 94.62752532958984
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 1,
+      "timestep": 899,
+      "direction_norm": 754.4552001953125
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 2,
+      "timestep": 799,
+      "direction_norm": 3000.968017578125
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 3,
+      "timestep": 699,
+      "direction_norm": 4079.9111328125
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 4,
+      "timestep": 599,
+      "direction_norm": 4635.27783203125
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 5,
+      "timestep": 500,
+      "direction_norm": 3046.3759765625
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 6,
+      "timestep": 400,
+      "direction_norm": 2287.162109375
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 7,
+      "timestep": 300,
+      "direction_norm": 2155.939208984375
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 8,
+      "timestep": 200,
+      "direction_norm": 2411.732421875
+    },
+    {
+      "phase": "train",
+      "example_index": 2,
+      "seed": 113,
+      "step_index": 9,
+      "timestep": 100,
+      "direction_norm": 2801.35693359375
+    }
+  ]
+}
