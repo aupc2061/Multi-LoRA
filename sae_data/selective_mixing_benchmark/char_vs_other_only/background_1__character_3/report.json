@@ -1,0 +1,1865 @@
+{
+  "lora_ids": [
+    "background_1",
+    "character_3"
+  ],
+  "lora_weights": {
+    "background_1": 1.0,
+    "character_3": 1.0
+  },
+  "prompt": "RAW photo, subject, 8k uhd, dslr, high quality, Fujifilm XT3, half-length portrait from knees up, lib_bg, library bookshelf, th3r0ck with no hair, muscular male, serious look on his face",
+  "methods": [
+    "merge",
+    "switch",
+    "selective_module_step",
+    "module_only",
+    "timestep_only"
+  ],
+  "policy": {
+    "support_mode": "union",
+    "top_modules_per_lora": 6,
+    "top_steps_per_lora": 6,
+    "switch_step": 5,
+    "timestep_schedule": [
+      [
+        "character_3"
+      ],
+      [
+        "background_1",
+        "character_3"
+      ],
+      [
+        "background_1",
+        "character_3"
+      ],
+      [
+        "background_1",
+        "character_3"
+      ],
+      [
+        "background_1",
+        "character_3"
+      ],
+      [
+        "background_1",
+        "character_3"
+      ],
+      [
+        "background_1"
+      ],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      []
+    ],
+    "module_only_assignments": {
+      "0": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "1": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "2": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "3": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "4": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "5": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "6": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "7": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "8": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "9": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "10": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "11": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "12": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "13": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "14": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "15": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "16": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "17": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "18": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "19": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "20": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "21": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "22": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "23": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      },
+      "24": {
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "background_1"
+        ]
+      }
+    },
+    "module_step_assignments": {
+      "0": {
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.1": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.1": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.0": [
+          "character_3"
+        ],
+        "up_blocks.2.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.2.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.2.attentions.1": [
+          "character_3"
+        ],
+        "up_blocks.2.resnets.1": [
+          "character_3"
+        ],
+        "up_blocks.2.attentions.0": [
+          "character_3"
+        ],
+        "up_blocks.2.resnets.0": [
+          "character_3"
+        ],
+        "up_blocks.1.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.1.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.1.attentions.1": [
+          "character_3"
+        ],
+        "up_blocks.1.attentions.0": [
+          "character_3"
+        ],
+        "up_blocks.1.resnets.1": [
+          "character_3"
+        ],
+        "down_blocks.2.attentions.1": [
+          "character_3"
+        ],
+        "down_blocks.2.resnets.1": [
+          "character_3"
+        ],
+        "down_blocks.3.resnets.0": [
+          "character_3"
+        ],
+        "down_blocks.2.attentions.0": [
+          "character_3"
+        ],
+        "up_blocks.1.resnets.0": [
+          "character_3"
+        ],
+        "mid_block.resnets.0": [
+          "character_3"
+        ],
+        "down_blocks.3.resnets.1": [
+          "character_3"
+        ],
+        "mid_block.attentions.0": [
+          "character_3"
+        ],
+        "up_blocks.0.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.0.resnets.1": [
+          "character_3"
+        ],
+        "mid_block.resnets.1": [
+          "character_3"
+        ],
+        "up_blocks.0.resnets.0": [
+          "character_3"
+        ],
+        "down_blocks.1.attentions.1": [
+          "character_3"
+        ],
+        "down_blocks.2.resnets.0": [
+          "character_3"
+        ],
+        "down_blocks.1.attentions.0": [
+          "character_3"
+        ],
+        "down_blocks.1.resnets.1": [
+          "character_3"
+        ],
+        "down_blocks.0.attentions.1": [
+          "character_3"
+        ],
+        "down_blocks.1.resnets.0": [
+          "character_3"
+        ],
+        "down_blocks.0.attentions.0": [
+          "character_3"
+        ],
+        "down_blocks.0.resnets.1": [
+          "character_3"
+        ]
+      },
+      "1": {
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.2.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "character_3"
+        ],
+        "up_blocks.2.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.0": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.1": [
+          "character_3"
+        ],
+        "up_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.1": [
+          "background_1"
+        ]
+      },
+      "2": {
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.2": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.attentions.0": [
+          "background_1"
+        ]
+      },
+      "3": {
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "character_3"
+        ],
+        "up_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.attentions.0": [
+          "background_1"
+        ]
+      },
+      "4": {
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "down_blocks.0.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.attentions.0": [
+          "background_1"
+        ],
+        "mid_block.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.0": [
+          "background_1"
+        ]
+      },
+      "5": {
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.0": [
+          "background_1"
+        ]
+      },
+      "6": {
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "down_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.0.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.2": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "down_blocks.1.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.2.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.2": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.2": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.1": [
+          "background_1"
+        ],
+        "down_blocks.2.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.1.resnets.0": [
+          "background_1"
+        ],
+        "down_blocks.2.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.1.attentions.0": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.2": [
+          "background_1"
+        ],
+        "down_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.resnets.1": [
+          "background_1"
+        ],
+        "mid_block.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.0.resnets.0": [
+          "background_1"
+        ],
+        "mid_block.resnets.0": [
+          "background_1"
+        ]
+      },
+      "7": {
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ]
+      },
+      "8": {
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ]
+      },
+      "9": {
+        "up_blocks.3.attentions.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.1": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.2": [
+          "character_3"
+        ],
+        "up_blocks.3.attentions.0": [
+          "background_1"
+        ],
+        "up_blocks.3.resnets.0": [
+          "background_1"
+        ]
+      },
+      "10": {},
+      "11": {},
+      "12": {},
+      "13": {},
+      "14": {},
+      "15": {},
+      "16": {},
+      "17": {},
+      "18": {},
+      "19": {},
+      "20": {},
+      "21": {},
+      "22": {},
+      "23": {},
+      "24": {}
+    }
+  },
+  "results": [
+    {
+      "method": "merge",
+      "rows": [
+        {
+          "seed": 111,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.224998127669096,
+              "generic_score": 0.22706183791160583,
+              "full_prompt_score": 0.2634183168411255,
+              "semantic_specificity": -0.002063710242509842,
+              "retention_ratio": 0.8173280769182261,
+              "image_similarity_to_single": 0.5802839994430542
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.2584687054157257,
+              "generic_score": 0.22706183791160583,
+              "full_prompt_score": 0.29743266105651855,
+              "semantic_specificity": 0.03140686750411986,
+              "retention_ratio": 0.9472848109124504,
+              "image_similarity_to_single": 0.8835420608520508
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.8823064439153383,
+            "min_retention": 0.8173280769182261,
+            "pairwise_concept_retention": 0.8823064439153383,
+            "mean_semantic_specificity": 0.01467157863080501,
+            "mean_image_similarity_to_single": 0.7319130301475525,
+            "generic_quality_score": 0.22706183791160583
+          }
+        },
+        {
+          "seed": 222,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.21750332787632942,
+              "generic_score": 0.21840110421180725,
+              "full_prompt_score": 0.24762006103992462,
+              "semantic_specificity": -0.000897776335477829,
+              "retention_ratio": 0.8237247917218949,
+              "image_similarity_to_single": 0.5443716049194336
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.2436928004026413,
+              "generic_score": 0.21840110421180725,
+              "full_prompt_score": 0.2621654272079468,
+              "semantic_specificity": 0.025291696190834045,
+              "retention_ratio": 0.9306923339931782,
+              "image_similarity_to_single": 0.8859177231788635
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.8772085628575366,
+            "min_retention": 0.8237247917218949,
+            "pairwise_concept_retention": 0.8772085628575366,
+            "mean_semantic_specificity": 0.012196959927678108,
+            "mean_image_similarity_to_single": 0.7151446640491486,
+            "generic_quality_score": 0.21840110421180725
+          }
+        }
+      ],
+      "summary": {
+        "mean_retention": 0.8797575033864374,
+        "min_retention": 0.8173280769182261,
+        "pairwise_concept_retention": 0.8797575033864374,
+        "mean_semantic_specificity": 0.013434269279241559,
+        "mean_image_similarity_to_single": 0.7235288470983505,
+        "generic_quality_score": 0.22273147106170654,
+        "mean_runtime_sec": 51.82679770450159,
+        "runtime_overhead_vs_merge": 1.0
+      },
+      "image_paths": [
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/merge_seed111.png",
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/merge_seed222.png"
+      ]
+    },
+    {
+      "method": "switch",
+      "rows": [
+        {
+          "seed": 111,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.25240398570895195,
+              "generic_score": 0.23095393180847168,
+              "full_prompt_score": 0.2850903868675232,
+              "semantic_specificity": 0.02145005390048027,
+              "retention_ratio": 0.9168825820159412,
+              "image_similarity_to_single": 0.6217727661132812
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.2502685248851776,
+              "generic_score": 0.23095393180847168,
+              "full_prompt_score": 0.2669256925582886,
+              "semantic_specificity": 0.01931459307670591,
+              "retention_ratio": 0.9172312442695016,
+              "image_similarity_to_single": 0.7731449007987976
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.9170569131427214,
+            "min_retention": 0.9168825820159412,
+            "pairwise_concept_retention": 0.9170569131427214,
+            "mean_semantic_specificity": 0.02038232348859309,
+            "mean_image_similarity_to_single": 0.6974588334560394,
+            "generic_quality_score": 0.23095393180847168
+          }
+        },
+        {
+          "seed": 222,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.2510584034025669,
+              "generic_score": 0.23089361190795898,
+              "full_prompt_score": 0.28824368119239807,
+              "semantic_specificity": 0.020164791494607925,
+              "retention_ratio": 0.9508039857229099,
+              "image_similarity_to_single": 0.6317799687385559
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.2610345721244812,
+              "generic_score": 0.23089361190795898,
+              "full_prompt_score": 0.28780534863471985,
+              "semantic_specificity": 0.03014096021652224,
+              "retention_ratio": 0.9969226615724461,
+              "image_similarity_to_single": 0.6708588004112244
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.973863323647678,
+            "min_retention": 0.9508039857229099,
+            "pairwise_concept_retention": 0.973863323647678,
+            "mean_semantic_specificity": 0.025152875855565082,
+            "mean_image_similarity_to_single": 0.6513193845748901,
+            "generic_quality_score": 0.23089361190795898
+          }
+        }
+      ],
+      "summary": {
+        "mean_retention": 0.9454601183951997,
+        "min_retention": 0.9168825820159412,
+        "pairwise_concept_retention": 0.9454601183951997,
+        "mean_semantic_specificity": 0.022767599672079086,
+        "mean_image_similarity_to_single": 0.6743891090154648,
+        "generic_quality_score": 0.23092377185821533,
+        "mean_runtime_sec": 48.28666535699995,
+        "runtime_overhead_vs_merge": 0.9316930139560957
+      },
+      "image_paths": [
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/switch_seed111.png",
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/switch_seed222.png"
+      ]
+    },
+    {
+      "method": "selective_module_step",
+      "rows": [
+        {
+          "seed": 111,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.23628782108426094,
+              "generic_score": 0.21536046266555786,
+              "full_prompt_score": 0.25884199142456055,
+              "semantic_specificity": 0.02092735841870308,
+              "retention_ratio": 0.8583390111140154,
+              "image_similarity_to_single": 0.5654820799827576
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.2578084826469421,
+              "generic_score": 0.21536046266555786,
+              "full_prompt_score": 0.27499741315841675,
+              "semantic_specificity": 0.042448019981384255,
+              "retention_ratio": 0.9448651021137342,
+              "image_similarity_to_single": 0.7859440445899963
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.9016020566138748,
+            "min_retention": 0.8583390111140154,
+            "pairwise_concept_retention": 0.9016020566138748,
+            "mean_semantic_specificity": 0.03168768920004367,
+            "mean_image_similarity_to_single": 0.675713062286377,
+            "generic_quality_score": 0.21536046266555786
+          }
+        },
+        {
+          "seed": 222,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.23756133764982224,
+              "generic_score": 0.20366758108139038,
+              "full_prompt_score": 0.2449033111333847,
+              "semantic_specificity": 0.033893756568431854,
+              "retention_ratio": 0.8996881348318475,
+              "image_similarity_to_single": 0.5470243692398071
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.22973370552062988,
+              "generic_score": 0.20366758108139038,
+              "full_prompt_score": 0.23294755816459656,
+              "semantic_specificity": 0.026066124439239502,
+              "retention_ratio": 0.8773808591580331,
+              "image_similarity_to_single": 0.7109959721565247
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.8885344969949402,
+            "min_retention": 0.8773808591580331,
+            "pairwise_concept_retention": 0.8885344969949402,
+            "mean_semantic_specificity": 0.029979940503835678,
+            "mean_image_similarity_to_single": 0.6290101706981659,
+            "generic_quality_score": 0.20366758108139038
+          }
+        }
+      ],
+      "summary": {
+        "mean_retention": 0.8950682768044076,
+        "min_retention": 0.8583390111140154,
+        "pairwise_concept_retention": 0.8950682768044076,
+        "mean_semantic_specificity": 0.030833814851939673,
+        "mean_image_similarity_to_single": 0.6523616164922714,
+        "generic_quality_score": 0.20951402187347412,
+        "mean_runtime_sec": 72.44355120949695,
+        "runtime_overhead_vs_merge": 1.3978010299332968
+      },
+      "image_paths": [
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/selective_module_step_seed111.png",
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/selective_module_step_seed222.png"
+      ]
+    },
+    {
+      "method": "module_only",
+      "rows": [
+        {
+          "seed": 111,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.23861795663833618,
+              "generic_score": 0.21685433387756348,
+              "full_prompt_score": 0.2628897726535797,
+              "semantic_specificity": 0.021763622760772705,
+              "retention_ratio": 0.8668034602678859,
+              "image_similarity_to_single": 0.5789241790771484
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.2563676178455353,
+              "generic_score": 0.21685433387756348,
+              "full_prompt_score": 0.2723289132118225,
+              "semantic_specificity": 0.039513283967971824,
+              "retention_ratio": 0.9395843493094218,
+              "image_similarity_to_single": 0.7459864616394043
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.9031939047886539,
+            "min_retention": 0.8668034602678859,
+            "pairwise_concept_retention": 0.9031939047886539,
+            "mean_semantic_specificity": 0.030638453364372265,
+            "mean_image_similarity_to_single": 0.6624553203582764,
+            "generic_quality_score": 0.21685433387756348
+          }
+        },
+        {
+          "seed": 222,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.2308560237288475,
+              "generic_score": 0.22928345203399658,
+              "full_prompt_score": 0.2664429545402527,
+              "semantic_specificity": 0.0015725716948509216,
+              "retention_ratio": 0.8742938874568126,
+              "image_similarity_to_single": 0.5973220467567444
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.2527067393064499,
+              "generic_score": 0.22928345203399658,
+              "full_prompt_score": 0.27868008613586426,
+              "semantic_specificity": 0.023423287272453297,
+              "retention_ratio": 0.9651176589227471,
+              "image_similarity_to_single": 0.8030438423156738
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.9197057731897799,
+            "min_retention": 0.8742938874568126,
+            "pairwise_concept_retention": 0.9197057731897799,
+            "mean_semantic_specificity": 0.01249792948365211,
+            "mean_image_similarity_to_single": 0.7001829445362091,
+            "generic_quality_score": 0.22928345203399658
+          }
+        }
+      ],
+      "summary": {
+        "mean_retention": 0.9114498389892169,
+        "min_retention": 0.8668034602678859,
+        "pairwise_concept_retention": 0.9114498389892169,
+        "mean_semantic_specificity": 0.021568191424012187,
+        "mean_image_similarity_to_single": 0.6813191324472427,
+        "generic_quality_score": 0.22306889295578003,
+        "mean_runtime_sec": 45.791452336001385,
+        "runtime_overhead_vs_merge": 0.8835477853964343
+      },
+      "image_paths": [
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/module_only_seed111.png",
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/module_only_seed222.png"
+      ]
+    },
+    {
+      "method": "timestep_only",
+      "rows": [
+        {
+          "seed": 111,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.2196785844862461,
+              "generic_score": 0.20582488179206848,
+              "full_prompt_score": 0.23485058546066284,
+              "semantic_specificity": 0.013853702694177628,
+              "retention_ratio": 0.798004307228389,
+              "image_similarity_to_single": 0.5229777693748474
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.24650803506374358,
+              "generic_score": 0.20582488179206848,
+              "full_prompt_score": 0.25150400400161743,
+              "semantic_specificity": 0.0406831532716751,
+              "retention_ratio": 0.9034490926403297,
+              "image_similarity_to_single": 0.8336474895477295
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.8507266999343593,
+            "min_retention": 0.798004307228389,
+            "pairwise_concept_retention": 0.8507266999343593,
+            "mean_semantic_specificity": 0.027268427982926363,
+            "mean_image_similarity_to_single": 0.6783126294612885,
+            "generic_quality_score": 0.20582488179206848
+          }
+        },
+        {
+          "seed": 222,
+          "per_lora": [
+            {
+              "lora_id": "background_1",
+              "trigger_score": 0.2208123505115509,
+              "generic_score": 0.21422898769378662,
+              "full_prompt_score": 0.2512364685535431,
+              "semantic_specificity": 0.006583362817764282,
+              "retention_ratio": 0.8362566642574301,
+              "image_similarity_to_single": 0.5536635518074036
+            },
+            {
+              "lora_id": "character_3",
+              "trigger_score": 0.26218007504940033,
+              "generic_score": 0.21422898769378662,
+              "full_prompt_score": 0.27559101581573486,
+              "semantic_specificity": 0.04795108735561371,
+              "retention_ratio": 1.001297476047997,
+              "image_similarity_to_single": 0.8719982504844666
+            }
+          ],
+          "summary": {
+            "mean_retention": 0.9187770701527135,
+            "min_retention": 0.8362566642574301,
+            "pairwise_concept_retention": 0.9187770701527135,
+            "mean_semantic_specificity": 0.027267225086688995,
+            "mean_image_similarity_to_single": 0.7128309011459351,
+            "generic_quality_score": 0.21422898769378662
+          }
+        }
+      ],
+      "summary": {
+        "mean_retention": 0.8847518850435364,
+        "min_retention": 0.798004307228389,
+        "pairwise_concept_retention": 0.8847518850435364,
+        "mean_semantic_specificity": 0.02726782653480768,
+        "mean_image_similarity_to_single": 0.6955717653036118,
+        "generic_quality_score": 0.21002693474292755,
+        "mean_runtime_sec": 46.407298184502,
+        "runtime_overhead_vs_merge": 0.8954305540755249
+      },
+      "image_paths": [
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/timestep_only_seed111.png",
+        "sae_data/selective_mixing_benchmark/char_vs_other_only/background_1__character_3/timestep_only_seed222.png"
+      ]
+    }
+  ]
+}
