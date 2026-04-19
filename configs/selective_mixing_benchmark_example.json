@@ -6,7 +6,6 @@
     "pair_mode": "character_vs_other",
     "categories": "character,object,style,clothing,background",
     "methods": "merge,switch,selective_module_step",
-    "include_ablations": "module_only,timestep_only",
     "profile_root": "sae_data/individual_circuit_ap_crossstep",
     "profile_mode": "auto_profile_missing",
     "benchmark_seeds": "111,222",
