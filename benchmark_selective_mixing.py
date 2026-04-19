@@ -85,6 +85,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--save_images", action="store_true")
     parser.add_argument("--save_per_seed_metrics", action="store_true")
     parser.add_argument("--export_eval_layout", action="store_true")
+    parser.add_argument("--resume_existing_pairs", action="store_true")
+    parser.add_argument("--start_at_combination", type=str, default="")
     parser.add_argument("--out_dir", type=str, default="sae_data/selective_mixing_benchmark")
 
     parser.add_argument("--lora_path", type=str, default="models/lora")
@@ -415,6 +417,23 @@ def export_eval_layout(out_root: Path, pair_result: dict[str, Any]) -> None:
                 dst.write_bytes(src.read_bytes())
 
 
+def pair_result_from_existing_report(combo: dict[str, Any], combo_out_dir: Path, combo_profile_status: dict[str, Any]) -> dict[str, Any]:
+    report_path = combo_out_dir / "report.json"
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    method_summaries = {item["method"]: item["summary"] for item in report["results"]}
+    return {
+        **combo,
+        "status": "ok",
+        "profiles": combo_profile_status,
+        "prompt": report.get("prompt", ""),
+        "report_path": str(report_path),
+        "method_summaries": method_summaries,
+        "deltas": summarize_pair_deltas(method_summaries),
+        "report": report,
+        "resumed_from_existing_report": True,
+    }
+
+
 def main() -> None:
     args = parse_args()
     from sae_semantic_metrics import CLIPSemanticScorer
@@ -453,6 +472,15 @@ def main() -> None:
 
     if not combinations_to_run:
         raise ValueError("No combinations matched the benchmark filters.")
+    if args.start_at_combination:
+        start_index = next(
+            (idx for idx, combo in enumerate(combinations_to_run) if combo["combination_id"] == args.start_at_combination),
+            None,
+        )
+        if start_index is None:
+            raise ValueError(f"--start_at_combination not found: {args.start_at_combination}")
+        LOGGER.info("Starting at combination %s (skipping %d earlier pair(s))", args.start_at_combination, start_index)
+        combinations_to_run = combinations_to_run[start_index:]
     LOGGER.info("Enumerated %d benchmark pair(s)", len(combinations_to_run))
 
     all_lora_ids = sorted({lora_id for combo in combinations_to_run for lora_id in combo["lora_ids"]})
@@ -516,6 +544,11 @@ def main() -> None:
         lora_weights = resolve_lora_weights(lora_ids, args.lora_weights)
         prompt = infer_prompt_for_loras(args.image_style, args.lora_info_path, lora_ids)
         combo_out_dir = out_root / combo["combination_id"]
+        if args.resume_existing_pairs and (combo_out_dir / "report.json").exists():
+            LOGGER.info("[%d/%d] Skipping %s; existing report found", pair_index, total_pairs, combo["combination_id"])
+            print(f"[benchmark] [{pair_index}/{total_pairs}] skipped existing report", flush=True)
+            pair_results.append(pair_result_from_existing_report(combo, combo_out_dir, combo_profile_status))
+            continue
         try:
             report = evaluate_mixing_combination(
                 pipeline=pipeline,
@@ -586,6 +619,8 @@ def main() -> None:
         "image_style": args.image_style,
         "combination_size": args.combination_size,
         "pair_mode": args.pair_mode,
+        "resume_existing_pairs": args.resume_existing_pairs,
+        "start_at_combination": args.start_at_combination,
         "methods": all_methods,
         "profile_mode": args.profile_mode,
         "benchmark_seeds": seeds,
