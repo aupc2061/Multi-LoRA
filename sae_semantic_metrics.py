@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Any, Iterable
 
 import torch
 from PIL import Image
@@ -58,6 +58,28 @@ class CLIPSemanticScorer:
         self.processor = CLIPProcessor.from_pretrained(model_name)
         self.model = CLIPModel.from_pretrained(model_name).to(self.device).eval()
 
+    def _normalize_embeds(self, embeds: torch.Tensor) -> torch.Tensor:
+        return embeds / embeds.norm(dim=-1, keepdim=True).clamp_min(1e-12)
+
+    def _coerce_image_features(self, image_features: Any) -> torch.Tensor:
+        if isinstance(image_features, torch.Tensor):
+            return image_features
+
+        if hasattr(image_features, "image_embeds"):
+            embeds = image_features.image_embeds
+            if isinstance(embeds, torch.Tensor):
+                return embeds
+
+        if hasattr(image_features, "pooler_output"):
+            pooled = image_features.pooler_output
+            if isinstance(pooled, torch.Tensor):
+                projection = getattr(self.model, "visual_projection", None)
+                if projection is not None:
+                    return projection(pooled)
+                return pooled
+
+        raise TypeError(f"Unsupported CLIP image feature output type: {type(image_features)!r}")
+
     @torch.no_grad()
     def score_image_text(self, images: Iterable[Image.Image], texts: list[str]) -> list[float]:
         image_list = [image.convert("RGB") for image in images]
@@ -71,8 +93,8 @@ class CLIPSemanticScorer:
         }
 
         outputs = self.model(**inputs)
-        image_embeds = outputs.image_embeds / outputs.image_embeds.norm(dim=-1, keepdim=True)
-        text_embeds = outputs.text_embeds / outputs.text_embeds.norm(dim=-1, keepdim=True)
+        image_embeds = self._normalize_embeds(outputs.image_embeds)
+        text_embeds = self._normalize_embeds(outputs.text_embeds)
         similarities = (image_embeds * text_embeds).sum(dim=-1)
         return [float(score.item()) for score in similarities.cpu()]
 
@@ -82,7 +104,8 @@ class CLIPSemanticScorer:
         inputs = self.processor(images=image_list, return_tensors="pt", padding=True)
         pixel_values = inputs["pixel_values"].to(self.device)
         image_embeds = self.model.get_image_features(pixel_values=pixel_values)
-        return image_embeds / image_embeds.norm(dim=-1, keepdim=True)
+        image_embeds = self._coerce_image_features(image_embeds)
+        return self._normalize_embeds(image_embeds)
 
     @torch.no_grad()
     def score_image_pairs(self, left_images: Iterable[Image.Image], right_images: Iterable[Image.Image]) -> list[float]:
