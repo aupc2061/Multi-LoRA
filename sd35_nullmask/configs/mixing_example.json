@@ -3,44 +3,37 @@
     "model_name": "stabilityai/stable-diffusion-3.5-large",
     "inventory_path": "sd35_dit_lora_info.json",
     "local_root": "models/dit_lora/sd35",
+
     "lora_ids": [
       "character_east_asian_beauty",
-      "background_bg3"
+      "character_trpfrog"
     ],
-    "lora_weights": [
-      1.0,
-      1.0
-    ],
-    "prompt": "cinematic portrait scene, high detail",
-    "negative_prompt": "blurry, low quality, distorted anatomy",
-    "seeds": [
-      111,
-      222,
-      333
-    ],
+    "lora_weights": [1.0, 1.0],
+
+    "prompt": "detailed photo",
+    "negative_prompt": "blurry, low quality, distorted anatomy, extra limbs",
+
+    "trigger_token_override": {
+      "character_east_asian_beauty": "beautiful Asian woman"
+    },
+
+    "seeds": [111, 222, 333],
     "denoise_steps": 28,
-    "lookahead_steps": [
-      2,
-      4
-    ],
+    "lookahead_steps": [2, 4],
     "intervention_block_start": -1,
     "intervention_block_end": -1,
     "svd_rank": 1,
-    "methods": [
-      "merge",
-      "switch",
-      "sd35_mask_only",
-      "sd35_mask_nullproj"
-    ],
-    "trigger_token_override": {
-      "clothing_emric": "fashion clothing",
-      "object_weapon": "weapon"
-    },
+    "switch_step": 5,
+
+    "methods": ["merge", "switch", "sd35_mask_only", "sd35_mask_nullproj"],
+
     "mask_confidence_threshold": 0.0,
+    "mask_binarize_tau": 0.7,
+    "null_proj_mu": -1.0,
     "save_attention_masks": true,
     "save_projected_delta_stats": true,
-    "switch_step": 5,
-    "dtype": "float16",
+
+    "dtype": "bfloat16",
     "device": "cuda",
     "height": 1024,
     "width": 1024,

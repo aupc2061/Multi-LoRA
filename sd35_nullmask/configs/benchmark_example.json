@@ -3,45 +3,22 @@
     "model_name": "stabilityai/stable-diffusion-3.5-large",
     "inventory_path": "sd35_dit_lora_info.json",
     "local_root": "models/dit_lora/sd35",
-    "methods": [
-      "merge",
-      "switch",
-      "sd35_mask_only",
-      "sd35_mask_nullproj"
+    "methods": ["merge", "switch", "sd35_mask_only", "sd35_mask_nullproj"],
+    "benchmark_pairs": [
+      ["character_east_asian_beauty", "character_trpfrog"],
+      ["character_east_asian_beauty", "style_chinese_lineart"],
+      ["character_east_asian_beauty", "style_pixel_art"],
+      ["character_trpfrog", "style_pixel_art"]
     ],
-    "benchmark_seeds": [
-      111,
-      222,
-      333
-    ],
+    "benchmark_seeds": [111, 222, 333],
     "denoise_steps": 28,
-    "lookahead_steps": [
-      2,
-      4
-    ],
+    "lookahead_steps": [2, 4],
     "svd_rank": 1,
     "switch_step": 5,
     "trigger_token_override": {
-      "clothing_emric": "fashion clothing",
-      "object_weapon": "weapon"
+      "character_east_asian_beauty": "beautiful Asian woman"
     },
     "out_dir": "results/sd35_nullmask_benchmark",
     "dry_run": true
-  },
-  "dit_adapter_inventory": {
-    "benchmark_pairs": [
-      [
-        "character_east_asian_beauty",
-        "clothing_emric"
-      ],
-      [
-        "character_east_asian_beauty",
-        "background_bg3"
-      ],
-      [
-        "character_east_asian_beauty",
-        "style_photorealistic"
-      ]
-    ]
   }
 }

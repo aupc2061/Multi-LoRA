@@ -38,6 +38,8 @@ class SD35NullMaskConfig:
     methods: list[str] = field(default_factory=lambda: ["merge", "switch", "sd35_mask_only", "sd35_mask_nullproj"])
     trigger_token_override: dict[str, str] = field(default_factory=dict)
     mask_confidence_threshold: float = 0.0
+    mask_binarize_tau: float = 0.7
+    null_proj_mu: float = -1.0
     save_attention_masks: bool = True
     save_projected_delta_stats: bool = True
     switch_step: int = 5

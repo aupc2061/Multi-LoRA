@@ -28,6 +28,8 @@ class SD35PipelineBackend:
     def __init__(self, config: SD35NullMaskConfig) -> None:
         self.config = config
         self.pipeline: Any | None = None
+        self._loaded_adapter_ids: list[str] = []
+        self._loaded_triggers: dict[str, str] = {}
 
     def require_runtime(self) -> None:
         try:
@@ -45,7 +47,8 @@ class SD35PipelineBackend:
         import torch
         from diffusers import StableDiffusion3Pipeline
 
-        dtype = torch.float16 if self.config.dtype == "float16" else torch.float32
+        _dtype_map = {"float16": torch.float16, "bfloat16": torch.bfloat16, "float32": torch.float32}
+        dtype = _dtype_map.get(self.config.dtype, torch.bfloat16)
         pipeline = StableDiffusion3Pipeline.from_pretrained(self.config.model_name, torch_dtype=dtype)
         pipeline = pipeline.to(self.config.device)
         self.pipeline = pipeline
@@ -67,7 +70,7 @@ class SD35PipelineBackend:
             return int(len(transformer.blocks))
         return None
 
-    def load_adapters(self, adapters: list[InventoryAdapter]) -> None:
+    def load_adapters(self, adapters: list[InventoryAdapter], resolved_triggers: list[ResolvedTrigger] | None = None) -> None:
         if self.pipeline is None:
             raise SD35BackendError("Pipeline must be loaded before loading adapters.")
         for adapter in adapters:
@@ -75,10 +78,13 @@ class SD35PipelineBackend:
                 raise FileNotFoundError(f"Local adapter file missing for {adapter.adapter_id}")
             weight_name = Path(adapter.local_files[0]).name
             self.pipeline.load_lora_weights(adapter.expected_local_dir, weight_name=weight_name, adapter_name=adapter.adapter_id)
+        self._loaded_adapter_ids = [adapter.adapter_id for adapter in adapters]
+        if resolved_triggers is not None:
+            self._loaded_triggers = {trigger.adapter_id: trigger.phrase for trigger in resolved_triggers}
 
     def run_preflight(self, adapters: list[InventoryAdapter], resolved_triggers: list[ResolvedTrigger]) -> dict[str, Any]:
         runtime = self.load_pipeline()
-        self.load_adapters(adapters)
+        self.load_adapters(adapters, resolved_triggers)
         return {
             "runtime": runtime.__dict__,
             "adapters": [
@@ -101,10 +107,61 @@ class SD35PipelineBackend:
         seed: int,
         intervention_payload: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
-        raise SD35BackendError(
-            f"Method '{method}' is scaffolded but not executed in this environment yet. "
-            "The backend exists to host SD3.5-specific intervention hooks once the runtime is installed and validated."
+        if self.pipeline is None:
+            raise SD35BackendError("Pipeline must be loaded before running a method.")
+        if not self._loaded_adapter_ids:
+            raise SD35BackendError("Adapters must be loaded before running a method.")
+        from .inference import SD35NullMaskEngine
+
+        trigger_list = [self._loaded_triggers.get(aid, "") for aid in self._loaded_adapter_ids]
+        engine = SD35NullMaskEngine(
+            pipeline=self.pipeline,
+            config=self.config,
+            adapter_ids=self._loaded_adapter_ids,
+            triggers=trigger_list,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
         )
+        image = engine.generate(method=method, seed=seed)
+        return {"image": image, "method": method, "seed": seed}
+
+    def run_all_methods(
+        self,
+        *,
+        methods: list[str],
+        seeds: list[int],
+        prompt: str,
+        negative_prompt: str = "",
+        pair_id: str,
+        out_root: Path | str,
+        config: SD35NullMaskConfig | None = None,
+    ) -> list[dict[str, Any]]:
+        if self.pipeline is None:
+            raise SD35BackendError("Pipeline must be loaded before running methods.")
+        if not self._loaded_adapter_ids:
+            raise SD35BackendError("Adapters must be loaded before running methods.")
+        from .inference import SD35NullMaskEngine
+
+        cfg = config if config is not None else self.config
+        pair_dir = Path(out_root) / pair_id
+        pair_dir.mkdir(parents=True, exist_ok=True)
+        trigger_list = [self._loaded_triggers.get(aid, "") for aid in self._loaded_adapter_ids]
+        engine = SD35NullMaskEngine(
+            pipeline=self.pipeline,
+            config=cfg,
+            adapter_ids=self._loaded_adapter_ids,
+            triggers=trigger_list,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+        )
+        records: list[dict[str, Any]] = []
+        for method in methods:
+            for seed in seeds:
+                image = engine.generate(method=method, seed=seed)
+                img_path = pair_dir / f"{method}_seed{seed}.png"
+                image.save(str(img_path))
+                records.append({"method": method, "seed": seed, "path": str(img_path)})
+        return records
 
     @staticmethod
     def save_json(path: str | Path, payload: dict[str, Any]) -> None:
