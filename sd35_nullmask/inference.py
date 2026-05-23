@@ -23,7 +23,7 @@ except ImportError:  # pragma: no cover
     _TQDM_AVAILABLE = False
 
 from .config import SD35NullMaskConfig
-from .masking import MaskBuildResult, build_exclusive_binary_masks, reduce_attention_to_patch_scores
+from .masking import MaskBuildResult, build_exclusive_binary_masks, build_soft_masks, reduce_attention_to_patch_scores
 from .projection import compute_structural_basis, project_delta_to_nullspace
 
 if TYPE_CHECKING:
@@ -731,20 +731,37 @@ class SD35NullMaskEngine:
         else:
             basis = None
 
-        # Blend: start from base, add spatially-masked (and optionally projected) deltas
-        h_blended = h_base.clone()
-        for adapter_id, mask_bool in mask_result.binary_masks_by_adapter.items():
+        # Soft-mask blending — matches LoRA-Shop's normalised weighted average:
+        #   h_blend[i] = Σ_k(m_k[i] · h_eff_k[i]) / Σ_k(m_k[i])
+        # where m_k is each adapter's attention probability distribution over patches
+        # (sums to 1 independently per adapter, not across adapters).
+        # Patches where total weight Σ_k m_k[i] < 1e-3 fall back to h_base[i].
+        soft_masks = mask_result.soft_masks_by_adapter
+        numerator = torch.zeros_like(h_base)
+        denominator = torch.zeros(
+            h_base.shape[0], h_base.shape[1], 1,
+            device=h_base.device, dtype=h_base.dtype,
+        )
+        for adapter_id in self.adapter_ids:
             if adapter_id not in h_by_adapter:
                 continue
-            delta = h_by_adapter[adapter_id] - h_base  # [B, N_img, C]
+            h_lora = h_by_adapter[adapter_id]
             if basis is not None:
-                mu = self.config.null_proj_mu
-                delta = project_delta_soft(delta, basis, mu)
-            mask_dev = mask_bool.to(device=h_blended.device)
-            h_blended[:, mask_dev, :] = (
-                h_blended[:, mask_dev, :]
-                + delta[:, mask_dev, :].to(dtype=h_blended.dtype)
-            )
+                delta = h_lora - h_base
+                delta = project_delta_soft(delta, basis, self.config.null_proj_mu)
+                h_lora_eff = (h_base + delta).to(dtype=h_base.dtype)
+            else:
+                h_lora_eff = h_lora
+            m = soft_masks[adapter_id].to(device=h_base.device, dtype=h_base.dtype)  # [N_img]
+            m_3d = m.unsqueeze(0).unsqueeze(-1)   # [1, N_img, 1]
+            numerator   += m_3d * h_lora_eff
+            denominator += m_3d
+
+        raw_denom = denominator.clone()
+        h_blended = numerator / denominator.clamp(min=1e-3)
+        # Fall back to base model for patches with no concept signal from any adapter
+        no_signal = raw_denom.squeeze(-1) < 1e-3  # [B, N_img]
+        h_blended[no_signal] = h_base[no_signal]
 
         # Injection pass: conditional with blended hidden states
         self.pipeline.disable_lora()
