@@ -1,0 +1,41 @@
+{
+  "character": [
+    {
+      "id": "character_east_asian_beauty",
+      "name": "East Asian Beauty Portrait",
+      "repo_id": "TDN-M/East-asian-beauty",
+      "url": "https://huggingface.co/TDN-M/East-asian-beauty",
+      "trigger": [],
+      "notes": "No dedicated trigger token — uses purely descriptive prompts. Set trigger_token_override to 'beautiful Asian woman' in your config so the masking engine can anchor cross-attention maps to this concept. Recommended dtype: bfloat16. Weight file: auto-detected by diffusers (no weight_name needed)."
+    },
+    {
+      "id": "character_trpfrog",
+      "name": "TrpFrog Character Icon",
+      "repo_id": "Prgckwb/trpfrog-sd3.5-large-lora",
+      "url": "https://huggingface.co/Prgckwb/trpfrog-sd3.5-large-lora",
+      "trigger": ["an icon of trpfrog"],
+      "weight_name": "pytorch_lora_weights.safetensors",
+      "notes": "DreamBooth LoRA trained on 50 images of the trpfrog icon character. Strong, compact spatial footprint — ideal counterpart for two-subject spatial masking tests."
+    }
+  ],
+  "style": [
+    {
+      "id": "style_chinese_lineart",
+      "name": "Chinese Line Art Style",
+      "repo_id": "Shakker-Labs/SD3.5-LoRA-Chinese-Line-Art",
+      "url": "https://huggingface.co/Shakker-Labs/SD3.5-LoRA-Chinese-Line-Art",
+      "trigger": ["Chinese line art"],
+      "weight_name": "SD35-lora-Chinese-Line-Art.safetensors",
+      "notes": "Traditional Chinese line drawing style. Good stress test for null-projection: this style aggressively rewrites global texture/rendering directions. Pair with a character LoRA to verify null-proj preserves face structure. Recommended dtype: bfloat16."
+    },
+    {
+      "id": "style_pixel_art",
+      "name": "Pixel Art Style",
+      "repo_id": "nerijs/pixel-art-3.5L",
+      "url": "https://huggingface.co/nerijs/pixel-art-3.5L",
+      "trigger": ["pixel art"],
+      "weight_name": "pixel-art-3.5L-v2_000000300.safetensors",
+      "notes": "Most popular SD3.5 style LoRA (222 downloads/month). Best checkpoint: v2_000000300 (step 300). Place 'pixel art' at the start of the prompt for strongest effect. Very aggressive global style — excellent for measuring how much null-projection preserves subject identity. Recommended dtype: bfloat16."
+    }
+  ]
+}
