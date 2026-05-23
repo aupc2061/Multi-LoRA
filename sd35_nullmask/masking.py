@@ -63,7 +63,10 @@ def build_exclusive_binary_masks(
         stacked.append(scores)
     score_matrix = torch.stack(stacked, dim=0)
     best_scores, owner_idx = score_matrix.max(dim=0)
-    low_confidence = best_scores <= float(confidence_threshold)
+    # Bug 9: use strict < so patches with score == threshold are still owned (not unowned).
+    # With the default threshold=0.0 and <=, ~70% of patches would be zeroed by smooth_and_binarize
+    # and then incorrectly marked unowned, leaving most of the image with no LoRA contribution.
+    low_confidence = best_scores < float(confidence_threshold)
     owner_idx = owner_idx.clone()
     owner_idx[low_confidence] = -1
 

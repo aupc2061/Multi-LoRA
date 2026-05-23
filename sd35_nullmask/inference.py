@@ -40,10 +40,12 @@ class AttentionCaptureHook:
         self._handle = attn_module.register_forward_pre_hook(self._hook, with_kwargs=True)
 
     def _hook(self, module: Any, args: tuple, kwargs: dict) -> None:
-        hidden_states = kwargs.get("hidden_states") or (args[0] if args else None)
-        encoder_states = kwargs.get("encoder_hidden_states") or (
-            args[1] if len(args) > 1 else None
-        )
+        hidden_states = kwargs.get("hidden_states")
+        if hidden_states is None:
+            hidden_states = args[0] if args else None
+        encoder_states = kwargs.get("encoder_hidden_states")
+        if encoder_states is None:
+            encoder_states = args[1] if len(args) > 1 else None
         if hidden_states is None or encoder_states is None:
             return
         with torch.no_grad():
@@ -100,7 +102,8 @@ class HiddenStateCaptureHook:
     def _hook(self, module: Any, input: Any, output: Any) -> None:
         enc_hidden, hidden = _unpack_block_output(output)
         self.last_hidden = hidden.detach().clone()
-        self.last_enc_hidden = enc_hidden.detach().clone()
+        # enc_hidden is None for context_pre_only blocks (e.g. last block in SD3.5-large)
+        self.last_enc_hidden = enc_hidden.detach().clone() if enc_hidden is not None else None
 
     def remove(self) -> None:
         self._handle.remove()
@@ -124,11 +127,13 @@ class HiddenStateInjectionHook:
             return None  # pass through
         enc_hidden, hidden = _unpack_block_output(output)
         new_hidden = self.inject_hidden.to(dtype=hidden.dtype, device=hidden.device)
-        new_enc = (
-            self.inject_enc_hidden.to(dtype=enc_hidden.dtype, device=enc_hidden.device)
-            if self.inject_enc_hidden is not None
-            else enc_hidden
-        )
+        # enc_hidden is None for context_pre_only blocks — preserve that
+        if enc_hidden is None:
+            new_enc = None
+        elif self.inject_enc_hidden is not None:
+            new_enc = self.inject_enc_hidden.to(dtype=enc_hidden.dtype, device=enc_hidden.device)
+        else:
+            new_enc = enc_hidden
         return _pack_block_output(new_enc, new_hidden, output)
 
     def reset(self) -> None:
@@ -139,19 +144,44 @@ class HiddenStateInjectionHook:
         self._handle.remove()
 
 
-def _unpack_block_output(output: Any) -> tuple[torch.Tensor, torch.Tensor]:
-    """Return (encoder_hidden_states, hidden_states) regardless of output format."""
-    if isinstance(output, (tuple, list)) and len(output) == 2:
-        a, b = output
-        # SD3 convention: first element is encoder states (N_txt dim ≤ N_img dim usually)
-        return a, b
-    raise ValueError(f"Unexpected JointTransformerBlock output type: {type(output)}")
+def _unpack_block_output(output: Any) -> tuple[Optional[torch.Tensor], torch.Tensor]:
+    """Return (encoder_hidden_states, hidden_states) regardless of output format.
+
+    Handles three cases:
+    - Normal JointTransformerBlock: returns (encoder_hidden_states, hidden_states) 2-tuple.
+    - context_pre_only block (last block in SD3.5-large): returns a bare hidden_states tensor
+      with no encoder states — returns (None, hidden_states).
+    - Rare 1-tuple: treated same as bare tensor (enc → None).
+    """
+    if isinstance(output, torch.Tensor):
+        # context_pre_only block returns a bare tensor (image hidden states only)
+        return None, output
+    if isinstance(output, (tuple, list)):
+        if len(output) == 1:
+            return None, output[0]
+        if len(output) == 2:
+            a, b = output
+            return a, b
+    raise ValueError(
+        f"Unexpected JointTransformerBlock output: type={type(output)}, "
+        f"len={len(output) if hasattr(output, '__len__') else 'N/A'}"
+    )
 
 
 def _pack_block_output(
-    enc_hidden: torch.Tensor, hidden: torch.Tensor, reference: Any
+    enc_hidden: Optional[torch.Tensor], hidden: torch.Tensor, reference: Any
 ) -> Any:
-    """Return packed output in same container type as reference."""
+    """Return packed output matching the container format of reference.
+
+    - Bare tensor reference (context_pre_only block): return bare hidden tensor only.
+    - 1-tuple reference: return 1-tuple.
+    - 2-tuple/list reference: return (enc_hidden, hidden) in same container type.
+    """
+    if isinstance(reference, torch.Tensor):
+        # context_pre_only block — diffusers expects bare tensor back
+        return hidden
+    if isinstance(reference, (tuple, list)) and len(reference) == 1:
+        return (hidden,) if isinstance(reference, tuple) else [hidden]
     if isinstance(reference, list):
         return [enc_hidden, hidden]
     return (enc_hidden, hidden)
@@ -257,7 +287,8 @@ def project_delta_soft(
         return project_delta_to_nullspace(delta, basis)
     # Soft: attenuate by factor mu/(1+mu) in the principal subspace
     flat = delta.reshape(-1, delta.shape[-1]).float()
-    v = basis.vectors  # [C, rank]
+    # Bug 7: move basis vectors to the same device/dtype as delta before matmul
+    v = basis.vectors.to(device=flat.device, dtype=flat.dtype)  # [C, rank]
     component = flat @ v @ v.transpose(0, 1)
     out = flat - (mu / (1.0 + mu)) * component
     return out.reshape_as(delta).to(dtype=delta.dtype, device=delta.device)
@@ -293,12 +324,15 @@ class SD35NullMaskEngine:
         self.blocks = transformer.transformer_blocks
         self.n_blocks = len(self.blocks)
 
-        # Image token count from transformer config
+        # Image token count from transformer config.
+        # sample_size is the latent spatial size in pixels (e.g. 128 for a 1024px image).
+        # Divide by patch_size (2) to get the patch grid side length → 64x64 = 4096 tokens.
         try:
-            sample_size = transformer.config.sample_size  # in patch units
-            self.n_img_tokens: int = int(sample_size * sample_size)
+            sample_size = transformer.config.sample_size  # latent px, NOT patch count
+            patch_size = int(getattr(transformer.config, "patch_size", 2) or 2)
+            n_side = sample_size // patch_size
+            self.n_img_tokens: int = n_side * n_side
         except Exception:
-            # Fallback: 1024px image, VAE factor 8, patch_size 2 → 64×64 = 4096 tokens
             patch_size = getattr(getattr(transformer, "config", None), "patch_size", 2) or 2
             self.n_img_tokens = (config.height // 8 // patch_size) * (
                 config.width // 8 // patch_size
@@ -332,6 +366,11 @@ class SD35NullMaskEngine:
 
         scheduler = self.pipeline.scheduler
         scheduler.set_timesteps(self.config.denoise_steps, device=device)
+        # Explicit reset: some diffusers versions of FlowMatchEulerDiscreteScheduler
+        # do NOT reset _step_index inside set_timesteps(). Without this, a second
+        # generate() call on the same engine would crash immediately because _step_index
+        # is still 28 (= denoise_steps) from the previous run, causing sigmas[29] OOB.
+        scheduler._step_index = None
         timesteps = scheduler.timesteps
 
         latents = self._prepare_latents(generator, device, dtype)
@@ -345,6 +384,11 @@ class SD35NullMaskEngine:
                 pooled_embeds,
                 seed=seed,
             )
+            # Lookahead called scheduler.step() advancing _step_index. Reset fully
+            # so the main loop starts at index 0 with a clean sigma sequence.
+            scheduler.set_timesteps(self.config.denoise_steps, device=device)
+            scheduler._step_index = None  # same version guard as above
+            timesteps = scheduler.timesteps
 
         for step_idx, t in enumerate(timesteps):
             noise_pred = self._denoising_step(
@@ -357,7 +401,7 @@ class SD35NullMaskEngine:
 
         image = self.pipeline.vae.decode(
             latents / self.pipeline.vae.config.scaling_factor, return_dict=False
-        )[0]
+        )[0].detach()
         return self.pipeline.image_processor.postprocess(image, output_type="pil")[0]
 
     # ── prompt encoding ─────────────────────────────────────────────────────────
@@ -418,8 +462,12 @@ class SD35NullMaskEngine:
         scores_by_adapter: dict[str, torch.Tensor] = {}
 
         for adapter_id, trigger in zip(self.adapter_ids, self.triggers):
+            # Bug 2: enable_lora() clears PEFT's _disable_adapters flag before set_adapters()
+            self.pipeline.enable_lora()
             self.pipeline.set_adapters([adapter_id], adapter_weights=[1.0])
 
+            # Bug 1: reset scheduler step index so each adapter's pass starts at t[0]
+            self.pipeline.scheduler._step_index = None
             latents = init_latents.clone()
             attn_accum: Optional[torch.Tensor] = None
             n_captured = 0
@@ -450,9 +498,12 @@ class SD35NullMaskEngine:
                 latents = scheduler.step(noise_pred, t, latents, return_dict=False)[0]
 
             if attn_accum is None or n_captured == 0:
-                # Fallback: uniform scores → adapter gets no spatial preference
+                # Fallback: uniform scores → adapter gets no spatial preference.
+                # Bug 5: derive token count from latent shape rather than self.n_img_tokens
+                # to avoid a mismatch if the config height/width differs from the actual run.
+                n_tokens = (init_latents.shape[2] // 2) * (init_latents.shape[3] // 2)
                 scores_by_adapter[adapter_id] = torch.ones(
-                    self.n_img_tokens, device=init_latents.device
+                    n_tokens, device=init_latents.device
                 )
                 continue
 
@@ -591,17 +642,21 @@ class SD35NullMaskEngine:
             if adapter_id is None:
                 self.pipeline.disable_lora()
             else:
+                # Bug 2: enable_lora() clears PEFT's _disable_adapters flag first
+                self.pipeline.enable_lora()
                 self.pipeline.set_adapters([adapter_id], adapter_weights=[1.0])
             cap = HiddenStateCaptureHook(intervention_block)
-            with torch.no_grad():
-                self.pipeline.transformer(
-                    hidden_states=latents,
-                    timestep=t.expand(latents.shape[0]),
-                    encoder_hidden_states=prompt_embeds,
-                    pooled_projections=pooled_embeds,
-                    return_dict=False,
-                )
-            cap.remove()
+            try:  # Bug 6: ensure hook is removed even if forward pass raises
+                with torch.no_grad():
+                    self.pipeline.transformer(
+                        hidden_states=latents,
+                        timestep=t.expand(latents.shape[0]),
+                        encoder_hidden_states=prompt_embeds,
+                        pooled_projections=pooled_embeds,
+                        return_dict=False,
+                    )
+            finally:
+                cap.remove()
             return cap.last_hidden, cap.last_enc_hidden
 
         # Pass 1: base (no LoRA)
@@ -658,28 +713,29 @@ class SD35NullMaskEngine:
         inject.inject_hidden = h_blended
         inject.inject_enc_hidden = h_base_enc
 
-        with torch.no_grad():
-            pred_cond = self.pipeline.transformer(
-                hidden_states=latents,
-                timestep=t.expand(latents.shape[0]),
-                encoder_hidden_states=prompt_embeds,
-                pooled_projections=pooled_embeds,
-                return_dict=False,
-            )[0]
-
-        if do_cfg:
-            # Unconditional pass: no LoRA, no injection (pure base model)
-            inject.reset()
+        try:  # Bug 6: always remove injection hook to avoid hook leaks on exceptions
             with torch.no_grad():
-                pred_uncond = self.pipeline.transformer(
+                pred_cond = self.pipeline.transformer(
                     hidden_states=latents,
                     timestep=t.expand(latents.shape[0]),
-                    encoder_hidden_states=negative_prompt_embeds,
-                    pooled_projections=negative_pooled_embeds,
+                    encoder_hidden_states=prompt_embeds,
+                    pooled_projections=pooled_embeds,
                     return_dict=False,
                 )[0]
-            inject.remove()
-            return pred_uncond + self.config.guidance_scale * (pred_cond - pred_uncond)
 
-        inject.remove()
-        return pred_cond
+            if do_cfg:
+                # Unconditional pass: no LoRA, no injection (pure base model)
+                inject.reset()
+                with torch.no_grad():
+                    pred_uncond = self.pipeline.transformer(
+                        hidden_states=latents,
+                        timestep=t.expand(latents.shape[0]),
+                        encoder_hidden_states=negative_prompt_embeds,
+                        pooled_projections=negative_pooled_embeds,
+                        return_dict=False,
+                    )[0]
+                return pred_uncond + self.config.guidance_scale * (pred_cond - pred_uncond)
+
+            return pred_cond
+        finally:
+            inject.remove()

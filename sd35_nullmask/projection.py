@@ -26,7 +26,9 @@ def _flatten_hidden_states(hidden_states: Any) -> Any:
     if hidden_states.ndim == 2:
         return hidden_states
     if hidden_states.ndim == 3:
-        return hidden_states.reshape(-1, hidden_states.shape[-1])
+        # Bug 10: reshape(-1, C) would mix batch items if B>1, corrupting the SVD basis.
+        # Use only the first sample — SVD captures per-sample structural directions.
+        return hidden_states[0]  # [N, C]
     raise ValueError("hidden_states must be rank-2 or rank-3")
 
 
@@ -49,6 +51,8 @@ def project_delta_to_nullspace(delta: Any, basis: StructuralBasis | None) -> Any
     if basis is None or basis.vectors.numel() == 0:
         return delta
     flat = delta.reshape(-1, delta.shape[-1]).float()
-    projection = flat @ basis.vectors @ basis.vectors.transpose(0, 1)
+    # Ensure basis vectors are on the same device/dtype as delta (Bug 7 companion fix)
+    v = basis.vectors.to(device=flat.device, dtype=flat.dtype)
+    projection = flat @ v @ v.transpose(0, 1)
     out = flat - projection
     return out.reshape_as(delta).to(dtype=delta.dtype, device=delta.device)
