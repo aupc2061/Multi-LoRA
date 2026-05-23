@@ -1,0 +1,43 @@
+{
+  "sd35_nullmask_benchmark": {
+    "model_name": "stabilityai/stable-diffusion-3.5-large",
+    "inventory_path": "sd35_dit_lora_info.json",
+    "local_root": "models/dit_lora/sd35",
+
+    "methods": ["merge", "switch", "sd35_mask_only", "sd35_mask_nullproj"],
+
+    "benchmark_pairs": [
+      ["character_east_asian_beauty", "style_pixel_art"],
+      ["character_trpfrog",           "style_chinese_lineart"],
+      ["character_trpfrog",           "style_pixel_art"]
+    ],
+
+    "benchmark_seeds": [111],
+
+    "trigger_token_override": {
+      "character_east_asian_beauty": "beautiful Asian woman"
+    },
+
+    "base_prompt": "portrait",
+    "negative_prompt": "blurry, low quality, distorted anatomy, extra limbs",
+
+    "denoise_steps": 28,
+    "lookahead_steps": [2, 4],
+    "intervention_block_start": 8,
+    "switch_step": 5,
+    "svd_rank": 1,
+
+    "dtype": "bfloat16",
+    "device": "cuda",
+    "height": 1024,
+    "width": 1024,
+    "guidance_scale": 7.0,
+
+    "mask_binarize_tau": 0.0,
+    "null_proj_mu": -1.0,
+    "mask_confidence_threshold": 0.0,
+
+    "out_dir": "results/sd35_charxstyle_sweep",
+    "dry_run": false
+  }
+}

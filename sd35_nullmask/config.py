@@ -101,6 +101,18 @@ class SD35NullMaskBenchmarkConfig:
     trigger_token_override: dict[str, str] = field(default_factory=dict)
     out_dir: str = "results/sd35_nullmask_benchmark"
     dry_run: bool = False
+    # Generation quality settings — must match per-pair mixing config
+    base_prompt: str = ""
+    negative_prompt: str = ""
+    dtype: str = "bfloat16"
+    device: str = "cuda"
+    height: int = 1024
+    width: int = 1024
+    guidance_scale: float = 7.0
+    intervention_block_start: int = -1
+    mask_binarize_tau: float = 0.0
+    null_proj_mu: float = -1.0
+    mask_confidence_threshold: float = 0.0
 
     @classmethod
     def from_config(cls, config_path: str | None = None, key: str = "sd35_nullmask_benchmark") -> "SD35NullMaskBenchmarkConfig":
@@ -115,4 +127,7 @@ class SD35NullMaskBenchmarkConfig:
         data["methods"] = _parse_csv_or_list_str(data.get("methods", []))
         data["benchmark_seeds"] = _parse_csv_or_list_int(data.get("benchmark_seeds", [111, 222, 333]))
         data["lookahead_steps"] = _parse_csv_or_list_int(data.get("lookahead_steps", [2, 4]))
+        # Strip unknown keys so callers can add future fields without breaking older code
+        known = {f.name for f in cls.__dataclass_fields__.values()}  # type: ignore[attr-defined]
+        data = {k: v for k, v in data.items() if k in known}
         return cls(**data)

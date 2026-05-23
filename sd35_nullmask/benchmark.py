@@ -21,7 +21,7 @@ def build_benchmark_plan(config: SD35NullMaskBenchmarkConfig, config_path: str |
     rows: list[dict[str, Any]] = []
     for pair in pair_specs:
         adapters = resolve_selected_adapters(inventory, pair)
-        prompt, resolved_triggers = build_pair_prompt("", adapters, override=config.trigger_token_override)
+        prompt, resolved_triggers = build_pair_prompt(config.base_prompt, adapters, override=config.trigger_token_override)
         rows.append(
             {
                 "pair_id": "__".join(pair),
@@ -77,7 +77,7 @@ def run_benchmark(config: SD35NullMaskBenchmarkConfig, *, config_path: str | Non
         backend.pipeline.unload_lora_weights()
 
         adapters = validate_selected_adapters(inventory, lora_ids)
-        _, resolved_triggers = build_pair_prompt("", adapters, override=config.trigger_token_override)
+        _, resolved_triggers = build_pair_prompt(config.base_prompt, adapters, override=config.trigger_token_override)
         backend.load_adapters(adapters, resolved_triggers)
 
         pair_config = SD35NullMaskConfig(
@@ -87,6 +87,7 @@ def run_benchmark(config: SD35NullMaskBenchmarkConfig, *, config_path: str | Non
             lora_ids=lora_ids,
             lora_weights=[1.0] * len(lora_ids),
             prompt=prompt,
+            negative_prompt=config.negative_prompt,
             denoise_steps=config.denoise_steps,
             lookahead_steps=config.lookahead_steps,
             svd_rank=config.svd_rank,
@@ -94,6 +95,17 @@ def run_benchmark(config: SD35NullMaskBenchmarkConfig, *, config_path: str | Non
             methods=row["methods"],
             out_dir=config.out_dir,
             trigger_token_override=config.trigger_token_override,
+            # Quality settings — must be forwarded explicitly; defaults in
+            # SD35NullMaskConfig differ from the tuned benchmark values
+            dtype=config.dtype,
+            device=config.device,
+            height=config.height,
+            width=config.width,
+            guidance_scale=config.guidance_scale,
+            intervention_block_start=config.intervention_block_start,
+            mask_binarize_tau=config.mask_binarize_tau,
+            null_proj_mu=config.null_proj_mu,
+            mask_confidence_threshold=config.mask_confidence_threshold,
         )
 
         records = backend.run_all_methods(
