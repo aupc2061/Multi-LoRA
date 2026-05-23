@@ -13,6 +13,8 @@
     "benchmark_seeds": [111, 222, 333],
     "denoise_steps": 28,
     "lookahead_steps": [2, 4],
+    "intervention_block_start": 8,
+    "mask_binarize_tau": 0.0,
     "svd_rank": 1,
     "switch_step": 5,
     "trigger_token_override": {

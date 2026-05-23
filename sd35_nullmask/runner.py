@@ -75,11 +75,39 @@ def main() -> None:
 
     inventory = build_inventory_context(config.inventory_path, config.local_root)
     adapters = validate_selected_adapters(inventory, config.lora_ids)
-    _, resolved_triggers = build_pair_prompt(config.prompt, adapters, override=config.trigger_token_override)
+    prompt, resolved_triggers = build_pair_prompt(config.prompt, adapters, override=config.trigger_token_override)
+
+    print(f"Prompt: {prompt!r}", flush=True)
+    print(f"Adapters: {[a.adapter_id for a in adapters]}", flush=True)
+    print(f"Methods:  {validate_methods(config.methods)}", flush=True)
+    print(f"Seeds:    {config.seeds}", flush=True)
+
     backend = SD35PipelineBackend(config)
     preflight = backend.run_preflight(adapters, resolved_triggers)
     backend.save_json(out_root / "preflight.json", preflight)
-    print(json.dumps({"status": "runtime_ready", "preflight_path": str(out_root / "preflight.json")}, indent=2))
+    print(json.dumps({"status": "runtime_ready", "preflight_path": str(out_root / "preflight.json")}, indent=2), flush=True)
+
+    # ── run all methods × seeds ───────────────────────────────────────────────
+    records = backend.run_all_methods(
+        methods=validate_methods(config.methods),
+        seeds=config.seeds,
+        prompt=prompt,
+        negative_prompt=config.negative_prompt,
+        pair_id=config.pair_id,
+        out_root=config.out_dir,
+        config=config,
+    )
+
+    report = {
+        "pair_id": config.pair_id,
+        "prompt": prompt,
+        "negative_prompt": config.negative_prompt,
+        "methods": validate_methods(config.methods),
+        "seeds": config.seeds,
+        "records": records,
+    }
+    backend.save_json(out_root / "report.json", report)
+    print(json.dumps({"status": "done", "images_saved": len(records), "out_dir": str(out_root)}, indent=2), flush=True)
 
 
 if __name__ == "__main__":

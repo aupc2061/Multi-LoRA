@@ -16,6 +16,12 @@ from typing import TYPE_CHECKING, Any, Optional
 import torch
 import torch.nn.functional as F
 
+try:
+    from tqdm.auto import tqdm as _tqdm
+    _TQDM_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    _TQDM_AVAILABLE = False
+
 from .config import SD35NullMaskConfig
 from .masking import MaskBuildResult, build_exclusive_binary_masks, reduce_attention_to_patch_scores
 from .projection import compute_structural_basis, project_delta_to_nullspace
@@ -377,6 +383,7 @@ class SD35NullMaskEngine:
 
         mask_result: Optional[MaskBuildResult] = None
         if method in ("sd35_mask_only", "sd35_mask_nullproj"):
+            print(f"  [{method}] running look-ahead ({self.config.lookahead_steps[0]}–{self.config.lookahead_steps[-1]} steps)...", flush=True)
             mask_result = self._run_lookahead(
                 latents.clone(),
                 timesteps,
@@ -384,13 +391,37 @@ class SD35NullMaskEngine:
                 pooled_embeds,
                 seed=seed,
             )
+            # Print mask ownership so users can verify the split is balanced
+            for aid, ratio in mask_result.ownership_ratio_by_adapter.items():
+                short_id = aid.split("_", 1)[-1]  # strip "character_" / "style_" prefix
+                print(f"    mask {short_id}: {ratio:.1%} of patches", flush=True)
+            if mask_result.unowned_ratio > 0.0:
+                print(f"    unowned: {mask_result.unowned_ratio:.1%}", flush=True)
+
             # Lookahead called scheduler.step() advancing _step_index. Reset fully
             # so the main loop starts at index 0 with a clean sigma sequence.
             scheduler.set_timesteps(self.config.denoise_steps, device=device)
             scheduler._step_index = None  # same version guard as above
             timesteps = scheduler.timesteps
 
-        for step_idx, t in enumerate(timesteps):
+        # ── denoising loop ────────────────────────────────────────────────────
+        _passes_per_step = (
+            4 if method in ("sd35_mask_only", "sd35_mask_nullproj") else 1
+        )
+        _step_iter = (
+            _tqdm(
+                enumerate(timesteps),
+                total=len(timesteps),
+                desc=f"  [{method}] seed={seed}",
+                unit="step",
+                leave=False,
+                ncols=100,
+            )
+            if _TQDM_AVAILABLE
+            else enumerate(timesteps)
+        )
+
+        for step_idx, t in _step_iter:
             noise_pred = self._denoising_step(
                 latents, t, step_idx,
                 prompt_embeds, negative_prompt_embeds,

@@ -1,0 +1,20 @@
+# SD3.5 null-mask inference stack
+# SD3.5 support requires diffusers >= 0.31
+diffusers>=0.32.0
+transformers>=4.44.0
+peft>=0.12.0
+accelerate>=0.33.0
+
+# T5-XXL tokenizer (third text encoder in SD3.5)
+sentencepiece
+protobuf
+
+# HuggingFace Hub — provides the `hf` CLI for weight downloads
+huggingface_hub>=0.24.0
+
+# Core ML
+torch>=2.1.0
+torchvision
+
+# Image I/O
+Pillow>=10.0.0

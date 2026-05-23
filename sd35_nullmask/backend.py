@@ -5,6 +5,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+try:
+    from tqdm.auto import tqdm as _tqdm
+    _TQDM_AVAILABLE = True
+except ImportError:
+    _TQDM_AVAILABLE = False
+
 from .config import SD35NullMaskConfig
 from .inventory import InventoryAdapter
 from .masking import MaskBuildResult
@@ -49,7 +55,7 @@ class SD35PipelineBackend:
 
         _dtype_map = {"float16": torch.float16, "bfloat16": torch.bfloat16, "float32": torch.float32}
         dtype = _dtype_map.get(self.config.dtype, torch.bfloat16)
-        pipeline = StableDiffusion3Pipeline.from_pretrained(self.config.model_name, torch_dtype=dtype)
+        pipeline = StableDiffusion3Pipeline.from_pretrained(self.config.model_name, dtype=dtype)
         pipeline = pipeline.to(self.config.device)
         self.pipeline = pipeline
         block_count = self._count_transformer_blocks(pipeline)
@@ -155,12 +161,26 @@ class SD35PipelineBackend:
             negative_prompt=negative_prompt,
         )
         records: list[dict[str, Any]] = []
+        total_images = len(methods) * len(seeds)
+        outer_bar = (
+            _tqdm(total=total_images, desc=f"  {pair_id}", unit="img", ncols=100, position=0)
+            if _TQDM_AVAILABLE
+            else None
+        )
         for method in methods:
             for seed in seeds:
+                if outer_bar is not None:
+                    outer_bar.set_description(f"  {pair_id}  [{method}] seed={seed}")
+                print(f"\n→ generating  method={method}  seed={seed}", flush=True)
                 image = engine.generate(method=method, seed=seed)
                 img_path = pair_dir / f"{method}_seed{seed}.png"
                 image.save(str(img_path))
+                print(f"  saved → {img_path}", flush=True)
                 records.append({"method": method, "seed": seed, "path": str(img_path)})
+                if outer_bar is not None:
+                    outer_bar.update(1)
+        if outer_bar is not None:
+            outer_bar.close()
         return records
 
     @staticmethod
