@@ -57,6 +57,11 @@ class SD35PipelineBackend:
         dtype = _dtype_map.get(self.config.dtype, torch.bfloat16)
         pipeline = StableDiffusion3Pipeline.from_pretrained(self.config.model_name, dtype=dtype)
         pipeline = pipeline.to(self.config.device)
+        # Tile the VAE decoder so it never needs to allocate the full ~512 MiB
+        # conv buffer at once — processes 512×512 px tiles instead of the full
+        # 1024×1024 image.  Prevents OOM when the CUDA allocator is fragmented
+        # after 28+ denoising steps.
+        pipeline.vae.enable_tiling()
         self.pipeline = pipeline
         block_count = self._count_transformer_blocks(pipeline)
         return SD35RuntimeInfo(
@@ -172,6 +177,14 @@ class SD35PipelineBackend:
                 if outer_bar is not None:
                     outer_bar.set_description(f"  {pair_id}  [{method}] seed={seed}")
                 print(f"\n→ generating  method={method}  seed={seed}", flush=True)
+                # Flush fragmented allocator blocks before each image so the VAE
+                # decode always has a clean ~512 MiB contiguous window available.
+                try:
+                    import torch as _torch
+                    if _torch.cuda.is_available():
+                        _torch.cuda.empty_cache()
+                except Exception:
+                    pass
                 image = engine.generate(method=method, seed=seed)
                 img_path = pair_dir / f"{method}_seed{seed}.png"
                 image.save(str(img_path))

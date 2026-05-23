@@ -430,9 +430,17 @@ class SD35NullMaskEngine:
             )
             latents = scheduler.step(noise_pred, t, latents, return_dict=False)[0]
 
-        image = self.pipeline.vae.decode(
-            latents / self.pipeline.vae.config.scaling_factor, return_dict=False
-        )[0].detach()
+        # Release fragmented allocator blocks before the VAE conv kernels need
+        # a large contiguous allocation.  Without this, 28 denoising steps leave
+        # the CUDA allocator with many small free fragments that can't satisfy a
+        # single 512 MiB request even when total free capacity is >> 512 MiB.
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+        with torch.no_grad():
+            image = self.pipeline.vae.decode(
+                latents / self.pipeline.vae.config.scaling_factor, return_dict=False
+            )[0].detach()
         return self.pipeline.image_processor.postprocess(image, output_type="pil")[0]
 
     # ── prompt encoding ─────────────────────────────────────────────────────────
