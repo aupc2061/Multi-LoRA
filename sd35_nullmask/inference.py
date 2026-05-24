@@ -351,12 +351,33 @@ class SD35NullMaskEngine:
             else self.n_blocks - 1
         )
 
-        # Look-ahead block: 80th-percentile of depth (analogous to LoRA-Shop Block 19)
-        self.lookahead_block_idx: int = (
+        # Look-ahead blocks: resolve -1 sentinel to the 80th-percentile block (LoRA-Shop default).
+        # Users can override via lookahead_block_indices in config, e.g. [17, 19, 21] for
+        # late-block multi-block averaging. Block 23 (context_pre_only=True) is excluded.
+        _auto_block = (
             self.intervention_block_idx
             if config.intervention_block_start >= 0
             else int(self.n_blocks * 0.8)
         )
+        _raw = config.lookahead_block_indices
+        if len(_raw) == 1 and _raw[0] == -1:
+            # Default: single block, current behavior
+            self.lookahead_block_indices: list[int] = [_auto_block]
+        else:
+            # User-specified: clamp to valid range, skip any block with context_pre_only
+            self.lookahead_block_indices = [
+                b for b in _raw
+                if 0 <= b < self.n_blocks
+                and not getattr(self.blocks[b], "context_pre_only", False)
+            ]
+            if not self.lookahead_block_indices:
+                warnings.warn(
+                    "lookahead_block_indices resolved to empty after filtering — "
+                    f"falling back to block {_auto_block}."
+                )
+                self.lookahead_block_indices = [_auto_block]
+        # Convenience alias for single-block code paths (kept for backwards compat)
+        self.lookahead_block_idx: int = self.lookahead_block_indices[0]
 
     # ── public entry point ──────────────────────────────────────────────────────
 
@@ -383,7 +404,8 @@ class SD35NullMaskEngine:
 
         mask_result: Optional[MaskBuildResult] = None
         if method in ("sd35_mask_only", "sd35_mask_nullproj"):
-            print(f"  [{method}] running look-ahead ({self.config.lookahead_steps[0]}–{self.config.lookahead_steps[-1]} steps)...", flush=True)
+            _blocks_str = str(self.lookahead_block_indices[0]) if len(self.lookahead_block_indices) == 1 else str(self.lookahead_block_indices)
+            print(f"  [{method}] running look-ahead (steps {self.config.lookahead_steps[0]}–{self.config.lookahead_steps[-1]}, blocks {_blocks_str})...", flush=True)
             mask_result = self._run_lookahead(
                 latents.clone(),
                 timesteps,
@@ -495,8 +517,19 @@ class SD35NullMaskEngine:
         la_start = self.config.lookahead_steps[0]
         la_end = self.config.lookahead_steps[-1]
         scheduler = self.pipeline.scheduler
-        attn_module = self.blocks[self.lookahead_block_idx].attn
+        # Resolve attention modules for all lookahead blocks
+        lookahead_attn_modules = [
+            self.blocks[b].attn for b in self.lookahead_block_indices
+        ]
+        n_lookahead_blocks = len(lookahead_attn_modules)
         tokenizer = self.pipeline.tokenizer
+
+        if n_lookahead_blocks > 1:
+            print(
+                f"  [lookahead] multi-block averaging over blocks "
+                f"{self.lookahead_block_indices}",
+                flush=True,
+            )
 
         scores_by_adapter: dict[str, torch.Tensor] = {}
 
@@ -508,13 +541,20 @@ class SD35NullMaskEngine:
             # Bug 1: reset scheduler step index so each adapter's pass starts at t[0]
             self.pipeline.scheduler._step_index = None
             latents = init_latents.clone()
-            attn_accum: Optional[torch.Tensor] = None
+            # One accumulator per lookahead block so we can average across both
+            # depth (blocks) and time (steps) independently before patch scoring.
+            attn_accum_by_block: list[Optional[torch.Tensor]] = [None] * n_lookahead_blocks
             n_captured = 0
 
             for step_idx, t in enumerate(all_timesteps[: la_end + 1]):
-                hook: Optional[AttentionCaptureHook] = None
+                hooks: list[Optional[AttentionCaptureHook]] = []
                 if step_idx >= la_start:
-                    hook = AttentionCaptureHook(attn_module, self.n_img_tokens)
+                    hooks = [
+                        AttentionCaptureHook(m, self.n_img_tokens)
+                        for m in lookahead_attn_modules
+                    ]
+                else:
+                    hooks = [None] * n_lookahead_blocks
 
                 with torch.no_grad():
                     noise_pred = self.pipeline.transformer(
@@ -525,18 +565,22 @@ class SD35NullMaskEngine:
                         return_dict=False,
                     )[0]
 
-                if hook is not None:
-                    hook.remove()
-                    if hook.last_attn_map is not None:
-                        if attn_accum is None:
-                            attn_accum = hook.last_attn_map.float()
-                        else:
-                            attn_accum = attn_accum + hook.last_attn_map.float()
-                        n_captured += 1
+                any_captured = False
+                for i, hook in enumerate(hooks):
+                    if hook is not None:
+                        hook.remove()
+                        if hook.last_attn_map is not None:
+                            if attn_accum_by_block[i] is None:
+                                attn_accum_by_block[i] = hook.last_attn_map.float()
+                            else:
+                                attn_accum_by_block[i] = attn_accum_by_block[i] + hook.last_attn_map.float()
+                            any_captured = True
+                if any_captured:
+                    n_captured += 1
 
                 latents = scheduler.step(noise_pred, t, latents, return_dict=False)[0]
 
-            if attn_accum is None or n_captured == 0:
+            if n_captured == 0 or all(a is None for a in attn_accum_by_block):
                 # Fallback: uniform scores → adapter gets no spatial preference.
                 # Bug 5: derive token count from latent shape rather than self.n_img_tokens
                 # to avoid a mismatch if the config height/width differs from the actual run.
@@ -546,7 +590,14 @@ class SD35NullMaskEngine:
                 )
                 continue
 
-            attn_map = attn_accum / n_captured  # [N_img, N_txt]
+            # Average across timesteps, then average across blocks.
+            # Order matters: average raw logits before smoothing to preserve locality.
+            valid_maps = [
+                acc / n_captured
+                for acc in attn_accum_by_block
+                if acc is not None
+            ]  # each: [N_img, N_txt]
+            attn_map = torch.stack(valid_maps, dim=0).mean(dim=0)  # [N_img, N_txt]
 
             token_indices = get_concept_token_indices(tokenizer, self.prompt, trigger)
             # Clamp to valid text-token range (attn_map might have fewer columns)

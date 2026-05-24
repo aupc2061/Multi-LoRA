@@ -32,6 +32,10 @@ class SD35NullMaskConfig:
     seeds: list[int] = field(default_factory=lambda: [111])
     denoise_steps: int = 28
     lookahead_steps: list[int] = field(default_factory=lambda: [2, 4])
+    lookahead_block_indices: list[int] = field(default_factory=lambda: [-1])
+    # -1 = auto: use int(0.8 * n_blocks), i.e. block 19 for 24-block SD3.5.
+    # Override with e.g. [17, 19, 21] for late-block multi-block averaging.
+    # Block 23 is intentionally excluded: context_pre_only=True returns a bare tensor.
     intervention_block_start: int = -1
     intervention_block_end: int = -1
     svd_rank: int = 1
@@ -66,6 +70,7 @@ class SD35NullMaskConfig:
         data["lora_weights"] = [float(value) for value in data.get("lora_weights", [])]
         data["seeds"] = _parse_csv_or_list_int(data.get("seeds", [111]))
         data["lookahead_steps"] = _parse_csv_or_list_int(data.get("lookahead_steps", [2, 4]))
+        data["lookahead_block_indices"] = _parse_csv_or_list_int(data.get("lookahead_block_indices", [-1]))
         data["methods"] = _parse_csv_or_list_str(data.get("methods", []))
         cfg = cls(**data)
         if len(cfg.lora_ids) != 2:
@@ -96,6 +101,7 @@ class SD35NullMaskBenchmarkConfig:
     benchmark_seeds: list[int] = field(default_factory=lambda: [111, 222, 333])
     denoise_steps: int = 28
     lookahead_steps: list[int] = field(default_factory=lambda: [2, 4])
+    lookahead_block_indices: list[int] = field(default_factory=lambda: [-1])
     svd_rank: int = 1
     switch_step: int = 5
     trigger_token_override: dict[str, str] = field(default_factory=dict)
@@ -127,6 +133,7 @@ class SD35NullMaskBenchmarkConfig:
         data["methods"] = _parse_csv_or_list_str(data.get("methods", []))
         data["benchmark_seeds"] = _parse_csv_or_list_int(data.get("benchmark_seeds", [111, 222, 333]))
         data["lookahead_steps"] = _parse_csv_or_list_int(data.get("lookahead_steps", [2, 4]))
+        data["lookahead_block_indices"] = _parse_csv_or_list_int(data.get("lookahead_block_indices", [-1]))
         # Strip unknown keys so callers can add future fields without breaking older code
         known = {f.name for f in cls.__dataclass_fields__.values()}  # type: ignore[attr-defined]
         data = {k: v for k, v in data.items() if k in known}
